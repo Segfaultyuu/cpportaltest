@@ -185,7 +185,7 @@
       </nav>
       <div class="sidebar-bottom">
         <div class="nav-item" id="collapse-btn">
-          <span class="nav-icon"><img src="images/collapse.png" alt="Collapse" style="opacity:0.5;" /></span>
+          <span class="nav-icon"><img id="collapse-icon" src="images/Collapse.png" alt="Collapse" /></span>
           <span class="nav-label collapse-label" style="font-size:14px;color:var(--text-secondary);">Collapse</span>
           <span class="nav-tooltip">Expand</span>
         </div>
@@ -251,6 +251,8 @@
     document.body.classList.toggle('sidebar-collapsed');
     const tip = collapseBtn.querySelector('.nav-tooltip');
     if (tip) tip.textContent = isCollapsing ? 'Expand' : 'Collapse';
+    const icon = document.getElementById('collapse-icon');
+    if (icon) icon.src = isCollapsing ? 'images/collapseOn.png' : 'images/Collapse.png';
     if (isCollapsing) {
       document.querySelectorAll('.submenu.open').forEach(s => s.classList.remove('open'));
       document.querySelectorAll('.nav-item.submenu-open').forEach(n => n.classList.remove('submenu-open'));
