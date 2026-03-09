@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
+      --green: #00b565;
+      --red: #ff2c40;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-1: #ffffff;
+      --bg-2: #f9f9f9;
+      --bg-4: #e5e7eb;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-2);
+      color: var(--text-primary);
+      min-width: 1280px;
+      overflow-x: auto;
+    }
+
+    /* ─── Main ────────────────────────────────────────────── */
+    .main {
+      margin-left: 240px; padding-top: 60px; min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .home-content {
+      max-width: 1440px; margin: 0 auto;
+      padding: 24px 40px 0; display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* ─── KYC Banner ──────────────────────────────────────── */
+    .kyc-banner {
+      background: #e8f1ff; border-radius: 16px;
+      height: 160px; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+    }
+
+    .kyc-bg-blob {
+      position: absolute; pointer-events: none; border-radius: 50%;
+    }
+
+    .kyc-bg-blob.b1 {
+      left: -40px; top: -100px; width: 340px; height: 300px;
+      background: radial-gradient(ellipse, rgba(30,104,246,0.2) 0%, transparent 70%);
+    }
+
+    .kyc-bg-blob.b2 {
+      right: -20px; bottom: -80px; width: 260px; height: 260px;
+      background: radial-gradient(ellipse, rgba(77,138,255,0.16) 0%, transparent 70%);
+    }
+
+    .kyc-avatar { width: 171px; height: 171px; flex-shrink: 0; position: relative; }
+    .kyc-avatar img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+    .kyc-body {
+      flex: 1; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 40px 0 0;
+    }
+
+    .kyc-text-block { display: flex; flex-direction: column; gap: 10px; }
+
+    .kyc-title {
+      font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.2;
+      max-width: 620px;
+    }
+
+    .kyc-progress-bar {
+      display: flex; align-items: center; width: 515px; gap: 0;
+    }
+
+    .kyc-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    .kyc-dot.on { background: var(--blue); }
+    .kyc-dot.off { background: #c2c7d0; }
+
+    .kyc-seg { height: 4px; flex: 1; }
+    .kyc-seg.full { background: var(--blue); }
+    .kyc-seg.half { background: linear-gradient(to right, var(--blue) 55%, #dde2e8 55%); }
+    .kyc-seg.empty { background: #dde2e8; }
+
+    .kyc-labels {
+      display: flex; justify-content: space-between; width: 515px;
+      font-size: 12px; margin-top: 4px;
+    }
+
+    .kyc-labels span { color: var(--text-primary); }
+    .kyc-labels span.dim { color: var(--text-tertiary); }
+
+    .kyc-verify-btn {
+      height: 40px; padding: 0 20px; border-radius: 8px;
+      border: 1.5px solid var(--blue); background: transparent;
+      color: var(--blue); font-size: 16px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .kyc-verify-btn:hover { background: rgba(10,54,199,0.06); }
+
+    .kyc-dots {
+      display: flex; align-items: center; gap: 4px;
+      justify-content: center; margin-top: 9px;
+    }
+
+    .kyc-pip { height: 2px; width: 16px; border-radius: 2px; }
+    .kyc-pip.on { background: var(--blue); }
+    .kyc-pip.off { background: rgba(10,54,199,0.12); }
+
+    /* ─── Stats Row ───────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 540px 1fr 1fr;
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: #fff; border-radius: 16px;
+      box-shadow: var(--shadow-card); overflow: hidden;
+    }
+
+    /* Assets card */
+    .assets-inner { padding: 40px 24px; }
+
+    .assets-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .assets-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 16px; color: var(--text-secondary);
+    }
+
+    .assets-history {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 14px; color: var(--text-secondary); cursor: pointer;
+    }
+
+    .assets-amount-row {
+      display: flex; align-items: flex-end; gap: 8px; margin-bottom: 40px;
+    }
+
+    .assets-flag { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+
+    .assets-figure {
+      font-size: 40px; font-weight: 700; color: var(--text-primary); line-height: 1;
+    }
+
+    .assets-figure .cents { font-size: 32px; }
+
+    .assets-currency {
+      font-size: 16px; font-weight: 700; color: var(--text-primary); margin-left: 6px;
+    }
+
+    .assets-buttons {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
+    }
+
+    .btn-deposit-h {
+      height: 40px; border-radius: 8px; border: none;
+      background: linear-gradient(-54deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    .btn-deposit-h:hover { opacity: 0.9; }
+
+    .btn-action-h {
+      height: 40px; border-radius: 8px; border: none;
+      background: var(--blue-light); color: var(--blue);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    .btn-action-h:hover { opacity: 0.85; }
+
+    /* Trading card */
+    .trading-inner {
+      padding: 24px 24px 40px;
+      display: flex; flex-direction: column;
+      height: 100%;
+    }
+
+    .trading-title { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+
+    .trading-chart {
+      flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px 0 20px;
+    }
+
+    .trading-chart img { width: 80px; height: 80px; object-fit: contain; }
+
+    .btn-open-acct {
+      height: 40px; border-radius: 8px; border: 1.5px solid var(--blue);
+      background: transparent; color: var(--blue);
+      font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;
+      transition: background 0.15s;
+    }
+
+    .btn-open-acct:hover { background: var(--blue-light); }
+
+    /* ClubBleu card */
+    .clubbleu-wrap { position: relative; height: 100%; }
+
+    .clubbleu-bg {
+      position: absolute; top: 0; left: 0; right: 0; height: 80px; overflow: hidden;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .clubbleu-bg img { width: 100%; height: 100%; object-fit: cover; }
+
+    .clubbleu-coin-wrap {
+      position: absolute; top: -29px; right: -10px;
+      width: 120px; height: 100px; overflow: visible; z-index: 2;
+    }
+
+    .clubbleu-coin-wrap img { width: 120px; height: 100px; object-fit: contain; }
+
+    .clubbleu-inner {
+      position: relative; z-index: 3;
+      padding: 24px 24px 40px;
+      display: flex; flex-direction: column;
+      height: 100%;
+    }
+
+    .cb-header {
+      display: flex; align-items: center; gap: 8px;
+      height: 40px; margin-bottom: 20px;
+    }
+
+    .cb-name { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+
+    .cb-sep { width: 1px; height: 14px; background: #bbb; }
+
+    .cb-tier {
+      font-size: 20px; font-weight: 700;
+      background: linear-gradient(-65deg, #0a36c7 4%, #1e68f6 105%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .cb-points-row {
+      display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 8px; padding-top: 20px;
+    }
+
+    .cb-pts-num { font-size: 36px; font-weight: 700; color: #031f45; line-height: 1; }
+    .cb-pts-lbl { font-size: 10px; color: #868686; margin-left: 4px; }
+
+    .cb-next { font-size: 10px; color: var(--text-primary); opacity: 0.8; display: flex; align-items: center; gap: 3px; }
+
+    .cb-bar { height: 3px; border-radius: 1.5px; margin: 16px 0 20px; overflow: hidden; }
+
+    .cb-bar-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--blue) 30%, rgba(10,54,199,0.1) 30%);
+    }
+
+    .cb-benefits {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-primary); opacity: 0.8; cursor: pointer;
+    }
+
+    /* ─── Market Table ────────────────────────────────────── */
+    .market-card {
+      background: #fff; border-radius: 16px;
+      box-shadow: var(--shadow-card); overflow: hidden;
+    }
+
+    .market-tabs {
+      display: flex; align-items: flex-end;
+      padding: 24px 24px 0;
+      gap: 0;
+    }
+
+    .market-tab {
+      font-size: 20px; font-weight: 500; color: #7A8699;
+      padding: 0 0 14px; margin-right: 48px;
+      cursor: pointer; border-bottom: none;
+      transition: color 0.15s; white-space: nowrap;
+    }
+
+    .market-tab:not(.active) { font-size: 20px; font-weight: 500; color: #7A8699; }
+    .market-tab.active { font-size: 20px; font-weight: 700; color: #282D34; border-bottom: none; }
+    .market-tab:hover { color: #282D34; }
+
+    .market-table { width: 100%; border-collapse: collapse; }
+
+    .market-table thead th {
+      padding: 12px 24px; font-size: 12px; font-weight: 500;
+      color: var(--text-secondary); text-align: left; border-bottom: 1px solid var(--border);
+    }
+
+    .market-table thead th.r { text-align: right; }
+
+    .market-table tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+    .market-table tbody tr:last-child { border-bottom: none; }
+    .market-table tbody tr:hover { background: var(--bg-2); }
+    .market-table tbody td { padding: 0 24px; height: 64px; font-size: 14px; }
+    .market-table tbody td.r { text-align: right; }
+
+    .sym-cell { display: flex; align-items: center; gap: 12px; }
+    .sym-flag { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex-shrink: 0; }
+    .sym-name { font-size: 14px; font-weight: 600; }
+    .sym-desc { font-size: 11px; color: var(--text-secondary); }
+
+    .p-sell { color: #e84040; font-weight: 500; }
+    .p-buy { color: var(--green); font-weight: 500; }
+
+    .chg-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 28px; min-width: 66px; border-radius: 4px;
+      font-size: 12px; font-weight: 600; padding: 0 10px;
+    }
+
+    .chg-neg { background: var(--red); color: #fff; }
+    .chg-pos { background: var(--green); color: #fff; }
+
+    /* ─── Section header ──────────────────────────────────── */
+    .sec-hdr {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+
+    .sec-title { font-size: 20px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
+
+    .sec-arrow {
+      width: 32px; height: 32px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; color: var(--text-secondary);
+    }
+
+    /* ─── News ────────────────────────────────────────────── */
+    .news-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+
+    .news-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px; cursor: pointer; transition: box-shadow 0.15s;
+    }
+
+    .news-card:hover { box-shadow: 0 6px 20px rgba(168,195,206,0.35); }
+
+    .news-text { flex: 1; min-width: 0; }
+
+    .news-hl {
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+      line-height: 1.4; margin-bottom: 6px;
+      display: -webkit-box; -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .news-sub {
+      font-size: 11px; color: var(--text-secondary);
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px;
+    }
+
+    .news-time { font-size: 10px; color: var(--text-tertiary); }
+
+    .news-thumb {
+      width: 64px; height: 64px; border-radius: 8px;
+      overflow: hidden; flex-shrink: 0;
+    }
+
+    /* ─── Traders ─────────────────────────────────────────── */
+    .ct-banner {
+      background: linear-gradient(90deg, rgba(197,225,255,0.2), rgba(91,151,255,0.1));
+      border-radius: 12px; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+
+    .ct-banner-t { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+
+    .ct-banner-d {
+      font-size: 12px; color: var(--text-secondary); line-height: 1.5; max-width: 660px;
+    }
+
+    .ct-banner-ico {
+      flex-shrink: 0; margin-left: 20px; opacity: 0.7;
+    }
+
+    .traders-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; }
+
+    .trader-card {
+      background: #FFFFFF; border-radius: 16px; box-shadow: var(--shadow-card);
+      padding: 24px 20px 20px; display: flex; flex-direction: column;
+      align-items: center; cursor: pointer; transition: box-shadow 0.15s;
+      border: 1.5px solid transparent;
+    }
+
+    .trader-card:hover { box-shadow: 0 6px 24px rgba(168,195,206,0.4); }
+    .trader-card.feat {
+      border-color: transparent;
+      background: linear-gradient(#fff, #fff) padding-box,
+                  linear-gradient(45deg, #FFFFFF 0%, #E2AD2F 50%, #FFFFFF 100%) border-box;
+    }
+
+    .trader-av-wrap { position: relative; width: 64px; height: 64px; margin-bottom: 12px; }
+
+    .trader-av {
+      width: 64px; height: 64px; border-radius: 50%;
+      object-fit: cover; display: block; flex-shrink: 0;
+    }
+
+    .trader-rank-badge {
+      position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      font-size: 9px; font-weight: 700; color: #fff;
+      padding: 1px 7px; border-radius: 8px; white-space: nowrap;
+    }
+
+    .r1 { background: linear-gradient(90deg, #f0c040, #e8950a); }
+    .r2 { background: linear-gradient(90deg, #909090, #696969); }
+    .r3 { background: linear-gradient(90deg, #c87941, #a05028); }
+
+    .trader-name { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; text-align: center; }
+
+    .trader-followers {
+      font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .trader-sep { width: 100%; height: 1px; background: var(--border); margin-bottom: 14px; }
+
+    .trader-ret-row {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; margin-bottom: 10px;
+    }
+
+    .trader-ret-lbl { font-size: 11px; color: var(--text-secondary); }
+    .trader-ret-val { font-size: 20px; font-weight: 700; color: var(--green); }
+
+    .trader-chart { width: 100%; height: 50px; margin-bottom: 10px; }
+    .trader-chart svg { width: 100%; height: 100%; }
+
+    .trader-metrics {
+      display: flex; align-items: center; justify-content: center;
+      gap: 32px; width: 100%; margin-bottom: 16px;
+    }
+
+    .tm { text-align: center; }
+    .tm-lbl { font-size: 10px; color: var(--text-secondary); margin-bottom: 2px; }
+    .tm-val { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+
+    .risk-b {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 3px;
+      background: var(--green); color: #fff; font-size: 11px; font-weight: 700;
+    }
+
+    .btn-view {
+      width: 100%; height: 40px; border-radius: 8px;
+      border: 1px solid var(--border); background: #fff;
+      color: var(--text-primary); font-size: 14px; font-weight: 500; cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-view:hover { background: var(--bg-2); }
+
+    /* ─── Legal footer ────────────────────────────────────── */
+    .legal {
+      padding: 20px 40px; font-size: 11px; color: var(--text-secondary);
+      line-height: 1.6; background: #fff; border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+
+    .legal a { color: var(--blue); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="sidebar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TOPBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="topbar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="home-content">
+
+    <!-- ── KYC Verification Banner ── -->
+    <div>
+      <div class="kyc-banner">
+        <div class="kyc-bg-blob b1"></div>
+        <div class="kyc-bg-blob b2"></div>
+
+        <div class="kyc-avatar">
+          <img src="https://www.figma.com/api/mcp/asset/9418e0af-c016-4c0b-9699-3dbe8afd3de5" alt="Verification avatar" />
+        </div>
+
+        <div class="kyc-body">
+          <div class="kyc-text-block">
+            <div class="kyc-title">Nearly there! Complete your ID verification in just 2 minutes</div>
+            <div>
+              <div class="kyc-progress-bar">
+                <div class="kyc-dot on"></div>
+                <div class="kyc-seg half"></div>
+                <div class="kyc-dot off"></div>
+                <div class="kyc-seg empty"></div>
+                <div class="kyc-dot off"></div>
+              </div>
+              <div class="kyc-labels">
+                <span>Sign Up</span>
+                <span>Verification</span>
+                <span class="dim">Deposit</span>
+              </div>
+            </div>
+          </div>
+          <button class="kyc-verify-btn">Verify Identity</button>
+        </div>
+      </div>
+      <div class="kyc-dots">
+        <div class="kyc-pip on"></div>
+        <div class="kyc-pip off"></div>
+        <div class="kyc-pip off"></div>
+        <div class="kyc-pip off"></div>
+        <div class="kyc-pip off"></div>
+      </div>
+    </div>
+
+    <!-- ── Stats Row ── -->
+    <div class="stats-row">
+
+      <!-- Total Assets -->
+      <div class="stat-card">
+        <div class="assets-inner">
+          <div class="assets-top">
+            <div class="assets-label">
+              Total assets estimate
+              <img src="https://www.figma.com/api/mcp/asset/8ca8fc90-5a98-4c70-9f2e-b3572fb4bb21" width="20" height="20" alt="" style="opacity:0.65;" />
+            </div>
+            <div class="assets-history">
+              History
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+            </div>
+          </div>
+
+          <div class="assets-amount-row">
+            <img class="assets-flag" src="https://www.figma.com/api/mcp/asset/24f825f6-845c-45f0-8c9b-5ce0ca29e32f" alt="USD" />
+            <span class="assets-figure">0<span class="cents">.00</span></span>
+            <span class="assets-currency">USD</span>
+            <img src="images/Arrows.png" alt="arrow" style="width:16px;height:16px;object-fit:contain;margin-bottom:2px;" />
+          </div>
+
+          <div class="assets-buttons">
+            <button class="btn-deposit-h">Deposit</button>
+            <button class="btn-action-h">Withdraw</button>
+            <button class="btn-action-h">Transfer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trading Account -->
+      <div class="stat-card">
+        <div class="trading-inner">
+          <div class="trading-title">Trading Account</div>
+          <div class="trading-chart">
+            <img src="https://www.figma.com/api/mcp/asset/985c3dcc-f803-4b65-aee0-2dc72eae541b" alt="3D Chart" />
+          </div>
+          <button class="btn-open-acct">Open Account</button>
+        </div>
+      </div>
+
+      <!-- ClubBleu -->
+      <div class="stat-card" style="position:relative; overflow:visible;">
+        <div class="clubbleu-bg">
+          <img src="https://www.figma.com/api/mcp/asset/f5dcaa40-78c3-49ad-9ed3-6a438b34fb0b" alt="" />
+        </div>
+        <div class="clubbleu-coin-wrap">
+          <img src="images/Layer_1-1 1.png" alt="ClubBleu coin" />
+        </div>
+        <div class="clubbleu-inner">
+          <div class="cb-header">
+            <span class="cb-name">ClubBleu</span>
+            <div class="cb-sep"></div>
+            <span class="cb-tier">Member</span>
+          </div>
+          <div>
+            <div class="cb-points-row">
+              <div>
+                <span class="cb-pts-num">0</span>
+                <span class="cb-pts-lbl">Points</span>
+              </div>
+              <div class="cb-next">
+                1234 Points to Next Level
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#c2c7d0" stroke-width="1.2"/><path d="M7 5v3m0 2h.01" stroke="#c2c7d0" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+            </div>
+            <div class="cb-bar"><div class="cb-bar-fill" style="width:100%;height:100%;"></div></div>
+            <div class="cb-benefits">
+              View my benefits
+              <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 9l4-4-4-4" stroke="#282d34" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /stats-row -->
+
+    <!-- ── Market Table ── -->
+    <div class="market-card">
+      <div class="market-tabs">
+        <div class="market-tab active" data-tab="forex">Forex</div>
+        <div class="market-tab" data-tab="crypto">Crypto</div>
+        <div class="market-tab" data-tab="shares">Shares</div>
+        <div class="market-tab" data-tab="indices">Indices</div>
+        <div class="market-tab" data-tab="metals">Metals</div>
+        <div class="market-tab" data-tab="energy">Energy</div>
+        <div class="market-tab" data-tab="etfs">Etfs</div>
+      </div>
+      <table class="market-table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th class="r" style="width:150px;">Sell</th>
+            <th class="r" style="width:150px;">Buy</th>
+            <th class="r" style="width:150px;">Spread</th>
+            <th class="r" style="width:100px;">%Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="sym-cell"><img class="sym-flag" src="images/USDCAD.png" alt="USDCAD" /><div><div class="sym-name">USDCAD</div><div class="sym-desc">US Dollar / Canadian Dollar</div></div></div></td>
+            <td class="r"><span class="p-sell">1.54554</span></td>
+            <td class="r"><span class="p-buy">1.55847</span></td>
+            <td class="r">0.01293</td>
+            <td class="r"><span class="chg-badge chg-neg">-2.56%</span></td>
+          </tr>
+          <tr>
+            <td><div class="sym-cell"><img class="sym-flag" src="images/USDJPY.png" alt="USDJPY" /><div><div class="sym-name">USDJPY</div><div class="sym-desc">US Dollar / Japanese Yen</div></div></div></td>
+            <td class="r"><span class="p-sell">1.54554</span></td>
+            <td class="r"><span class="p-buy">1.55847</span></td>
+            <td class="r">0.01293</td>
+            <td class="r"><span class="chg-badge chg-pos">+2.56%</span></td>
+          </tr>
+          <tr>
+            <td><div class="sym-cell"><img class="sym-flag" src="images/USDSGD.png" alt="USDSGD" /><div><div class="sym-name">USDSGD</div><div class="sym-desc">US Dollar / Singapore Dollar</div></div></div></td>
+            <td class="r"><span class="p-sell">1.55847</span></td>
+            <td class="r"><span class="p-buy">1.54554</span></td>
+            <td class="r">0.01293</td>
+            <td class="r"><span class="chg-badge chg-pos">+2.56%</span></td>
+          </tr>
+          <tr>
+            <td><div class="sym-cell"><img class="sym-flag" src="images/USDCAD.png" alt="USDCAD" /><div><div class="sym-name">USDCAD</div><div class="sym-desc">US Dollar / Canadian Dollar</div></div></div></td>
+            <td class="r"><span class="p-sell">1.54554</span></td>
+            <td class="r"><span class="p-buy">1.55847</span></td>
+            <td class="r">0.01293</td>
+            <td class="r"><span class="chg-badge chg-neg">-2.56%</span></td>
+          </tr>
+          <tr>
+            <td><div class="sym-cell"><img class="sym-flag" src="images/USDCAD.png" alt="USDCAD" /><div><div class="sym-name">USDCAD</div><div class="sym-desc">US Dollar / Canadian Dollar</div></div></div></td>
+            <td class="r"><span class="p-sell">1.54554</span></td>
+            <td class="r"><span class="p-buy">1.55847</span></td>
+            <td class="r">0.01293</td>
+            <td class="r"><span class="chg-badge chg-pos">+2.56%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── News ── -->
+    <div>
+      <div class="sec-hdr">
+        <span class="sec-title">News</span>
+        <div class="sec-arrow">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="news-grid">
+        <div class="news-card">
+          <div class="news-text">
+            <div class="news-hl">GBP/USD: Likely to trade in a range between 1.344 and 1.352 - UOB Group</div>
+            <div class="news-sub">Long positions above 21175.00 with target...</div>
+            <div class="news-time">09:05</div>
+          </div>
+          <div class="news-thumb">
+            <img src="images/News1.png" alt="News 1" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </div>
+        </div>
+        <div class="news-card">
+          <div class="news-text">
+            <div class="news-hl">GBP/USD: Likely to trade in a range between 1.344 and 1.352 - UOB Group</div>
+            <div class="news-sub">Long positions above 21175.00 with target...</div>
+            <div class="news-time">Today 09:05</div>
+          </div>
+          <div class="news-thumb">
+            <img src="images/News2.png" alt="News 2" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </div>
+        </div>
+        <div class="news-card">
+          <div class="news-text">
+            <div class="news-hl">GBP/USD: Likely to trade in a range between 1.344 and 1.352 - UOB Group</div>
+            <div class="news-sub">Long positions above 21175.00 with target...</div>
+            <div class="news-time">09:05</div>
+          </div>
+          <div class="news-thumb">
+            <img src="images/News3.png" alt="News 3" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Highest Annual Return / Copy Trading ── -->
+    <div>
+      <div class="sec-hdr">
+        <span class="sec-title">
+          Highest Annual Return
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#c2c7d0" stroke-width="1.2"/><path d="M8 7v3.5M8 5.5h.01" stroke="#c2c7d0" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </span>
+        <div class="sec-arrow">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <div class="ct-banner">
+        <div>
+          <div class="ct-banner-t">What Is Copy Trading?</div>
+          <div class="ct-banner-d">VT Markets makes copy trading effortless. Follow top traders, replicate their strategies in real-time, and grow your portfolio without needing market expertise.</div>
+        </div>
+        <div class="ct-banner-ico">
+          <img src="images/ct-banner.png" alt="Copy Trading" style="height:56px;width:auto;display:block;" />
+        </div>
+      </div>
+
+      <div class="traders-grid">
+        <!-- 2nd -->
+        <div class="trader-card">
+          <div class="trader-av-wrap">
+            <img class="trader-av" src="images/avatar2nd.png" alt="2nd trader" />
+            <div class="trader-rank-badge r2">2nd</div>
+          </div>
+          <div class="trader-name">Harun Hussen Ushu</div>
+          <div class="trader-followers">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4" r="2.5" stroke="#7a8699" stroke-width="1.2"/><circle cx="9" cy="4" r="2.5" stroke="#7a8699" stroke-width="1.2"/><path d="M1 11c0-2.21 1.79-4 4-4m4 0c2.21 0 4 1.79 4 4" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg>
+            398
+          </div>
+          <div class="trader-sep"></div>
+          <div class="trader-ret-row"><span class="trader-ret-lbl">Return (1Y)</span><span class="trader-ret-val">+550.56%</span></div>
+          <div class="trader-chart">
+            <svg viewBox="0 0 200 50" preserveAspectRatio="none">
+              <defs><linearGradient id="ga2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity="0.18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 40 C30 38,60 30,90 24 S140 15,170 12 S185 10,200 8" fill="none" stroke="#00b565" stroke-width="1.5"/>
+              <path d="M0 40 C30 38,60 30,90 24 S140 15,170 12 S185 10,200 8 L200 50 L0 50Z" fill="url(#ga2)"/>
+            </svg>
+          </div>
+          <div class="trader-metrics">
+            <div class="tm"><div class="tm-lbl">Win Rate</div><div class="tm-val">0.10%</div></div>
+            <div class="tm"><div class="tm-lbl">Risk Level</div><div class="tm-val"><span class="risk-b">1</span></div></div>
+          </div>
+          <button class="btn-view">View</button>
+        </div>
+
+        <!-- 1st (featured) -->
+        <div class="trader-card feat">
+          <div class="trader-av-wrap">
+            <img class="trader-av" src="images/avatar1st.png" alt="1st trader" />
+            <div class="trader-rank-badge r1">1st</div>
+          </div>
+          <div class="trader-name">Hảo Hán Lương Sơn</div>
+          <div class="trader-followers">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4" r="2.5" stroke="#7a8699" stroke-width="1.2"/><circle cx="9" cy="4" r="2.5" stroke="#7a8699" stroke-width="1.2"/><path d="M1 11c0-2.21 1.79-4 4-4m4 0c2.21 0 4 1.79 4 4" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg>
+            398
+          </div>
+          <div class="trader-sep"></div>
+          <div class="trader-ret-row"><span class="trader-ret-lbl">Return (1Y)</span><span class="trader-ret-val">+550.56%</span></div>
+          <div class="trader-chart">
+            <svg viewBox="0 0 200 50" preserveAspectRatio="none">
+              <defs><linearGradient id="ga1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity="0.18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 38 C20 35,50 26,82 20 S138 11,165 8 S187 6,200 4" fill="none" stroke="#00b565" stroke-width="1.5"/>
+              <path d="M0 38 C20 35,50 26,82 20 S138 11,165 8 S187 6,200 4 L200 50 L0 50Z" fill="url(#ga1)"/>
+            </svg>
+          </div>
+          <div class="trader-metrics">
+            <div class="tm"><div class="tm-lbl">Win Rate</div><div class="tm-val">0.10%</div></div>
+            <div class="tm"><div class="tm-lbl">Risk Level</div><div class="tm-val"><span class="risk-b">1</span></div></div>
+          </div>
+          <button class="btn-view">View</button>
+        </div>
+
+        <!-- 3rd -->
+        <div class="trader-card">
+          <div class="trader-av-wrap">
+            <img class="trader-av" src="images/avatar3rd.png" alt="3rd trader" />
+            <div class="trader-rank-badge r3">3rd</div>
+          </div>
+          <div class="trader-name">Harun Hussen Ushu</div>
+          <div class="trader-followers">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4" r="2.5" stroke="#7a8699" stroke-width="1.2"/><circle cx="9" cy="4" r="2.5" stroke="#7a8699" stroke-width="1.2"/><path d="M1 11c0-2.21 1.79-4 4-4m4 0c2.21 0 4 1.79 4 4" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg>
+            398
+          </div>
+          <div class="trader-sep"></div>
+          <div class="trader-ret-row"><span class="trader-ret-lbl">Return (1Y)</span><span class="trader-ret-val">+550.56%</span></div>
+          <div class="trader-chart">
+            <svg viewBox="0 0 200 50" preserveAspectRatio="none">
+              <defs><linearGradient id="ga3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity="0.18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 42 C30 40,65 32,95 26 S148 17,172 13 S188 10,200 9" fill="none" stroke="#00b565" stroke-width="1.5"/>
+              <path d="M0 42 C30 40,65 32,95 26 S148 17,172 13 S188 10,200 9 L200 50 L0 50Z" fill="url(#ga3)"/>
+            </svg>
+          </div>
+          <div class="trader-metrics">
+            <div class="tm"><div class="tm-lbl">Win Rate</div><div class="tm-val">0.10%</div></div>
+            <div class="tm"><div class="tm-lbl">Risk Level</div><div class="tm-val"><span class="risk-b">1</span></div></div>
+          </div>
+          <button class="btn-view">View</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /home-content -->
+
+  <!-- Legal footer -->
+  <div class="legal">
+    Simply log in the VT Markets App with your portal email address and password. <a href="#">Click here to find out more.</a>&nbsp;
+    Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.
+  </div>
+</main>
+
+<script>
+  document.querySelectorAll('.market-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+
+</script>
+<script src="sidebar.js"></script>
+<script src="topbar.js"></script>
+</body>
+</html>

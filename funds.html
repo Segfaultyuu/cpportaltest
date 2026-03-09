@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Funds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
+      --green: #00b565;
+      --red: #ff2c40;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-1: #ffffff;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168,195,206,0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-2);
+      color: var(--text-primary);
+      min-width: 1280px;
+      overflow-x: auto;
+    }
+
+    /* ─── Layout ──────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      padding: 40px 40px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ─── Page Header ─────────────────────────────────────── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+    }
+
+    /* ─── Tabs ────────────────────────────────────────────── */
+    .funds-tabs {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    .funds-tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding-bottom: 8px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      text-decoration: none;
+    }
+
+    .funds-tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    .funds-tab:hover { color: var(--blue); }
+
+    /* ─── Main Card ───────────────────────────────────────── */
+    .funds-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      gap: 120px;
+      padding: 16px 40px;
+      width: 100%;
+    }
+
+    /* ─── Form Section ────────────────────────────────────── */
+    .funds-form-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .funds-form {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .field-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 22px;
+    }
+
+    .field-select {
+      height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .field-select:hover { border-color: var(--blue); }
+
+    .field-select-placeholder {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    .field-select-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .field-select-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Amount field */
+    .amount-wrap {
+      position: relative;
+    }
+
+    .amount-input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 52px 0 16px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .amount-input::placeholder { color: var(--text-tertiary); }
+    .amount-input:focus { border-color: var(--blue); }
+
+    .amount-currency {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      pointer-events: none;
+    }
+
+    /* Continue Button */
+    .btn-continue {
+      height: 48px;
+      width: 240px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Roboto', sans-serif;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-transform: capitalize;
+    }
+
+    .btn-continue:hover { background: var(--blue-hover); }
+
+    /* ─── Steps Section ───────────────────────────────────── */
+    .funds-steps-wrap {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex-shrink: 0;
+      width: 465px;
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-row {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .step-icon-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .step-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-icon img { width: 20px; height: 20px; display: block; }
+
+    .step-connector {
+      width: 1px;
+      flex: 1;
+      background: var(--border);
+      min-height: 40px;
+    }
+
+    .step-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 20px;
+      flex: 1;
+    }
+
+    .step-content.inactive { padding-top: 20px; padding-bottom: 0; }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 24px;
+    }
+
+    .step-title.inactive { color: var(--text-tertiary); }
+
+    .step-desc {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      line-height: 24px;
+    }
+
+    /* ─── Footer ──────────────────────────────────────────── */
+    .funds-footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 20px;
+      max-width: 1440px;
+    }
+
+    .funds-footer a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    /* Coupon icon size in select */
+    .coupon-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* Arrow chevron SVG */
+    .chevron-down {
+      width: 16px;
+      height: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="sidebar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TOPBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="topbar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="content">
+
+    <!-- Page Title -->
+    <h1 class="page-title">Funds</h1>
+
+    <!-- Tabs -->
+    <div class="funds-tabs">
+      <a class="funds-tab active" href="#">Deposit</a>
+      <a class="funds-tab" href="#">Withdraw</a>
+      <a class="funds-tab" href="#">Transfer</a>
+      <a class="funds-tab" href="#">Transfer History</a>
+    </div>
+
+    <!-- Main Card -->
+    <div class="funds-card">
+
+      <!-- ── Left: Deposit Form ── -->
+      <div class="funds-form-wrap">
+        <div class="funds-form">
+          <div class="form-fields">
+
+            <!-- Account -->
+            <div class="field-group">
+              <label class="field-label">Account</label>
+              <div class="field-select">
+                <span class="field-select-placeholder">Select Account</span>
+                <span class="field-select-icon">
+                  <svg class="chevron-down" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 6l4 4 4-4" stroke="#282d34" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <!-- Amount -->
+            <div class="field-group">
+              <label class="field-label">Amount</label>
+              <div class="amount-wrap">
+                <input class="amount-input" type="text" placeholder="Please Enter" />
+                <span class="amount-currency">USD</span>
+              </div>
+            </div>
+
+            <!-- Select Voucher -->
+            <div class="field-group">
+              <label class="field-label">Select Voucher</label>
+              <div class="field-select">
+                <div class="field-select-left">
+                  <img class="coupon-icon" src="images/imgCoupons.svg" alt="Coupon" />
+                  <span class="field-select-placeholder">Select A Deposit Rebate Voucher</span>
+                </div>
+                <span class="field-select-icon">
+                  <svg class="chevron-down" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 6l4 4 4-4" stroke="#282d34" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Continue Button -->
+          <button class="btn-continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- ── Right: Steps Guide ── -->
+      <div class="funds-steps-wrap">
+        <div class="steps-list">
+
+          <!-- Step 1: Deposit Funds (active) -->
+          <div class="step-row">
+            <div class="step-icon-col">
+              <div class="step-icon">
+                <img src="https://www.figma.com/api/mcp/asset/822b3cc1-9116-40da-90b6-3210f4bcfd72" alt="Deposit" />
+              </div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Deposit Funds</div>
+              <div class="step-desc">Start by depositing the desired amount into your account to initiate the process.</div>
+            </div>
+          </div>
+
+          <!-- Step 2: Select Deposit Method (inactive) -->
+          <div class="step-row">
+            <div class="step-icon-col">
+              <div class="step-icon">
+                <img src="https://www.figma.com/api/mcp/asset/96da9201-c98a-48a5-ba69-a0f03d470b2a" alt="Method" style="opacity:0.4;" />
+              </div>
+            </div>
+            <div class="step-content inactive">
+              <div class="step-title inactive">Select Deposit Method</div>
+              <div class="step-desc">Choose the most convenient payment method from the available options for your deposit.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /funds-card -->
+
+    <!-- Footer -->
+    <div class="funds-footer">
+      <p>Simply log in the VT Markets App with your portal email address and password. <a href="#">Click here to find out more.</a></p>
+      <br />
+      <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  /* ── Tab switching ── */
+  document.querySelectorAll('.funds-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.funds-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+<script src="sidebar.js"></script>
+<script src="topbar.js"></script>
+</body>
+</html>
