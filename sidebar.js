@@ -93,6 +93,100 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.12);
     }
     #sidebar-tooltip.visible { opacity: 1; }
+
+    /* ── Mobile overlay sidebar ──────────────────────────── */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35); z-index: 99;
+    }
+    .sidebar-overlay.visible { display: block; }
+
+    /* ── Mobile menu header (hidden on desktop) ───────────── */
+    .mobile-menu-header {
+      display: none; flex-direction: column;
+      background: #fff; flex-shrink: 0;
+    }
+    .mobile-close-row {
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 10px 16px; height: 44px;
+    }
+    .mobile-close-btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer; color: #282d34; padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-user-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 16px 12px; cursor: pointer;
+    }
+    .mobile-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .mobile-user-info { flex: 1; min-width: 0; }
+    .mobile-user-name { font-size: 18px; font-weight: 600; color: #282d34; display: flex; align-items: center; gap: 6px; }
+    .mobile-user-nick { font-size: 14px; font-weight: 400; color: #7a8699; }
+    .mobile-user-id { font-size: 13px; font-weight: 500; color: #7a8699; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .mobile-toggle-wrap {
+      margin: 4px 16px 14px; background: #f9f9f9; border-radius: 12px;
+      padding: 4px; display: flex; height: 40px;
+    }
+    .mobile-toggle-btn {
+      flex: 1; height: 32px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 400; color: #7a8699; background: transparent;
+      transition: background 0.15s; -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-toggle-btn.active { background: #e8f1ff; font-weight: 600; color: #0a36c7; }
+
+    /* ── Mobile footer rows (hidden on desktop) ───────────── */
+    .mobile-lang-row, .mobile-logout-row {
+      display: none; align-items: center; gap: 12px; padding: 0 16px;
+      font-size: 16px; font-weight: 500; color: #282d34;
+      cursor: pointer; flex-shrink: 0; white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-lang-row { height: 56px; border-top: 1px solid #f4f5f6; }
+    .mobile-logout-row { height: 64px; border-top: 1px solid #f4f5f6; color: #0a36c7; }
+    .mobile-lang-flag { width: 24px; height: 24px; flex-shrink: 0; }
+
+    /* ── Mobile bottom tab bar ────────────────────────────── */
+    .mobile-tabbar {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      height: 64px; background: #fff;
+      border-top: 1px solid var(--border); z-index: 101;
+    }
+    .tabbar-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px;
+      font-size: 11px; font-weight: 500; color: #7a8699;
+      text-decoration: none; cursor: pointer;
+      border: none; background: transparent; padding: 8px 0;
+      -webkit-tap-highlight-color: transparent; outline: none;
+    }
+    .tabbar-item.active { color: #0a36c7; }
+    .tabbar-item img { width: 22px; height: 22px; display: block; }
+    .tabbar-icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+        width: 100% !important; overflow-y: auto; overflow-x: hidden;
+        z-index: 102;
+      }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .sidebar.collapsed { width: 100% !important; }
+      .sidebar-logo { display: none; }
+      .sidebar .nav-icon { display: none !important; }
+      .sidebar .nav-item { padding: 0 16px; height: 56px; border-radius: 0; gap: 0; }
+      .sidebar .nav-item.active, .sidebar .nav-item.active:active { border-radius: 0; }
+      .sidebar .nav-divider { display: none; }
+      .sidebar .sidebar-nav { flex: none; overflow: visible; padding: 0; }
+      .sidebar-bottom { display: none; }
+      .mobile-menu-header { display: flex; }
+      .mobile-lang-row { display: flex; }
+      .mobile-logout-row { display: flex; }
+      .mobile-tabbar { display: flex; }
+      #sidebar-tooltip { display: none !important; }
+    }
+
     .nav-flyout {
       position: fixed; left: 64px;
       background: rgba(255,255,255,0.97); backdrop-filter: blur(10px);
@@ -160,8 +254,32 @@
   }
 
   /* ── Build HTML ──────────────────────────────────────────── */
+  const tabActive = (href) => isActive(href) ? ' active' : '';
+  const tabIcon   = (def, sel, href) => `<img src="images/${isActive(href) ? sel : def}" alt="" />`;
+
   const html = `
     <aside class="sidebar" id="sidebar">
+      <div class="mobile-menu-header">
+        <div class="mobile-close-row">
+          <button class="mobile-close-btn" id="mobile-close-btn" aria-label="Close menu">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/>
+            </svg>
+          </button>
+        </div>
+        <div class="mobile-user-row">
+          <img src="images/img7.png" class="mobile-avatar" alt="User" />
+          <div class="mobile-user-info">
+            <div class="mobile-user-name">User Name <span class="mobile-user-nick">Nickname</span></div>
+            <div class="mobile-user-id">User ID: 24429</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+        </div>
+        <div class="mobile-toggle-wrap">
+          <button class="mobile-toggle-btn active" id="m-client-btn">Client</button>
+          <button class="mobile-toggle-btn" id="m-ib-btn">IB</button>
+        </div>
+      </div>
       <div class="sidebar-logo">
         <div class="logo-wrap"><img src="images/logo.png" alt="Logo" /></div>
       </div>
@@ -183,6 +301,17 @@
         ${navItem('#', 'Download.png', 'Download-selected.png', 'Downloads', 'Downloads')}
         ${navItem('#', 'Support.png',  'Support-selected.png',  'Support',   'Support')}
       </nav>
+      <div class="mobile-lang-row" id="mobile-lang-row">
+        <img src="images/imgIcoLanguage.svg" class="mobile-lang-flag" alt="Language" />
+        <span style="flex:1">English</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+      </div>
+      <div class="mobile-logout-row" id="mobile-logout-row">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4M14 15l4-5-4-5M18 10H8"/>
+        </svg>
+        <span>Logout</span>
+      </div>
       <div class="sidebar-bottom">
         <div class="nav-item" id="collapse-btn">
           <span class="nav-icon"><img id="collapse-icon" src="images/Collapse.png" alt="Collapse" /></span>
@@ -191,6 +320,33 @@
         </div>
       </div>
     </aside>
+
+    <div class="mobile-tabbar" id="mobile-tabbar">
+      <a class="tabbar-item${tabActive('index.html')}" href="index.html">
+        ${tabIcon('Home.png','Home-selected.png','index.html')}
+        <span>Home</span>
+      </a>
+      <a class="tabbar-item${tabActive('account.html')}" href="account.html">
+        ${tabIcon('Account.png','Account-selected.png','account.html')}
+        <span>Accounts</span>
+      </a>
+      <a class="tabbar-item" href="#">
+        <img src="images/Coupons.png" alt="" />
+        <span>Promotions</span>
+      </a>
+      <a class="tabbar-item${tabActive('funds.html')}" href="funds.html">
+        ${tabIcon('Funds.png','Fund-selected.png','funds.html')}
+        <span>Funds</span>
+      </a>
+      <button class="tabbar-item" id="tabbar-more">
+        <span class="tabbar-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <line x1="4" y1="6" x2="18" y2="6"/><line x1="4" y1="11" x2="18" y2="11"/><line x1="4" y1="16" x2="18" y2="16"/>
+          </svg>
+        </span>
+        <span>More</span>
+      </button>
+    </div>
 
     <div class="nav-flyout" id="flyout-wallet">
       <div class="flyout-title">VT-Wallet</div>
@@ -225,6 +381,44 @@
   const globalTip = document.createElement('div');
   globalTip.id = 'sidebar-tooltip';
   document.body.appendChild(globalTip);
+
+  /* ── Mobile overlay ──────────────────────────────────────── */
+  const overlay = document.createElement('div');
+  overlay.className = 'sidebar-overlay';
+  document.body.appendChild(overlay);
+
+  function mobileSidebarOpen() {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('visible');
+  }
+  function mobileSidebarClose() {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('visible');
+  }
+  document.addEventListener('sidebar-mobile-toggle', () => {
+    sidebar.classList.contains('mobile-open') ? mobileSidebarClose() : mobileSidebarOpen();
+  });
+  overlay.addEventListener('click', mobileSidebarClose);
+
+  /* ── Mobile close button ─────────────────────────────────── */
+  const mobileCloseBtn = document.getElementById('mobile-close-btn');
+  if (mobileCloseBtn) mobileCloseBtn.addEventListener('click', mobileSidebarClose);
+
+  /* ── Mobile Client/IB toggle (syncs with topbar) ─────────── */
+  document.querySelectorAll('.mobile-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mobile-toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const label = btn.textContent.trim();
+      document.querySelectorAll('.topbar-toggle-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.trim() === label);
+      });
+    });
+  });
+
+  /* ── Tab bar More button ─────────────────────────────────── */
+  const tabbarMore = document.getElementById('tabbar-more');
+  if (tabbarMore) tabbarMore.addEventListener('click', mobileSidebarOpen);
 
   document.querySelectorAll('.nav-item:not(.has-submenu)').forEach(item => {
     item.addEventListener('mouseenter', () => {

@@ -21,7 +21,7 @@
       --text-tertiary: #c2c7d0;
       --border: #e8e9ea;
       --bg-1: #ffffff;
-      --bg-2: #f9f9f9;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
       --bg-4: #e5e7eb;
       --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
     }
@@ -30,8 +30,7 @@
       font-family: 'Roboto', sans-serif;
       background: var(--bg-2);
       color: var(--text-primary);
-      min-width: 1280px;
-      overflow-x: auto;
+      overflow-x: hidden;
     }
 
     /* ─── Main layout ─────────────────────────────────────── */
@@ -378,6 +377,14 @@
 
     .btn-trade:hover { background: var(--blue-hover); }
 
+    /* ─── Mobile responsive ────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 64px; }
+      .content { padding: 16px 16px 40px; }
+      .cards-row { grid-template-columns: 1fr; }
+      .promo-card { flex-direction: column; align-items: flex-start; gap: 16px; min-height: unset; }
+      .filter-bar { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>

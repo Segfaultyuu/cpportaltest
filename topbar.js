@@ -13,6 +13,20 @@
 
     body.sidebar-collapsed .topbar { left: 64px; }
 
+    .topbar-hamburger {
+      display: none; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+      border: none; background: transparent; margin-right: auto;
+      color: var(--text-secondary); transition: background 0.15s;
+    }
+    .topbar-hamburger:hover { background: var(--bg-2); }
+
+    .topbar-mobile-logo {
+      display: none; align-items: center;
+      margin-right: auto; height: 24px;
+    }
+    .topbar-mobile-logo img { height: 24px; width: auto; }
+
     .topbar-btn-outline {
       display: flex; align-items: center; justify-content: center;
       height: 36px; padding: 0 14px; border-radius: 8px;
@@ -59,12 +73,27 @@
 
     .topbar-toggle-btn.active { background: var(--blue-light); font-weight: 600; color: var(--blue); }
     .topbar-toggle-btn:not(.active) { color: var(--text-secondary); }
+
+    @media (max-width: 768px) {
+      .topbar { left: 0 !important; padding: 0 16px; gap: 10px; }
+      .topbar-hamburger { display: none !important; }
+      .topbar-webtrader { display: none !important; }
+      .topbar-deposit { display: none !important; }
+      .topbar-toggle { display: none !important; }
+      .topbar-mobile-logo { display: flex !important; }
+    }
   `;
   document.head.appendChild(style);
 
   /* ── Build HTML ──────────────────────────────────────────── */
   const html = `
     <header class="topbar">
+      <button class="topbar-hamburger" id="topbar-hamburger" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+        </svg>
+      </button>
+      <div class="topbar-mobile-logo"><img src="images/logo.png" alt="Logo" /></div>
       <div class="topbar-btn-outline topbar-webtrader">Webtrader+</div>
       <div class="topbar-btn-outline topbar-deposit">Deposit</div>
       <div class="topbar-icon-btn" title="Coupons"><img src="images/imgCoupons.svg" width="20" height="20" alt="Coupons" /></div>
@@ -81,6 +110,10 @@
   root.innerHTML = html;
 
   /* ── Attach behaviour ────────────────────────────────────── */
+  document.getElementById('topbar-hamburger').addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('sidebar-mobile-toggle'));
+  });
+
   document.querySelectorAll('.topbar-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.topbar-toggle-btn').forEach(b => b.classList.remove('active'));

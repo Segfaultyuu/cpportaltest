@@ -21,7 +21,7 @@
       --text-tertiary: #c2c7d0;
       --border: #e8e9ea;
       --bg-1: #ffffff;
-      --bg-2: #f9f9f9;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
       --bg-4: #e5e7eb;
       --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
     }
@@ -30,8 +30,7 @@
       font-family: 'Roboto', sans-serif;
       background: var(--bg-2);
       color: var(--text-primary);
-      min-width: 1280px;
-      overflow-x: auto;
+      overflow-x: hidden;
     }
 
     /* ─── Main ────────────────────────────────────────────── */
@@ -76,7 +75,7 @@
       justify-content: space-between; padding: 0 40px 0 0;
     }
 
-    .kyc-text-block { display: flex; flex-direction: column; gap: 10px; }
+    .kyc-text-block { display: flex; flex-direction: column; gap: 10px; padding-right: 8px; }
 
     .kyc-title {
       font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.2;
@@ -106,6 +105,16 @@
 
     .kyc-labels span { color: var(--text-primary); }
     .kyc-labels span.dim { color: var(--text-tertiary); }
+
+    .kyc-arrow-btn {
+      display: none;
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      border: 1.5px solid var(--blue); background: transparent;
+      align-items: center; justify-content: center;
+      cursor: pointer; color: var(--blue); padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .kyc-arrow-btn:hover { background: rgba(10,54,199,0.06); }
 
     .kyc-verify-btn {
       height: 40px; padding: 0 20px; border-radius: 8px;
@@ -222,9 +231,10 @@
     .clubbleu-bg {
       position: absolute; top: 0; left: 0; right: 0; height: 80px; overflow: hidden;
       border-radius: 16px 16px 0 0;
+      background: var(--Background-Background-bg-Blue, #E8F1FF);
     }
 
-    .clubbleu-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .clubbleu-bg img { display: none; }
 
     .clubbleu-coin-wrap {
       position: absolute; top: -29px; right: -10px;
@@ -310,14 +320,14 @@
 
     .market-table tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
     .market-table tbody tr:last-child { border-bottom: none; }
-    .market-table tbody tr:hover { background: var(--bg-2); }
+    .market-table tbody tr:hover { background: #F9F9F9; }
     .market-table tbody td { padding: 0 24px; height: 64px; font-size: 14px; }
     .market-table tbody td.r { text-align: right; }
 
     .sym-cell { display: flex; align-items: center; gap: 12px; }
     .sym-flag { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex-shrink: 0; }
     .sym-name { font-size: 14px; font-weight: 600; }
-    .sym-desc { font-size: 11px; color: var(--text-secondary); }
+    .sym-desc { font-size: 11px; color: var(--text-secondary); max-width: 150px; white-space: normal; line-height: 1.4; }
 
     .p-sell { color: #e84040; font-weight: 500; }
     .p-buy { color: var(--green); font-weight: 500; }
@@ -394,23 +404,23 @@
       flex-shrink: 0; margin-left: 20px; opacity: 0.7;
     }
 
-    .traders-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; }
+    .traders-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; padding-top: 40px; }
 
     .trader-card {
-      background: #FFFFFF; border-radius: 16px; box-shadow: var(--shadow-card);
-      padding: 24px 20px 20px; display: flex; flex-direction: column;
+      background: linear-gradient(180deg, #FAFBFF 0%, #F1F7FD 100%); border-radius: 16px; box-shadow: var(--shadow-card);
+      padding: 0 20px 20px; display: flex; flex-direction: column;
       align-items: center; cursor: pointer; transition: box-shadow 0.15s;
-      border: 1.5px solid transparent;
+      border: 1.5px solid transparent; overflow: visible;
     }
 
     .trader-card:hover { box-shadow: 0 6px 24px rgba(168,195,206,0.4); }
     .trader-card.feat {
       border-color: transparent;
-      background: linear-gradient(#fff, #fff) padding-box,
+      background: linear-gradient(180deg, #FAFBFF 0%, #F1F7FD 100%) padding-box,
                   linear-gradient(45deg, #FFFFFF 0%, #E2AD2F 50%, #FFFFFF 100%) border-box;
     }
 
-    .trader-av-wrap { position: relative; width: 64px; height: 64px; margin-bottom: 12px; }
+    .trader-av-wrap { position: relative; width: 64px; height: 64px; margin-top: -32px; margin-bottom: 12px; }
 
     .trader-av {
       width: 64px; height: 64px; border-radius: 50%;
@@ -474,11 +484,37 @@
     /* ─── Legal footer ────────────────────────────────────── */
     .legal {
       padding: 20px 40px; font-size: 11px; color: var(--text-secondary);
-      line-height: 1.6; background: #fff; border-top: 1px solid var(--border);
+      line-height: 1.6; background: #fff;
       margin-top: 20px;
     }
 
     .legal a { color: var(--blue); text-decoration: none; }
+
+    /* ─── Mobile responsive ────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 64px; }
+      .home-content { padding: 16px 16px 0; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-card--clubbleu { overflow: hidden !important; }
+      .stat-card--clubbleu .clubbleu-inner { height: auto; }
+      .stat-card--clubbleu .clubbleu-coin-wrap { top: 0; right: 0; }
+      .kyc-title { font-size: 16px; }
+      .kyc-avatar { width: 80px; height: 80px; }
+      .kyc-body { padding-right: 16px; }
+      .kyc-verify-btn { display: none; }
+      .kyc-arrow-btn { display: flex; }
+      .kyc-progress-bar, .kyc-labels { width: 100%; }
+      .market-tab:not(.active), .market-tab.active { font-size: 16px; }
+      .market-table thead th,
+      .market-table tbody td { padding-left: 8px; padding-right: 8px; }
+      .market-table thead th.r { width: auto !important; white-space: nowrap; }
+      .market-table tbody td.r { white-space: nowrap; }
+      .market-table th:nth-child(2), .market-table td:nth-child(2),
+      .market-table th:nth-child(4), .market-table td:nth-child(4) { display: none; }
+      .news-grid { grid-template-columns: 1fr; }
+      .traders-grid { grid-template-columns: 1fr; gap: 20px; }
+      .legal { padding: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -528,6 +564,9 @@
             </div>
           </div>
           <button class="kyc-verify-btn">Verify Identity</button>
+          <button class="kyc-arrow-btn" aria-label="Verify Identity">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+          </button>
         </div>
       </div>
       <div class="kyc-dots">
@@ -548,7 +587,7 @@
           <div class="assets-top">
             <div class="assets-label">
               Total assets estimate
-              <img src="https://www.figma.com/api/mcp/asset/8ca8fc90-5a98-4c70-9f2e-b3572fb4bb21" width="20" height="20" alt="" style="opacity:0.65;" />
+              <img id="assets-eye" src="images/Eye.png" width="20" height="20" alt="Toggle visibility" style="opacity:0.65;cursor:pointer;" />
             </div>
             <div class="assets-history">
               History
@@ -557,8 +596,8 @@
           </div>
 
           <div class="assets-amount-row">
-            <img class="assets-flag" src="https://www.figma.com/api/mcp/asset/24f825f6-845c-45f0-8c9b-5ce0ca29e32f" alt="USD" />
-            <span class="assets-figure">0<span class="cents">.00</span></span>
+            <img class="assets-flag" src="images/imgUsd.png" alt="USD" />
+            <span class="assets-figure" id="assets-figure">0<span class="cents">.00</span></span>
             <span class="assets-currency">USD</span>
             <img src="images/Arrows.png" alt="arrow" style="width:16px;height:16px;object-fit:contain;margin-bottom:2px;" />
           </div>
@@ -583,7 +622,7 @@
       </div>
 
       <!-- ClubBleu -->
-      <div class="stat-card" style="position:relative; overflow:visible;">
+      <div class="stat-card stat-card--clubbleu" style="position:relative; overflow:visible;">
         <div class="clubbleu-bg">
           <img src="https://www.figma.com/api/mcp/asset/f5dcaa40-78c3-49ad-9ed3-6a438b34fb0b" alt="" />
         </div>
@@ -848,5 +887,17 @@
 </script>
 <script src="sidebar.js"></script>
 <script src="topbar.js"></script>
+<script>
+(function () {
+  const eye = document.getElementById('assets-eye');
+  const figure = document.getElementById('assets-figure');
+  let hidden = false;
+  eye.addEventListener('click', function () {
+    hidden = !hidden;
+    eye.src = hidden ? 'images/Eye Hide.png' : 'images/Eye.png';
+    figure.innerHTML = hidden ? '*<span class="cents">.**</span>' : '0<span class="cents">.00</span>';
+  });
+})();
+</script>
 </body>
 </html>

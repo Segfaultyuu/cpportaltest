@@ -21,7 +21,7 @@
       --text-tertiary: #c2c7d0;
       --border: #e8e9ea;
       --bg-1: #ffffff;
-      --bg-2: #f9f9f9;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
       --shadow-card: 0 4px 12px 0 rgba(168,195,206,0.20);
     }
 
@@ -29,8 +29,7 @@
       font-family: 'Roboto', sans-serif;
       background: var(--bg-2);
       color: var(--text-primary);
-      min-width: 1280px;
-      overflow-x: auto;
+      overflow-x: hidden;
     }
 
     /* ─── Layout ──────────────────────────────────────────── */
@@ -313,6 +312,16 @@
     .chevron-down {
       width: 16px;
       height: 16px;
+    }
+
+    /* ─── Mobile responsive ────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 64px; }
+      .content { padding: 16px 16px 40px; }
+      .funds-card { flex-direction: column; gap: 24px; padding: 16px; }
+      .funds-steps-wrap { width: 100%; }
+      .btn-continue { width: 100%; }
+      .funds-tabs { overflow-x: auto; }
     }
   </style>
 </head>
