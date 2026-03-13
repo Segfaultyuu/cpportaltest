@@ -176,7 +176,7 @@
         <div class="topbar-icon-btn" title="Coupons"><img src="images/imgCoupons.svg" width="20" height="20" alt="Coupons" /></div>
         <div class="topbar-icon-btn topbar-language" title="Language"><img src="images/imgIcoLanguage.svg" width="20" height="20" alt="Language" /></div>
         <div class="topbar-icon-btn" title="Price Alert"><img src="images/imgFrame.svg" width="20" height="20" alt="Price Alert" /></div>
-        <button class="topbar-download" title="Download"><img src="images/download.png" width="24" height="24" alt="Download" /></button>
+        <button class="topbar-download" title="Download"><img src="images/Download.png" width="24" height="24" alt="Download" /></button>
       </div>
       <div class="topbar-avatar-wrap" id="topbar-avatar-wrap">
         <div class="topbar-avatar" id="topbar-avatar" title="Profile"><img src="images/img7.png" width="32" height="32" alt="Profile" /></div>
