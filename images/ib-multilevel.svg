@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 16 15.0001" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1000005042">
+<path id="Ellipse 1821" d="M1.5 10.5996C1.00294 10.5996 0.599609 11.0029 0.599609 11.5C0.599609 11.9971 1.00294 12.4004 1.5 12.4004C1.99706 12.4004 2.40039 11.9971 2.40039 11.5C2.40039 11.0029 1.99706 10.5996 1.5 10.5996Z" stroke="var(--stroke-0, #282D34)" stroke-width="1.2"/>
+<path id="Ellipse 1822" d="M14.5 10.5996C14.0029 10.5996 13.5996 11.0029 13.5996 11.5C13.5996 11.9971 14.0029 12.4004 14.5 12.4004C14.9971 12.4004 15.4004 11.9971 15.4004 11.5C15.4004 11.0029 14.9971 10.5996 14.5 10.5996Z" stroke="var(--stroke-0, #282D34)" stroke-width="1.2"/>
+<g id="Rectangle 148275">
+<mask id="path-3-inside-1_0_209" fill="white">
+<rect x="3" width="10" height="10" rx="1"/>
+</mask>
+<rect x="3" width="10" height="10" rx="1" stroke="var(--stroke-0, #282D34)" stroke-width="2.4" mask="url(#path-3-inside-1_0_209)"/>
+</g>
+<path id="Vector 582" d="M13.4999 10.5001L11.9999 9.00008" stroke="var(--stroke-0, #282D34)" stroke-width="1.2"/>
+<path id="Vector 585" d="M2 10.9999L3.5 9.49994" stroke="var(--stroke-0, #282D34)" stroke-width="1.2"/>
+<path id="Line 259" d="M8 10V12.5" stroke="var(--stroke-0, #282D34)" stroke-width="1.2"/>
+<path id="Ellipse 1824" d="M8 12.5997C8.49706 12.5997 8.90039 13.003 8.90039 13.5001C8.90039 13.9971 8.49706 14.4005 8 14.4005C7.50294 14.4005 7.09961 13.9971 7.09961 13.5001C7.09961 13.003 7.50294 12.5997 8 12.5997Z" stroke="var(--stroke-0, #282D34)" stroke-width="1.2"/>
+<path id="Line 257" d="M7 6H9" stroke="var(--stroke-0, #282D34)" stroke-width="1.2" stroke-linecap="round"/>
+</g>
+</svg>
