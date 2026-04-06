@@ -1,0 +1,2701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Copy Trading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
+      --green: #00b565;
+      --red: #ff2c40;
+      --orange: #ff9800;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-1: #ffffff;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+      --shadow-card-hover: 0 8px 24px 0 rgba(168, 195, 206, 0.35);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-2);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      padding: 40px 40px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ─── Breadcrumb ───────────────────────────────────────── */
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--blue); }
+    .breadcrumb-sep { color: var(--text-tertiary); }
+
+    /* ─── Page Header ──────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .account-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .account-selector:hover { opacity: 0.8; }
+
+    .account-selector-flag {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .account-selector-flag img {
+      width: 16px;
+      height: 16px;
+      object-fit: cover;
+    }
+
+    .account-selector-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: #282D34;
+      font-family: 'Roboto', sans-serif;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .account-selector-arrow {
+      width: 12px;
+      height: 12px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .page-actions { display: flex; gap: 12px; align-items: center; }
+
+    .btn-primary {
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-54deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* ─── Pill Tabs ────────────────────────────────────────── */
+    .pill-tabs {
+      display: flex;
+      background: #F0F2F5;
+      border-radius: 40px;
+      padding: 4px;
+      width: fit-content;
+      margin-bottom: 32px;
+      gap: 0;
+    }
+
+    .pill-tab {
+      height: 38px;
+      padding: 0 28px;
+      border-radius: 32px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .pill-tab.active {
+      background: #fff;
+      color: var(--text-primary);
+      font-weight: 700;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.10);
+    }
+
+    .pill-tab:hover:not(.active) { color: var(--text-primary); }
+
+    /* ─── Page entrance animation (bottom-to-top) ──────────── */
+    @keyframes contentSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .breadcrumb {
+      animation: contentSlideUp 0.45s 0.06s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+    .page-header {
+      animation: contentSlideUp 0.45s 0.10s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+    .pill-tabs {
+      animation: contentSlideUp 0.45s 0.14s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    /* ─── Tab Panels — bottom-to-top on switch ──────────────── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active {
+      display: block;
+      animation: fadeSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+    /* Stagger sections inside the active panel */
+    .tab-panel.active .section:nth-child(1) { animation-delay: 0.00s; }
+    .tab-panel.active .section:nth-child(2) { animation-delay: 0.07s; }
+    .tab-panel.active .section:nth-child(3) { animation-delay: 0.14s; }
+
+    /* ─── Section ──────────────────────────────────────────── */
+    .section { margin-bottom: 48px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--blue);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+    .section-link:hover { opacity: 0.8; }
+
+    /* ─── Provider Grid (Discover) ─────────────────────────── */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    .provider-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .provider-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: #e0eaff;
+    }
+
+    .provider-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .provider-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .provider-avatar img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .provider-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .provider-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .provider-followers {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1;
+    }
+    .provider-followers svg { flex-shrink: 0; }
+
+    .btn-copy {
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 4px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-copy:hover { opacity: 0.88; }
+
+    /* ─── Mini Chart ───────────────────────────────────────── */
+    .chart-wrap {
+      height: 56px;
+      position: relative;
+      border-radius: 6px;
+    }
+    .chart-wrap svg { width: 100%; height: 100%; display: block; }
+
+    /* K-line icon — always visible, sits next to Copy button */
+    .chart-kline-btn {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .chart-kline-btn:hover { background: #F4F5F6; }
+
+    /* ─── Divider between header and stats ─────────────────── */
+    .card-divider {
+      width: 100%;
+      height: 0;
+      border: none;
+      border-top: 0.939px solid #F9F9F9;
+      margin: 8px 0;
+      flex-shrink: 0;
+    }
+
+    /* ─── Return(3M) above chart ──────────────────────────── */
+    .stats-return-top { padding: 0; }
+    .stats-return-top .stat-row { justify-content: space-between; }
+
+    /* ─── Provider Stats ───────────────────────────────────── */
+    .provider-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-label {
+      color: var(--Text-Text-Icon-Tertiary, #C2C7D0);
+      font-family: 'Roboto', sans-serif;
+      font-size: 11.263px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+    }
+
+    /* Return(3M) value — big green */
+    .stat-val {
+      color: var(--Brand-Secondary---Green---Primary, #00B565);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: 'Roboto', sans-serif;
+      font-size: 22.527px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      text-transform: capitalize;
+    }
+    /* Win Rate / Risk values — smaller dark */
+    .stat-val.neutral {
+      color: var(--Text-Text-Icon-Primary, #282D34);
+      font-size: 15.018px;
+    }
+    .stat-val.positive { color: var(--green); }
+    .stat-val.negative { color: var(--red); }
+
+    /* ─── Filters Bar (Signal Providers) ───────────────────── */
+    .filters-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      height: 34px;
+      padding: 0 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .filter-btn.active {
+      background: var(--blue-light);
+      border-color: var(--blue);
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ─── Provider Row (Signal Providers list) ─────────────── */
+    .providers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .provider-row {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s;
+      border: 1px solid transparent;
+    }
+    .provider-row:hover {
+      background: #f9fafc;
+      box-shadow: var(--shadow-card-hover);
+      border-color: #e0eaff;
+    }
+
+    .provider-row-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .provider-row-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .provider-row-avatar img {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .provider-row-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .provider-row-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .provider-row-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .provider-row-meta span {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .provider-row-metrics {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .metric-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .metric-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .metric-value.positive { color: var(--green); }
+    .metric-value.negative { color: var(--red); }
+
+    .provider-row-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .risk-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .risk-badge.low { background: #e6f9f0; color: var(--green); }
+    .risk-badge.medium { background: #fff3e0; color: var(--orange); }
+    .risk-badge.high { background: #ffebee; color: var(--red); }
+
+    .btn-follow {
+      height: 34px;
+      padding: 0 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--blue);
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-follow:hover { background: var(--blue-light); }
+    .btn-follow.following {
+      background: var(--blue-light);
+    }
+
+    /* ─── Portfolio Grid ───────────────────────────────────── */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .portfolio-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1px solid transparent;
+    }
+    .portfolio-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: #e0eaff;
+    }
+
+    .portfolio-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .portfolio-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .portfolio-meta { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+    .portfolio-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+    .portfolio-sub { font-size: 12px; color: var(--text-secondary); }
+
+    .portfolio-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .pstat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pstat-label { font-size: 12px; color: var(--text-secondary); }
+    .pstat-value { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .pstat-value.positive { color: var(--green); }
+    .pstat-value.negative { color: var(--red); }
+
+    .portfolio-footer { display: flex; gap: 10px; }
+    .btn-secondary {
+      flex: 1;
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: #f4f6f9; }
+    .btn-action {
+      flex: 1;
+      height: 34px;
+      border-radius: 6px;
+      border: none;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-action:hover { background: rgba(10, 54, 199, 0.15); }
+
+    /* ═══════════════════════════════════════════════════════ */
+    /* ─── RANK PANEL                                        ─ */
+    /* ═══════════════════════════════════════════════════════ */
+
+    /* Tabs + Search 同行布局 */
+    .tabs-search-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .tabs-search-row .pill-tabs { margin-bottom: 0; }
+
+    .rank-search-wrap {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      min-width: 268px;
+    }
+    .rank-search-wrap.visible { display: flex; }
+    .rank-search {
+      border: none; outline: none;
+      font-family: Roboto, sans-serif;
+      font-size: 12px;
+      color: var(--text-primary);
+      background: transparent;
+      width: 100%;
+    }
+    .rank-search::placeholder { color: var(--text-tertiary); }
+
+    /* ── TOP3 Podium ── */
+    .rank-podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @keyframes podiumSlideUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmerSweep {
+      0%        { transform: translateX(-160%); opacity: 0; }
+      12%       { opacity: 1; }
+      88%       { opacity: 1; }
+      100%      { transform: translateX(200%); opacity: 0; }
+    }
+
+    .rank-podium-card {
+      border-radius: 16px;
+      padding: 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    /* 卡片内宽扫光层 */
+    .rank-podium-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 70%;
+      height: 100%;
+      border-radius: 16px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .rank-podium-card.podium-visible {
+      animation: podiumSlideUp 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .rank-podium-1.podium-visible {
+      animation: podiumSlideUp 0.55s 0s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .rank-podium-2.podium-visible {
+      animation: podiumSlideUp 0.55s 0.12s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .rank-podium-3.podium-visible {
+      animation: podiumSlideUp 0.55s 0.24s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .rank-podium-1.podium-visible::after {
+      background: linear-gradient(225deg,
+        rgba(255,235,160,0)    0%,
+        rgba(255,235,160,0.03) 18%,
+        rgba(255,235,160,0.08) 32%,
+        rgba(255,235,160,0.16) 42%,
+        rgba(255,235,160,0.22) 50%,
+        rgba(255,235,160,0.14) 58%,
+        rgba(255,235,160,0.06) 70%,
+        rgba(255,235,160,0.02) 82%,
+        rgba(255,235,160,0)    100%);
+      animation: shimmerSweep 3.8s 0.6s cubic-bezier(0.4,0,0.6,1) infinite;
+    }
+    .rank-podium-2.podium-visible::after {
+      background: linear-gradient(225deg,
+        rgba(200,225,255,0)    0%,
+        rgba(200,225,255,0.03) 18%,
+        rgba(200,225,255,0.08) 32%,
+        rgba(200,225,255,0.16) 42%,
+        rgba(200,225,255,0.22) 50%,
+        rgba(200,225,255,0.14) 58%,
+        rgba(200,225,255,0.06) 70%,
+        rgba(200,225,255,0.02) 82%,
+        rgba(200,225,255,0)    100%);
+      animation: shimmerSweep 3.8s 1.1s cubic-bezier(0.4,0,0.6,1) infinite;
+    }
+    .rank-podium-3.podium-visible::after {
+      background: linear-gradient(225deg,
+        rgba(235,185,120,0)    0%,
+        rgba(235,185,120,0.03) 18%,
+        rgba(235,185,120,0.08) 32%,
+        rgba(235,185,120,0.16) 42%,
+        rgba(235,185,120,0.22) 50%,
+        rgba(235,185,120,0.14) 58%,
+        rgba(235,185,120,0.06) 70%,
+        rgba(235,185,120,0.02) 82%,
+        rgba(235,185,120,0)    100%);
+      animation: shimmerSweep 3.8s 1.6s cubic-bezier(0.4,0,0.6,1) infinite;
+    }
+    .rank-podium-1 {
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(222deg, #FFEBBE -3.26%, rgba(255, 255, 255, 0.00) 76.72%);
+    }
+    .rank-podium-1::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(to bottom, #EBC061, #FFFAF0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .rank-podium-2 {
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(222deg, #D3E5FF -3.26%, rgba(255, 255, 255, 0.00) 76.72%);
+    }
+    .rank-podium-2::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(to bottom, #80AFF4, #FFFAF0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .rank-podium-3 {
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(222deg, #FFD5AF -3.26%, rgba(255, 255, 255, 0.00) 76.72%);
+    }
+    .rank-podium-3::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(to bottom, #AB7545, #FFFAF0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* TOP1/2/3 渐变 badge */
+    .rank-podium-badge-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+      position: relative;
+      top: -1px;
+    }
+    .rank-podium-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      padding: 0 18px;
+      border-radius: 0 0 20px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #fff;
+    }
+    .rank-podium-1 .rank-podium-badge {
+      position: relative;
+      width: 123px;
+      height: 22px;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+    }
+    .rank-podium-1 .rank-podium-badge svg.badge-shape {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .rank-podium-1 .rank-podium-badge span {
+      position: relative;
+      z-index: 1;
+    }
+    .rank-podium-2 .rank-podium-badge,
+    .rank-podium-3 .rank-podium-badge {
+      position: relative;
+      width: 152px;
+      height: 22px;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+    }
+    .rank-podium-2 .rank-podium-badge svg.badge-shape,
+    .rank-podium-3 .rank-podium-badge svg.badge-shape {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .rank-podium-2 .rank-podium-badge span,
+    .rank-podium-3 .rank-podium-badge span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── 头像框 wrap（容纳 SVG 图形帧 + 头像） ── */
+    .rank-podium-avatar-wrap {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+    /* 头像图片：圆形，居中放置在框内 */
+    .rank-podium-avatar {
+      position: absolute;
+      top: 12px; left: 12px;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      z-index: 1;
+    }
+    /* avatar background via inline style — no img tag */
+    /* SVG 框图形：绝对覆盖整个 wrap */
+    .rank-podium-frame-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .rank-podium-followers {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+    .rank-podium-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .rank-podium-stats {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .rank-podium-stat { display: flex; justify-content: space-between; align-items: center; }
+    .rps-label { font-size: 12px; color: var(--text-secondary); }
+    .rps-val { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .rps-val.positive { color: var(--green); }
+
+    .btn-copy-full {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-copy-full:hover { opacity: 0.88; }
+
+    /* ── Rank 列表：每行单独卡片 ── */
+    .rank-table-section {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .rank-table-head {
+      display: grid;
+      grid-template-columns: 1fr 180px 120px 150px;
+      gap: 22px;
+      padding: 0 0 8px 0;
+    }
+    .rank-table-head .rth:last-child { justify-content: flex-end; }
+    .rth {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    #rank-table-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* 每行：独立白色卡片 */
+    .rank-table-row {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid transparent;
+      display: grid;
+      grid-template-columns: 56px 1fr 180px 120px 150px;
+      gap: 22px;
+      padding: 14px 0;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+    .rank-table-row:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: #e0eaff;
+    }
+
+    .rt-num { font-size: 15px; font-weight: 600; color: var(--text-tertiary); padding-left: 20px; }
+
+    .rt-provider { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .rt-avatar { width:36px; height:36px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+    .rt-avatar img { width:36px; height:36px; object-fit:cover; border-radius:50%; }
+    .rt-info { display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .rt-name {
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .rt-followers { display:flex; align-items:center; gap:3px; font-size:11px; color:var(--text-secondary); }
+
+    .rt-return { display:flex; flex-direction:column; gap:2px; }
+    .rt-ret-val { font-size: 14px; font-weight: 700; color: var(--green); }
+    .rt-ret-sub { font-size: 11px; color: var(--text-secondary); }
+
+    /* Risk 数字 + 下方 label */
+    .rt-risk-wrap { display:flex; flex-direction:column; gap:2px; }
+    .rt-risk { font-size: 16px; font-weight: 700; }
+    .rt-risk.r-green  { color: var(--green); }
+    .rt-risk.r-yellow { color: #FFB800; }
+    .rt-risk.r-orange { color: var(--orange); }
+    .rt-risk.r-red    { color: var(--red); }
+    .rt-risk-sub { font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:2px; }
+
+    .rt-action { display:flex; align-items:center; justify-content:flex-end; gap:8px; padding-right: 20px; }
+
+    /* ── placeholder sort-bar (keep class name stub to avoid JS errors) ── */
+    .rank-sort-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 2px;
+    }
+    .rank-sort-bar::-webkit-scrollbar { display: none; }
+
+    .rank-sort-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .rank-sort-pill {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .rank-sort-pill svg { flex-shrink: 0; }
+    .rank-sort-pill.active {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .rank-sort-pill:hover:not(.active) {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* ─── Responsive — Desktop breakpoints ─────────────────── */
+    @media (max-width: 1400px) {
+      .provider-grid { grid-template-columns: repeat(4, 1fr); }
+      .provider-row-metrics { gap: 24px; }
+      .rank-table-row { grid-template-columns: 48px 1fr 160px 110px 140px; }
+      .rank-table-head { grid-template-columns: 1fr 160px 110px 140px; }
+    }
+    @media (max-width: 1200px) {
+      .provider-grid { grid-template-columns: repeat(3, 1fr); }
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+      .provider-row-metrics { gap: 16px; }
+      .rank-table-row { grid-template-columns: 48px 1fr 150px 90px 120px; }
+      .rank-table-head { grid-template-columns: 1fr 150px 90px 120px; }
+    }
+    @media (max-width: 900px) {
+      .provider-row { flex-wrap: wrap; }
+      .provider-row-metrics { display: none; }
+      .rank-table-row { grid-template-columns: 44px 1fr 120px 70px 90px; gap: 12px; }
+      .rank-table-head { grid-template-columns: 1fr 120px 70px 90px; gap: 12px; }
+      .rank-podium { gap: 10px; }
+      .rank-podium-card { padding: 0 12px 16px; }
+      .rank-podium-name { font-size: 13px; }
+    }
+    @media (max-width: 768px) {
+      .main { margin-left: 64px; }
+      .content { padding: 20px 16px 40px; }
+      .page-title { font-size: 24px; }
+      .provider-grid { grid-template-columns: repeat(2, 1fr); }
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── H5 Mobile (≤480px) ────────────────────────────────── */
+    @media (max-width: 480px) {
+      /* Full-width layout, no sidebar offset */
+      .main { margin-left: 0; padding-top: 56px; }
+      .content { padding: 16px 12px 32px; }
+
+      /* Breadcrumb hidden on mobile */
+      .breadcrumb { display: none; }
+
+      /* Page title: 18px semibold, row with account selector */
+      .page-header { margin-bottom: 16px; }
+      .page-title { font-size: 18px; font-weight: 600; }
+      .page-actions { display: none; }
+
+      /* Pill tabs: full width, taller pill */
+      .pill-tabs {
+        width: 100%;
+        border-radius: 35.83px;
+        height: 40px;
+        padding: 3px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+      }
+      .pill-tab {
+        flex: 1;
+        justify-content: center;
+        height: 34px;
+        font-size: 14px;
+        padding: 0 12px;
+      }
+
+
+      /* Section header */
+      .section { margin-bottom: 24px; }
+      .section-header { margin-bottom: 12px; }
+      .section-title { font-size: 14px; }
+
+      /* Cards: horizontal scroll row, 315px cards */
+      .provider-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 10px;
+        padding-bottom: 8px;
+        /* hide scrollbar */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .provider-grid::-webkit-scrollbar { display: none; }
+
+      .provider-card {
+        flex: 0 0 315px;
+        width: 315px;
+        min-width: 315px;
+        scroll-snap-align: start;
+        border-radius: 14px;
+        box-shadow: 0 3px 3px rgba(0,0,0,.05), 0 4px 10px rgba(0,0,0,.10);
+      }
+
+      /* ── Rank podium mobile：纵向堆叠，每张卡片横向布局 ── */
+      .rank-podium {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .rank-podium-card {
+        display: grid;
+        grid-template-areas:
+          "badge   badge"
+          "avatar  name"
+          "avatar  followers"
+          "avatar  stats"
+          "btn     btn";
+        grid-template-columns: 96px 1fr;
+        grid-template-rows: auto auto auto 1fr auto;
+        column-gap: 16px;
+        row-gap: 4px;
+        padding: 0 16px 16px;
+        align-items: start;
+        height: auto;
+      }
+      .rank-podium-badge-wrap  { grid-area: badge; margin-bottom: 12px; }
+      .rank-podium-avatar-wrap {
+        grid-area: avatar;
+        width: 96px; height: 96px;
+        margin: 0;
+        align-self: center;
+      }
+      .rank-podium-frame-svg   { width: 96px; height: 96px; }
+      .rank-podium-avatar      { top: 12px; left: 12px; width: 72px; height: 72px; }
+      /* avatar background via inline style — no img tag */
+      .rank-podium-name        { grid-area: name; font-size: 20px; font-weight: 700; text-align: left; align-self: end; margin-bottom: 0; }
+      .rank-podium-followers   { grid-area: followers; font-size: 12px; text-align: left; align-self: start; margin-top: 6px; margin-bottom: 0; }
+      .rank-podium-stats       { grid-area: stats; margin-top: 10px; margin-bottom: 0; width: 100%; }
+      .rank-podium-stats .rank-podium-stat { display: flex; justify-content: space-between; }
+      .rps-label { font-size: 12px; }
+      .rps-val   { font-size: 13px; }
+      .rank-podium-card .btn-copy-full { grid-area: btn; width: 100%; height: 40px; font-size: 14px; margin-top: 12px; }
+
+      /* Rank table mobile：三行布局 */
+      .rank-table-head { display: none; }
+      .rank-table-section { gap: 12px; }
+      .rank-table-row {
+        display: grid;
+        grid-template-areas:
+          "num provider provider"
+          ".   ret      risk"
+          "act act      act";
+        grid-template-columns: 28px 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        row-gap: 10px;
+        column-gap: 8px;
+        padding: 14px 16px;
+      }
+      .rt-num      { grid-area: num; padding-left: 0; align-self: center; }
+      .rt-provider { grid-area: provider; }
+      .rt-return   { grid-area: ret; }
+      .rt-risk-wrap { grid-area: risk; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
+      .rt-risk-wrap .rt-risk-sub { justify-content: flex-end; }
+      .rt-action   { grid-area: act; padding-right: 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .rt-action .btn-copy { width: min(280px, 100%); flex: none; height: 36px; font-size: 13px; }
+      /* 搜索栏移到 pill tabs 下方，单独占一行 */
+      .tabs-search-row {
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .tabs-search-row .pill-tabs { width: 100%; margin-bottom: 0; }
+      .rank-search-wrap { min-width: 0; width: 100%; height: 40px; border-radius: 10px; font-size: 13px; }
+
+      /* Win Rate + Risk side-by-side on mobile */
+      .provider-stats {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0;
+      }
+      .provider-stats .stat-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+      .provider-stats .stat-row:last-child { align-items: flex-end; }
+
+      /* Hide desktop sidebar/portfolio elements */
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .provider-row-metrics { display: none; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* START COPY DRAWER (Side Panel)                             */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: 666px;
+      max-width: 100vw;
+      background: #fff;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.active .modal-container {
+      transform: translateX(0);
+    }
+
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid #e8e9ea;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: background 0.15s;
+    }
+
+    .modal-close:hover {
+      background: #f4f5f6;
+    }
+
+    .modal-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Strategy Info Card */
+    .strategy-card {
+      padding: 0 0 24px 0;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .strategy-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .strategy-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .strategy-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .strategy-id {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .strategy-metrics {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .strategy-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .strategy-metric:nth-child(2) {
+      text-align: center;
+    }
+
+    .strategy-metric:nth-child(3) {
+      text-align: right;
+    }
+
+    .strategy-metric-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .strategy-metric-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .strategy-metric-value.positive {
+      color: var(--green);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .form-label-info {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1.5px solid #c2c7d0;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 600;
+      color: #c2c7d0;
+      cursor: help;
+    }
+
+    .form-label-right {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .form-label-right-highlight {
+      color: var(--blue);
+      font-weight: 500;
+    }
+
+    .form-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 48px 0 14px;
+      border: 1px solid #e8e9ea;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s;
+      background: #fff;
+    }
+
+    .form-input:focus {
+      border-color: var(--blue);
+    }
+
+    .form-input:disabled,
+    .form-input:read-only {
+      background: #f8f9fa;
+      color: var(--text-secondary);
+    }
+
+    .form-input-suffix {
+      position: absolute;
+      right: 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    .form-hint-highlight {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-col {
+      flex: 1;
+    }
+
+    .form-select {
+      width: 100%;
+      height: 44px;
+      padding: 0 36px 0 14px;
+      border: 1px solid #e8e9ea;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      background: #fff url('data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4.5L6 7.5L9 4.5" stroke="%237A8699" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 14px center;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .form-select:focus {
+      border-color: var(--blue);
+    }
+
+    .slider-group {
+      margin-top: 12px;
+    }
+
+    .slider-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e8e9ea;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff2c40;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      border: 3px solid #fff;
+    }
+
+    .slider-input::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff2c40;
+      cursor: pointer;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .slider-input.green {
+      background: linear-gradient(to right, #00b565 0%, #00b565 50%, #e8e9ea 50%, #e8e9ea 100%);
+    }
+
+    .slider-input.green::-webkit-slider-thumb {
+      background: #00b565;
+    }
+
+    .slider-input.green::-moz-range-thumb {
+      background: #00b565;
+    }
+
+    .slider-input::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    .slider-input::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #e8e9ea;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle-switch.active {
+      background: var(--green);
+    }
+
+    .toggle-switch-handle {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch.active .toggle-switch-handle {
+      transform: translateX(20px);
+    }
+
+    .modal-footer {
+      height: 84px;
+      padding: 0 24px;
+      border-top: 1px solid #e8e9ea;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-modal {
+      height: 48px;
+      padding: 0 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-modal:hover {
+      opacity: 0.88;
+    }
+
+    .btn-modal-submit {
+      background: var(--blue);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="#">Explore</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Copy Trading</span>
+        <span class="breadcrumb-sep">›</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-title-wrap">
+          <h1 class="page-title" id="page-title">Discover</h1>
+          <div class="account-selector" id="account-selector">
+            <span class="account-selector-flag">
+              <img src="images/imgUsd.png" alt="USD" />
+            </span>
+            <span class="account-selector-text">6003667-USD-Copy trading</span>
+            <svg class="account-selector-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M2 4l4 4 4-4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="page-actions" id="page-actions"></div>
+      </div>
+
+      <!-- Pill Tabs + Search -->
+      <div class="tabs-search-row">
+        <div class="pill-tabs">
+          <button class="pill-tab active" data-tab="recommendation" onclick="switchPill(this,'recommendation')">Recommendation</button>
+          <button class="pill-tab" data-tab="rank" onclick="switchPill(this,'rank')">Rank</button>
+        </div>
+        <div class="rank-search-wrap" id="rank-search-wrap">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.2" stroke="#C2C7D0" stroke-width="1.4"/><path d="M9.5 9.5L12 12" stroke="#C2C7D0" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input class="rank-search" type="text" placeholder="Search strategy or signal provider" />
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL: RECOMMENDATION                                -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div id="panel-recommendation" class="tab-panel active">
+
+        <!-- Most Copied -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="2" height="6" rx="1" fill="#0a36c7"/><rect x="5" y="5" width="2" height="9" rx="1" fill="#0a36c7"/><rect x="8" y="3" width="2" height="11" rx="1" fill="#0a36c7"/><rect x="11" y="6" width="2" height="8" rx="1" fill="#0a36c7" opacity=".5"/><rect x="14" y="9" width="2" height="5" rx="1" fill="#0a36c7" opacity=".3"/></svg>
+              Most Copied
+            </h2>
+            <a class="section-link">View all <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 3l4 3-4 3"/></svg></a>
+          </div>
+          <div class="provider-grid">
+            <!-- Card 1 -->
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar1st.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Matteo Masino</div>
+                  <div class="provider-followers">👥 3,124 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 44 L15 36 L30 40 L45 28 L60 20 L75 24 L90 12 L105 8 L120 4 L120 56 L0 56Z" fill="url(#g1)"/>
+                  <path d="M0 44 L15 36 L30 40 L45 28 L60 20 L75 24 L90 12 L105 8 L120 4" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+10,550.56%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">76.70%</span></div>
+              </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar2nd.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">James Wilson</div>
+                  <div class="provider-followers">👥 2,891 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 48 L15 42 L30 38 L45 44 L60 30 L75 18 L90 22 L105 14 L120 8 L120 56 L0 56Z" fill="url(#g2)"/>
+                  <path d="M0 48 L15 42 L30 38 L45 44 L60 30 L75 18 L90 22 L105 14 L120 8" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+8,234.12%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">71.30%</span></div>
+              </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar3rd.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Sarah Chen</div>
+                  <div class="provider-followers">👥 2,456 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 52 L15 46 L30 36 L45 32 L60 38 L75 24 L90 16 L105 10 L120 6 L120 56 L0 56Z" fill="url(#g3)"/>
+                  <path d="M0 52 L15 46 L30 36 L45 32 L60 38 L75 24 L90 16 L105 10 L120 6" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+6,780.45%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">68.90%</span></div>
+              </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar" style="background:linear-gradient(135deg,#5b7fff,#0a36c7)">M</div>
+                <div class="provider-info">
+                  <div class="provider-name">Michael Park</div>
+                  <div class="provider-followers">👥 1,988 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 46 L15 40 L30 44 L45 34 L60 26 L75 30 L90 18 L105 12 L120 6 L120 56 L0 56Z" fill="url(#g4)"/>
+                  <path d="M0 46 L15 40 L30 44 L45 34 L60 26 L75 30 L90 18 L105 12 L120 6" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+5,491.88%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">65.40%</span></div>
+              </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar" style="background:linear-gradient(135deg,#d36bff,#9c27b0)">E</div>
+                <div class="provider-info">
+                  <div class="provider-name">Elena Torres</div>
+                  <div class="provider-followers">👥 1,642 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="g5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 50 L15 44 L30 40 L45 30 L60 36 L75 22 L90 14 L105 18 L120 10 L120 56 L0 56Z" fill="url(#g5)"/>
+                  <path d="M0 50 L15 44 L30 40 L45 30 L60 36 L75 22 L90 14 L105 18 L120 10" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+4,320.11%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">63.80%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highest Annual Return -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12 L6 8 L9 11 L14 4" stroke="#0a36c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 4h3v3" stroke="#0a36c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Highest Annual Return
+            </h2>
+            <a class="section-link">View all <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 3l4 3-4 3"/></svg></a>
+          </div>
+          <div class="provider-grid">
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar" style="background:linear-gradient(135deg,#ffa040,#ff6820)">A</div>
+                <div class="provider-info">
+                  <div class="provider-name">Alex Kim</div>
+                  <div class="provider-followers">👥 4,230 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="ga1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 50 L15 44 L30 48 L45 36 L60 18 L75 22 L90 10 L105 6 L120 2 L120 56 L0 56Z" fill="url(#ga1)"/>
+                  <path d="M0 50 L15 44 L30 48 L45 36 L60 18 L75 22 L90 10 L105 6 L120 2" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Annual Return</span><span class="stat-val">+482.3%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">74.20%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar1st.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">David Mueller</div>
+                  <div class="provider-followers">👥 3,560 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="ga2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 48 L15 50 L30 42 L45 30 L60 24 L75 16 L90 20 L105 8 L120 4 L120 56 L0 56Z" fill="url(#ga2)"/>
+                  <path d="M0 48 L15 50 L30 42 L45 30 L60 24 L75 16 L90 20 L105 8 L120 4" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Annual Return</span><span class="stat-val">+391.7%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">70.80%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar2nd.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Priya Singh</div>
+                  <div class="provider-followers">👥 2,870 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="ga3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 52 L15 46 L30 50 L45 40 L60 28 L75 20 L90 24 L105 12 L120 6 L120 56 L0 56Z" fill="url(#ga3)"/>
+                  <path d="M0 52 L15 46 L30 50 L45 40 L60 28 L75 20 L90 24 L105 12 L120 6" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Annual Return</span><span class="stat-val">+328.4%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">67.50%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar3rd.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Marco Rossi</div>
+                  <div class="provider-followers">👥 2,344 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="ga4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 46 L15 42 L30 46 L45 38 L60 26 L75 18 L90 14 L105 10 L120 8 L120 56 L0 56Z" fill="url(#ga4)"/>
+                  <path d="M0 46 L15 42 L30 46 L45 38 L60 26 L75 18 L90 14 L105 10 L120 8" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Annual Return</span><span class="stat-val">+274.6%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">66.10%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar" style="background:linear-gradient(135deg,#26d97e,#00875a)">Y</div>
+                <div class="provider-info">
+                  <div class="provider-name">Yuki Tanaka</div>
+                  <div class="provider-followers">👥 1,920 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="ga5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 50 L15 48 L30 44 L45 36 L60 30 L75 22 L90 16 L105 10 L120 6 L120 56 L0 56Z" fill="url(#ga5)"/>
+                  <path d="M0 50 L15 48 L30 44 L45 36 L60 30 L75 22 L90 16 L105 10 L120 6" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Annual Return</span><span class="stat-val">+241.9%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">64.30%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Low Risk and Stable Return -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2 L13 4.5 V8 C13 11 10.5 13.5 8 14 C5.5 13.5 3 11 3 8 V4.5 Z" stroke="#0a36c7" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M6 8l1.5 1.5L10.5 6" stroke="#0a36c7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Low Risk and Stable Return
+            </h2>
+            <a class="section-link">View all <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 3l4 3-4 3"/></svg></a>
+          </div>
+          <div class="provider-grid">
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar" style="background:linear-gradient(135deg,#00b8d9,#0077b6)">R</div>
+                <div class="provider-info">
+                  <div class="provider-name">Robert Chang</div>
+                  <div class="provider-followers">👥 5,128 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="gl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 40 L15 38 L30 36 L45 32 L60 28 L75 26 L90 22 L105 18 L120 16 L120 56 L0 56Z" fill="url(#gl1)"/>
+                  <path d="M0 40 L15 38 L30 36 L45 32 L60 28 L75 26 L90 22 L105 18 L120 16" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+92.4%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">82.10%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar1st.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Fatima Hassan</div>
+                  <div class="provider-followers">👥 4,472 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="gl2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 42 L15 38 L30 40 L45 34 L60 30 L75 26 L90 24 L105 20 L120 14 L120 56 L0 56Z" fill="url(#gl2)"/>
+                  <path d="M0 42 L15 38 L30 40 L45 34 L60 30 L75 26 L90 24 L105 20 L120 14" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+78.6%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">80.50%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar2nd.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Daniel Smith</div>
+                  <div class="provider-followers">👥 3,891 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="gl3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 44 L15 42 L30 38 L45 36 L60 32 L75 28 L90 26 L105 22 L120 18 L120 56 L0 56Z" fill="url(#gl3)"/>
+                  <path d="M0 44 L15 42 L30 38 L45 36 L60 32 L75 28 L90 26 L105 22 L120 18" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+67.2%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">79.30%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar"><img src="images/avatar3rd.png" alt="avatar" /></div>
+                <div class="provider-info">
+                  <div class="provider-name">Ana Gutierrez</div>
+                  <div class="provider-followers">👥 3,215 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="gl4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 46 L15 44 L30 40 L45 38 L60 34 L75 30 L90 26 L105 22 L120 20 L120 56 L0 56Z" fill="url(#gl4)"/>
+                  <path d="M0 46 L15 44 L30 40 L45 38 L60 34 L75 30 L90 26 L105 22 L120 20" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+58.9%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">77.60%</span></div>
+              </div>
+            </div>
+            <div class="provider-card">
+              <div class="provider-head">
+                <div class="provider-avatar" style="background:linear-gradient(135deg,#ab47bc,#6a1b9a)">L</div>
+                <div class="provider-info">
+                  <div class="provider-name">Liam Johnson</div>
+                  <div class="provider-followers">👥 2,680 followers</div>
+                </div>
+                <button class="btn-copy">Copy</button>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 120 56" preserveAspectRatio="none">
+                  <defs><linearGradient id="gl5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b565" stop-opacity=".18"/><stop offset="100%" stop-color="#00b565" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 48 L15 46 L30 42 L45 40 L60 36 L75 32 L90 28 L105 24 L120 22 L120 56 L0 56Z" fill="url(#gl5)"/>
+                  <path d="M0 48 L15 46 L30 42 L45 40 L60 36 L75 32 L90 28 L105 24 L120 22" stroke="#00b565" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="provider-stats">
+                <div class="stat-row"><span class="stat-label">Profit/Loss</span><span class="stat-val">+51.3%</span></div>
+                <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-val neutral">76.10%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL: RANK                                          -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL: RANK                                         -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- PANEL: RANK                                         -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div id="panel-rank" class="tab-panel">
+
+        <!-- TOP 3 Podium -->
+        <div class="rank-podium" id="rank-podium"></div>
+
+        <!-- Rank table (4+) -->
+        <div class="rank-table-section">
+          <div class="rank-table-head">
+            <div class="rth">
+              Strategies
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#C2C7D0" stroke-width="1.3"/><path d="M8 7v5" stroke="#C2C7D0" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="5.5" r="0.8" fill="#C2C7D0"/></svg>
+            </div>
+            <div class="rth">Return</div>
+            <div class="rth">
+              Risk
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#C2C7D0" stroke-width="1.3"/><path d="M8 7v5" stroke="#C2C7D0" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="5.5" r="0.8" fill="#C2C7D0"/></svg>
+            </div>
+            <div class="rth">Action</div>
+          </div>
+          <div id="rank-table-rows"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+/* ════════════════════════════════════════════════════════════
+   RANK PANEL — 严格按照 Figma 设计稿还原
+   ════════════════════════════════════════════════════════════ */
+
+/* 头像图标（组件库） */
+const AVATARS = ['images/avatar1st.png','images/avatar2nd.png','images/avatar3rd.png'];
+
+/* 粉丝 icon（与 Recommendation 面板一致） */
+const F_ICON = `<svg width="12" height="12" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="5" r="3.2" stroke="#7A8699" stroke-width="1.6"/><path d="M11.5 11H7.38516C5.34064 11 3.5021 12.2448 2.74278 14.143L2.5 14.75C1.78153 16.5462 3.10435 18.5 5.03887 18.5H11.5" stroke="#7A8699" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+
+/* K线图标（复用现有 KLINE_ICON，稍后声明后注入） */
+const KLINE_SVG = `<svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M12.617 11.7998L12.5879 11.8288C12.4124 12.0043 12.1743 12.1029 11.926 12.1029C11.6777 12.1029 11.4396 12.0043 11.2641 11.8288L9.27922 9.83645L7.29063 11.8288C7.20506 11.9173 7.1029 11.988 6.98998 12.037C6.87707 12.086 6.75562 12.1122 6.63256 12.1143C6.50949 12.1163 6.38723 12.0941 6.27276 12.0489C6.15828 12.0037 6.05383 11.9364 5.96537 11.8508C5.87691 11.7652 5.80616 11.6631 5.75718 11.5502C5.7082 11.4372 5.68194 11.3158 5.6799 11.1927C5.67785 11.0697 5.70007 10.9474 5.74528 10.8329C5.79048 10.7184 5.85779 10.614 5.94337 10.5255L8.61449 7.84692C8.79102 7.67106 9.03004 7.57232 9.27922 7.57232C9.52841 7.57232 9.76743 7.67106 9.94396 7.84692L11.9288 9.83552L15.2385 6.52213C15.4141 6.34658 15.6524 6.248 15.9007 6.24809C16.1491 6.24817 16.3872 6.34692 16.5628 6.5226C16.7383 6.69828 16.8369 6.9365 16.8368 7.18486C16.8367 7.43322 16.738 7.67137 16.5623 7.84692L12.617 11.7998ZM4.36859 15.6262H16.5398C16.7882 15.6262 17.0263 15.7249 17.2019 15.9004C17.3775 16.076 17.4761 16.3142 17.4761 16.5625C17.4761 16.8108 17.3775 17.0489 17.2019 17.2245C17.0263 17.4001 16.7882 17.4987 16.5398 17.4987H3.43234C3.18765 17.4987 2.96047 17.3114 2.77031 17.2245C2.68338 17.1376 2.61441 17.0344 2.56736 16.9208C2.52031 16.8072 2.49609 16.6854 2.49609 16.5625V3.43625C2.49609 3.1899 2.69355 2.5 3.43234 2.5C3.55529 2.5 3.67704 2.52422 3.79063 2.57127C3.90422 2.61832 4.00743 2.68728 4.09437 2.77422C4.18131 2.86116 4.25027 2.96437 4.29733 3.07796C4.34438 3.19155 4.36859 3.3133 4.36859 3.43625V15.6262Z" fill="#0A36C7"/></svg>`;
+
+/* Risk 颜色映射 */
+function riskColorClass(r) {
+  if (r <= 2) return 'r-green';
+  if (r <= 5) return 'r-yellow';
+  if (r <= 7) return 'r-orange';
+  return 'r-red';
+}
+
+/* TOP3 数据（设计稿中显示） */
+const TOP3 = [
+  { label:'TOP1', cls:'rank-podium-1', name:'Matteo Masino', followers:398, returnPct:'70.70', riskLevel:2, avatar:'images/avatar1st.png', medal:'🥇' },
+  { label:'TOP2', cls:'rank-podium-2', name:'Matteo Masino', followers:398, returnPct:'70.70', riskLevel:2, avatar:'images/avatar2nd.png', medal:'🥈' },
+  { label:'TOP3', cls:'rank-podium-3', name:'Matteo Masino', followers:398, returnPct:'70.70', riskLevel:2, avatar:'images/avatar3rd.png', medal:'🥉' },
+];
+
+/* 表格数据（rank 4–10，按收益从高到低排序） */
+const TABLE_DATA = [
+  { rank:4,  name:'Matteo Masino Matteo Matteo', avatar:'images/avatar1st.png', followers:398, returnPct:'10550.56', risk:1 },
+  { rank:5,  name:'Matteo Masino Matteo Matteo', avatar:'images/avatar2nd.png', followers:398, returnPct:'9820.34',  risk:2 },
+  { rank:6,  name:'Matteo Masino Matteo Matteo', avatar:'images/avatar3rd.png', followers:398, returnPct:'8740.12',  risk:3 },
+  { rank:7,  name:'Matteo Masino Matteo Matteo', avatar:'images/avatar1st.png', followers:398, returnPct:'7630.88',  risk:2 },
+  { rank:8,  name:'Matteo Masino Matteo Matteo', avatar:'images/avatar2nd.png', followers:398, returnPct:'6520.45',  risk:4 },
+  { rank:9,  name:'Matteo Masino Matteo Matteo', avatar:'images/avatar3rd.png', followers:398, returnPct:'5410.22',  risk:3 },
+  { rank:10, name:'Matteo Masino Matteo Matteo', avatar:'images/avatar1st.png', followers:398, returnPct:'4300.67',  risk:5 },
+];
+
+/* ── 三种头像圆框 PNG 图片 ── */
+const FRAME_SVGS = {
+  'rank-podium-1': `<img class="rank-podium-frame-svg" src="images/frame-gold.png"   alt="">`,
+  'rank-podium-2': `<img class="rank-podium-frame-svg" src="images/frame-blue.png"   alt="">`,
+  'rank-podium-3': `<img class="rank-podium-frame-svg" src="images/frame-orange.png" alt="">`
+};
+
+/* 渲染 TOP3 podium */
+function renderPodium() {
+  const el = document.getElementById('rank-podium');
+  if (!el) return;
+  el.innerHTML = TOP3.map(p => `
+    <div class="rank-podium-card ${p.cls}">
+      <div class="rank-podium-badge-wrap">
+        <div class="rank-podium-badge">
+          ${p.cls === 'rank-podium-1'
+            ? `<svg class="badge-shape" viewBox="0 0 123 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H123L116.461 3.80427C114.162 5.14218 112.327 7.15311 111.206 9.56587C107.683 17.1493 100.08 22 91.7176 22H31.2824C22.9202 22 15.3174 17.1493 11.7937 9.56587C10.6725 7.15311 8.83848 5.14219 6.53884 3.80427L0 0Z" fill="url(#top1g)"/><defs><linearGradient id="top1g" x1="61.5" y1="22" x2="61.5" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#EBC061" stop-opacity="0.5"/><stop offset="1" stop-color="#EBC061"/></linearGradient></defs></svg><span>${p.label}</span>`
+            : p.cls === 'rank-podium-2'
+            ? `<svg class="badge-shape" viewBox="0 0 152 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H152L143.722 3.89745C141.009 5.17464 138.753 7.25385 137.26 9.85409C132.946 17.3673 124.944 22 116.28 22H35.7202C27.0565 22 19.0541 17.3673 14.7398 9.85409C13.2467 7.25385 10.9913 5.17464 8.27845 3.89745L0 0Z" fill="url(#top2g)"/><defs><linearGradient id="top2g" x1="76" y1="22" x2="76" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#C8DEFF"/><stop offset="1" stop-color="#80AFF4"/></linearGradient></defs></svg><span>${p.label}</span>`
+            : `<svg class="badge-shape" viewBox="0 0 152 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H152L143.722 3.89745C141.009 5.17464 138.753 7.25385 137.26 9.85409C132.946 17.3673 124.944 22 116.28 22H35.7202C27.0565 22 19.0541 17.3673 14.7398 9.85409C13.2467 7.25385 10.9913 5.17464 8.27845 3.89745L0 0Z" fill="url(#top3g)"/><defs><linearGradient id="top3g" x1="76" y1="22" x2="76" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#F4BB89" stop-opacity="0.5"/><stop offset="1" stop-color="#AB7545"/></linearGradient></defs></svg><span>${p.label}</span>`}
+        </div>
+      </div>
+      <div class="rank-podium-avatar-wrap">
+        <div class="rank-podium-avatar" style="background: url('${p.avatar}') lightgray 50% / cover no-repeat;"></div>
+        ${FRAME_SVGS[p.cls] || ''}
+      </div>
+      <div class="rank-podium-followers">${F_ICON} ${p.followers}</div>
+      <div class="rank-podium-name">${p.name}</div>
+      <div class="rank-podium-stats">
+        <div class="rank-podium-stat">
+          <span class="rps-label">Return (3M)</span>
+          <span class="rps-val positive">+${p.returnPct}%</span>
+        </div>
+        <div class="rank-podium-stat">
+          <span class="rps-label">Risk Level</span>
+          <span class="rps-val">${p.riskLevel}</span>
+        </div>
+      </div>
+      <button class="btn-copy-full">Copy</button>
+    </div>`).join('');
+}
+
+/* 渲染表格 rows（每行独立卡片） */
+function renderRankTable() {
+  const el = document.getElementById('rank-table-rows');
+  if (!el) return;
+  const INFO_ICON = `<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#C2C7D0" stroke-width="1.3"/><path d="M8 7v5" stroke="#C2C7D0" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="5.5" r="0.8" fill="#C2C7D0"/></svg>`;
+  el.innerHTML = TABLE_DATA.map(p => `
+    <div class="rank-table-row">
+      <div class="rt-num">${p.rank}</div>
+      <div class="rt-provider">
+        <div class="rt-avatar"><img src="${p.avatar}" alt="${p.name}"/></div>
+        <div class="rt-info">
+          <div class="rt-name">${p.name}</div>
+          <div class="rt-followers">${F_ICON} ${p.followers}</div>
+        </div>
+      </div>
+      <div class="rt-return">
+        <span class="rt-ret-val">+${p.returnPct}%</span>
+        <span class="rt-ret-sub">Return (3M)</span>
+      </div>
+      <div class="rt-risk-wrap">
+        <span class="rt-risk ${riskColorClass(p.risk)}">${p.risk}</span>
+        <span class="rt-risk-sub">Risk ${INFO_ICON}</span>
+      </div>
+      <div class="rt-action">
+        <button class="chart-kline-btn" title="K线图">${KLINE_SVG}</button>
+        <button class="btn-copy">Copy</button>
+      </div>
+    </div>`).join('');
+}
+
+/* 初始化 Rank 面板 */
+renderPodium();
+renderRankTable();
+
+/* Podium 滚动入场动效 */
+(function() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('podium-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  function observePodium() {
+    document.querySelectorAll('.rank-podium-card').forEach(card => {
+      card.classList.remove('podium-visible');
+      observer.observe(card);
+    });
+  }
+
+  observePodium();
+  document.addEventListener('pillSwitch', function(e) {
+    if (e.detail === 'rank') observePodium();
+  });
+})();
+
+function switchPill(btn, name) {
+  document.querySelectorAll('.pill-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById('panel-' + name);
+  /* 重触发入场动画 */
+  panel.style.animation = 'none';
+  panel.offsetHeight;
+  panel.style.animation = '';
+  panel.classList.add('active');
+  /* 搜索栏：仅 Rank 面板显示 */
+  const sw = document.getElementById('rank-search-wrap');
+  if (sw) sw.classList.toggle('visible', name === 'rank');
+  /* 触发 podium 动效 */
+  if (name === 'rank') document.dispatchEvent(new CustomEvent('pillSwitch', { detail: 'rank' }));
+}
+
+    /* ── Followers: replace emoji with Figma SVG icon (node 3578-435) ── */
+    const FOLLOWER_ICON = `<svg width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="5" r="3.2" stroke="#7A8699" stroke-width="1.6"/><path d="M11.5 11H7.38516C5.34064 11 3.5021 12.2448 2.74278 14.143L2.5 14.75C1.78153 16.5462 3.10435 18.5 5.03887 18.5H11.5" stroke="#7A8699" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+
+    document.querySelectorAll('.provider-followers').forEach(el => {
+      const num = el.textContent.match(/[\d,]+/);
+      if (num) el.innerHTML = FOLLOWER_ICON + num[0];
+    });
+
+    /* ── K-line icon SVG (Figma node 5103-385830) ── */
+    const KLINE_ICON = `<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.617 11.7998L12.5879 11.8288C12.4124 12.0043 12.1743 12.1029 11.926 12.1029C11.6777 12.1029 11.4396 12.0043 11.2641 11.8288L9.27922 9.83645L7.29063 11.8288C7.20506 11.9173 7.1029 11.988 6.98998 12.037C6.87707 12.086 6.75562 12.1122 6.63256 12.1143C6.50949 12.1163 6.38723 12.0941 6.27276 12.0489C6.15828 12.0037 6.05383 11.9364 5.96537 11.8508C5.87691 11.7652 5.80616 11.6631 5.75718 11.5502C5.7082 11.4372 5.68194 11.3158 5.6799 11.1927C5.67785 11.0697 5.70007 10.9474 5.74528 10.8329C5.79048 10.7184 5.85779 10.614 5.94337 10.5255C5.95166 10.5173 5.96042 10.5094 5.96958 10.5021L8.61449 7.84692C8.79102 7.67106 9.03004 7.57232 9.27922 7.57232C9.52841 7.57232 9.76743 7.67106 9.94396 7.84692L11.9288 9.83552L15.2385 6.52213C15.4141 6.34658 15.6524 6.248 15.9007 6.24809C16.1491 6.24817 16.3872 6.34692 16.5628 6.5226C16.7383 6.69828 16.8369 6.9365 16.8368 7.18486C16.8367 7.43322 16.738 7.67137 16.5623 7.84692L12.617 11.7998ZM4.36859 15.6262H16.5398C16.7882 15.6262 17.0263 15.7249 17.2019 15.9004C17.3775 16.076 17.4761 16.3142 17.4761 16.5625C17.4761 16.8108 17.3775 17.0489 17.2019 17.2245C17.0263 17.4001 16.7882 17.4987 16.5398 17.4987H3.43234C3.30939 17.4987 3.18765 17.4745 3.07406 17.4275C2.96047 17.3804 2.85725 17.3114 2.77031 17.2245C2.68338 17.1376 2.61441 17.0344 2.56736 16.9208C2.52031 16.8072 2.49609 16.6854 2.49609 16.5625V3.43625C2.49609 3.3133 2.52031 3.19155 2.56736 3.07796C2.61441 2.96437 2.68338 2.86116 2.77031 2.77422C2.85725 2.68728 2.96047 2.61832 3.07406 2.57127C3.18765 2.52422 3.30939 2.5 3.43234 2.5C3.55529 2.5 3.67704 2.52422 3.79063 2.57127C3.90422 2.61832 4.00743 2.68728 4.09437 2.77422C4.18131 2.86116 4.25027 2.96437 4.29733 3.07796C4.34438 3.19155 4.36859 3.3133 4.36859 3.43625V15.6262Z" fill="#0A36C7"/></svg>`;
+
+    /* ── Smooth line charts — unique point sets per card ── */
+    const LINE_POINTS = [
+      [[0,44],[15,36],[30,40],[45,28],[60,20],[75,24],[90,12],[105,8],[120,4]],
+      [[0,48],[15,42],[30,38],[45,44],[60,30],[75,18],[90,22],[105,14],[120,8]],
+      [[0,52],[15,46],[30,36],[45,32],[60,38],[75,24],[90,16],[105,10],[120,6]],
+      [[0,46],[15,40],[30,44],[45,34],[60,26],[75,30],[90,18],[105,12],[120,6]],
+      [[0,50],[15,44],[30,40],[45,30],[60,36],[75,22],[90,14],[105,18],[120,10]],
+      [[0,50],[15,44],[30,48],[45,36],[60,18],[75,22],[90,10],[105,6],[120,2]],
+      [[0,48],[15,50],[30,42],[45,30],[60,24],[75,16],[90,20],[105,8],[120,4]],
+      [[0,52],[15,46],[30,50],[45,40],[60,28],[75,20],[90,24],[105,12],[120,6]],
+      [[0,46],[15,42],[30,46],[45,38],[60,26],[75,18],[90,14],[105,10],[120,8]],
+      [[0,50],[15,48],[30,44],[45,36],[60,30],[75,22],[90,16],[105,10],[120,6]],
+      [[0,40],[15,38],[30,36],[45,32],[60,28],[75,26],[90,22],[105,18],[120,16]],
+      [[0,42],[15,38],[30,40],[45,34],[60,30],[75,26],[90,24],[105,20],[120,14]],
+      [[0,44],[15,42],[30,38],[45,36],[60,32],[75,28],[90,26],[105,22],[120,18]],
+      [[0,46],[15,44],[30,40],[45,38],[60,34],[75,30],[90,26],[105,22],[120,20]],
+      [[0,48],[15,46],[30,42],[45,40],[60,36],[75,32],[90,28],[105,24],[120,22]]
+    ];
+
+    /* Build a smooth cubic-bezier path through points */
+    function smoothPath(pts) {
+      let d = `M${pts[0][0]},${pts[0][1]}`;
+      for (let i = 1; i < pts.length; i++) {
+        const [x0,y0] = pts[i-1], [x1,y1] = pts[i];
+        const cx = (x0+x1)/2;
+        d += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`;
+      }
+      return d;
+    }
+
+    document.querySelectorAll('.chart-wrap').forEach((wrap, idx) => {
+      const pts = LINE_POINTS[idx % LINE_POINTS.length];
+      const linePath = smoothPath(pts);
+      const last = pts[pts.length-1];
+      const first = pts[0];
+      const areaPath = linePath + ` L${last[0]},56 L${first[0]},56 Z`;
+      const gId = 'sg' + idx;
+      wrap.innerHTML =
+        `<svg viewBox="0 0 120 56" preserveAspectRatio="none">
+          <defs><linearGradient id="${gId}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00B565" stop-opacity=".18"/>
+            <stop offset="100%" stop-color="#00B565" stop-opacity="0"/>
+          </linearGradient></defs>
+          <path d="${areaPath}" fill="url(#${gId})"/>
+          <path d="${linePath}" stroke="var(--Brand-Secondary-Green, #00B565)" stroke-width="0.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      /* Insert K-line button to the LEFT of the Copy button */
+      const card = wrap.closest('.provider-card');
+      if (card) {
+        const head = card.querySelector('.provider-head');
+        const copyBtn = head && head.querySelector('.btn-copy');
+        if (copyBtn && !head.querySelector('.chart-kline-btn')) {
+          const btn = document.createElement('button');
+          btn.className = 'chart-kline-btn';
+          btn.title = 'K线图';
+          btn.innerHTML = KLINE_ICON;
+          head.insertBefore(btn, copyBtn);
+        }
+      }
+    });
+
+    /* ── Update wrong field labels + add missing Risk stat row ── */
+    /* Risk scores per card (in card DOM order) */
+    const RISK_VALUES = [6, 5, 4, 5, 4,   /* Most Copied 1-5 */
+                         7, 6, 5, 6, 5,   /* Highest Annual 1-5 */
+                         2, 2, 3, 2, 3];  /* Low Risk 1-5 */
+
+    document.querySelectorAll('.provider-card').forEach((card, idx) => {
+      /* Rename "Profit/Loss" → "Return(3M)" */
+      card.querySelectorAll('.stat-label').forEach(lbl => {
+        const t = lbl.textContent.trim();
+        if (t === 'Profit/Loss' || t === 'Return') lbl.textContent = 'Return(3M)';
+      });
+      /* Add Risk stat row (neutral = small dark style) */
+      const stats = card.querySelector('.provider-stats');
+      if (stats && !stats.querySelector('.stat-row-risk')) {
+        const risk = RISK_VALUES[idx] ?? 5;
+        const row = document.createElement('div');
+        row.className = 'stat-row stat-row-risk';
+        row.innerHTML = `<span class="stat-label">Risk</span><span class="stat-val neutral">${risk}</span>`;
+        stats.appendChild(row);
+      }
+      /* Win Rate value should also use neutral (small dark) */
+      card.querySelectorAll('.stat-label').forEach(lbl => {
+        if (lbl.textContent.trim() === 'Win Rate') {
+          const val = lbl.nextElementSibling;
+          if (val) val.classList.add('neutral');
+        }
+      });
+    });
+
+    /* ── Replace letter-initial avatars with component library images ── */
+    const AVATAR_IMGS = ['images/avatar1st.png', 'images/avatar2nd.png', 'images/avatar3rd.png'];
+    let avatarIdx = 0;
+    document.querySelectorAll('.provider-avatar').forEach(av => {
+      if (!av.querySelector('img')) {
+        /* Letter-initial avatar — replace with img from component library */
+        av.textContent = '';
+        av.removeAttribute('style');
+        av.style.background = 'transparent';
+        const img = document.createElement('img');
+        img.src = AVATAR_IMGS[avatarIdx % AVATAR_IMGS.length];
+        img.alt = 'avatar';
+        av.appendChild(img);
+        avatarIdx++;
+      }
+    });
+
+    /* ── Return(3M) row ABOVE chart; Win Rate + Risk BELOW chart ── */
+    document.querySelectorAll('.provider-card').forEach(card => {
+      const stats = card.querySelector('.provider-stats');
+      const chart = card.querySelector('.chart-wrap');
+      if (!stats || !chart) return;
+
+      /* Insert divider between provider-head and the rest */
+      const head = card.querySelector('.provider-head');
+      if (head && !card.querySelector('.card-divider')) {
+        const divider = document.createElement('div');
+        divider.className = 'card-divider';
+        head.insertAdjacentElement('afterend', divider);
+      }
+
+      /* Pull the Return(3M) row into its own wrapper above the chart */
+      const returnRow = Array.from(stats.querySelectorAll('.stat-row')).find(r =>
+        r.querySelector('.stat-label')?.textContent.trim() === 'Return(3M)'
+      );
+      if (returnRow) {
+        const topWrap = document.createElement('div');
+        topWrap.className = 'stats-return-top';
+        topWrap.appendChild(returnRow);
+        card.insertBefore(topWrap, chart);
+      }
+
+      /* provider-stats (Win Rate + Risk) stays after chart — ensure order */
+      if (chart.nextElementSibling !== stats) {
+        chart.insertAdjacentElement('afterend', stats);
+      }
+    });
+  </script>
+
+  <!-- START COPY DRAWER -->
+  <div id="startCopyModal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Start Copy</h3>
+        <button class="modal-close" id="modalClose">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l8 8M14 6l-8 8"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Strategy Info Card -->
+        <div class="strategy-card">
+          <img src="images/avatar1st.png" alt="Strategy" class="strategy-avatar" />
+          <div class="strategy-info">
+            <div class="strategy-name">Strategy Name Name</div>
+            <div class="strategy-id">ID : 13421111</div>
+            <div class="strategy-metrics">
+              <div class="strategy-metric">
+                <div class="strategy-metric-label">Return(3M)</div>
+                <div class="strategy-metric-value positive">120.07%</div>
+              </div>
+              <div class="strategy-metric">
+                <div class="strategy-metric-label">Settlement</div>
+                <div class="strategy-metric-value">Weekly</div>
+              </div>
+              <div class="strategy-metric">
+                <div class="strategy-metric-label">Profit Sharing</div>
+                <div class="strategy-metric-value">20%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy Mode -->
+        <div class="form-group">
+          <label class="form-label">
+            Copy Mode
+            <span class="form-label-info">i</span>
+          </label>
+          <select class="form-select" id="copyMode">
+            <option value="fixed">Fixed Lots</option>
+            <option value="proportional">Proportional</option>
+            <option value="multiplier">Multiplier</option>
+          </select>
+        </div>
+
+        <!-- Investment -->
+        <div class="form-group">
+          <label class="form-label">
+            Investment
+            <span class="form-label-info">i</span>
+            <span class="form-label-right">Available Investment <span class="form-label-right-highlight">$171.44 USD</span></span>
+          </label>
+          <div class="form-input-wrap">
+            <input type="number" class="form-input" id="investment" value="50.00" step="0.01" min="0" />
+            <span class="form-input-suffix">USD</span>
+          </div>
+          <div class="form-hint">Available Credit <span class="form-hint-highlight">0.00 USD</span></div>
+          <div class="form-hint">Used Balance <span class="form-hint-highlight">428.88 USD</span></div>
+        </div>
+
+        <!-- Lots Per Order -->
+        <div class="form-group">
+          <label class="form-label">
+            Lots Per Order
+          </label>
+          <div class="form-input-wrap">
+            <input type="number" class="form-input" id="lotsPerOrder" value="0.01" step="0.01" min="0.01" />
+            <span class="form-input-suffix">Lots</span>
+          </div>
+        </div>
+
+        <!-- Stop Loss -->
+        <div class="form-group">
+          <label class="form-label">
+            Stop Loss
+            <span class="form-label-info">i</span>
+            <span class="form-label-right">Estimated Loss <span class="form-label-right-highlight">65.00 USD</span></span>
+          </label>
+          <div class="form-input-wrap">
+            <input type="number" class="form-input" id="stopLoss" value="65" step="1" min="0" />
+            <span class="form-input-suffix">Lots</span>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="slider-input" id="stopLossSlider" min="0" max="500" value="65" />
+          </div>
+        </div>
+
+        <!-- Take Profit -->
+        <div class="form-group">
+          <div class="toggle-group">
+            <div class="toggle-label">
+              Take Profit
+              <span class="form-label-info">i</span>
+            </div>
+            <div class="toggle-switch active" id="takeProfitToggle">
+              <div class="toggle-switch-handle"></div>
+            </div>
+          </div>
+          <div class="form-hint" style="margin-bottom: 8px;">Lots</div>
+          <div class="slider-group">
+            <input type="range" class="slider-input green" id="takeProfitSlider" min="0" max="500" value="250" />
+          </div>
+        </div>
+
+        <!-- Lot Round-Up -->
+        <div class="form-group">
+          <div class="toggle-group">
+            <div class="toggle-label">
+              Lot Round-Up
+              <span class="form-label-info">i</span>
+            </div>
+            <div class="toggle-switch active" id="lotRoundUpToggle">
+              <div class="toggle-switch-handle"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy Opened Trades -->
+        <div class="form-group">
+          <div class="toggle-group">
+            <div class="toggle-label">
+              Copy Opened Trades
+              <span class="form-label-info">i</span>
+            </div>
+            <div class="toggle-switch active" id="copyOpenedTradesToggle">
+              <div class="toggle-switch-handle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal btn-modal-submit" id="modalSubmit">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Drawer functionality
+    const modal = document.getElementById('startCopyModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalSubmit = document.getElementById('modalSubmit');
+
+    // Sync input with slider
+    const stopLoss = document.getElementById('stopLoss');
+    const stopLossSlider = document.getElementById('stopLossSlider');
+    const takeProfitSlider = document.getElementById('takeProfitSlider');
+
+    stopLoss.addEventListener('input', (e) => {
+      stopLossSlider.value = e.target.value;
+    });
+
+    stopLossSlider.addEventListener('input', (e) => {
+      stopLoss.value = e.target.value;
+    });
+
+    // Toggle switches
+    function setupToggle(toggleId) {
+      const toggle = document.getElementById(toggleId);
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          toggle.classList.toggle('active');
+        });
+      }
+    }
+
+    setupToggle('takeProfitToggle');
+    setupToggle('lotRoundUpToggle');
+    setupToggle('copyOpenedTradesToggle');
+
+    // Open drawer when ANY Copy button is clicked (including dynamically generated ones)
+    // Using event delegation on document body
+    document.body.addEventListener('click', (e) => {
+      // Check if clicked element is a Copy button or inside one
+      const copyButton = e.target.closest('.btn-copy, .btn-copy-full');
+      if (copyButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+
+    // Close drawer
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+
+    modalSubmit.addEventListener('click', () => {
+      // Get form values
+      const formData = {
+        copyMode: document.getElementById('copyMode').value,
+        investment: document.getElementById('investment').value,
+        lotsPerOrder: document.getElementById('lotsPerOrder').value,
+        stopLoss: document.getElementById('stopLoss').value,
+        takeProfit: document.getElementById('takeProfitToggle').classList.contains('active'),
+        lotRoundUp: document.getElementById('lotRoundUpToggle').classList.contains('active'),
+        copyOpenedTrades: document.getElementById('copyOpenedTradesToggle').classList.contains('active')
+      };
+
+      console.log('Copy Trading Started:', formData);
+      alert('Copy trading started successfully!');
+      closeModal();
+    });
+
+    // Close drawer when clicking overlay
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Close drawer with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  </script>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

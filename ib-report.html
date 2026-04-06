@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – IB Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Tabs ────────────────────────────────────────────── */
+    .tabs-bar {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      padding-bottom: 6px;
+      margin-bottom: -1px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      text-decoration: none;
+    }
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+    .tab:hover { color: var(--blue); }
+
+    /* ─── Tab Panels ──────────────────────────────────────── */
+    .tab-panel { display: none; flex-direction: column; gap: 32px; }
+    .tab-panel.active { display: flex; }
+
+    /* ─── Summary Card ────────────────────────────────────── */
+    .summary-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .summary-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .summary-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      height: 40px;
+      min-width: 160px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 16px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    .filter-select:focus { outline: none; border-color: var(--blue); }
+
+    .filter-date {
+      height: 40px;
+      min-width: 220px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 40px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      background-image:
+        url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='3' width='12' height='11' rx='2' stroke='%237a8699' stroke-width='1.3'/%3E%3Cpath d='M2 7h12' stroke='%237a8699' stroke-width='1.3'/%3E%3Cpath d='M5 2v2M11 2v2' stroke='%237a8699' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat, no-repeat;
+      background-position: right 12px center, left 14px center;
+      background-size: 16px 16px, 16px 16px;
+    }
+    .filter-date:focus { outline: none; border-color: var(--blue); }
+
+    .btn-update {
+      height: 40px;
+      padding: 0 24px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-update:hover { opacity: 0.9; }
+
+    /* ─── Net Value Display ───────────────────────────────── */
+    .net-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .net-flag {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0;
+      margin-bottom: 4px;
+    }
+
+    .net-amount {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .net-currency {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    /* ─── Stats Row (gray bar) ────────────────────────────── */
+    .stats-bar {
+      background: var(--bg-field);
+      border-radius: 10px;
+      padding: 18px 24px;
+      display: flex;
+      gap: 0;
+    }
+
+    .stats-bar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stats-bar-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .stats-bar-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .stats-bar-currency {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-left: 4px;
+    }
+
+    /* ─── Table Filters ───────────────────────────────────── */
+    .table-filters {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar {
+      height: 40px;
+      width: 310px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 16px 0 40px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='7' cy='7' r='4.5' stroke='%23c2c7d0' stroke-width='1.3'/%3E%3Cpath d='M10.5 10.5L13.5 13.5' stroke='%23c2c7d0' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 14px center;
+    }
+    .search-bar::placeholder { color: var(--text-tertiary); }
+    .search-bar:focus { outline: none; border-color: var(--blue); }
+
+    .table-filter-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-download {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg-field);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-download:hover { background: #e4e6e8; }
+
+    /* ─── Data Table ──────────────────────────────────────── */
+    .table-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .data-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    .data-table thead tr {
+      background: var(--bg-field);
+      border-bottom: 1px solid var(--bg-field);
+    }
+
+    .data-table thead th {
+      padding: 16px 24px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      white-space: nowrap;
+      text-transform: capitalize;
+    }
+
+    .data-table tbody td {
+      padding: 16px 24px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--bg-field);
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: #fafbfc; }
+
+    /* ─── Pagination ──────────────────────────────────────── */
+    .pagination-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--bg-field);
+      flex-wrap: wrap;
+    }
+
+    .pagination-info {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-right: auto;
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      transition: background 0.15s;
+    }
+    .page-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .page-btn:hover:not(.active) { background: var(--bg-field); }
+    .page-btn.ellipsis { border: none; cursor: default; background: transparent; }
+    .page-btn.ellipsis:hover { background: transparent; }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .content { padding: 28px 24px 48px; gap: 24px; }
+    }
+
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; gap: 20px; }
+      .page-title { font-size: 24px; }
+      .tabs-bar { overflow-x: auto; }
+      .summary-card-header { flex-direction: column; align-items: flex-start; }
+      .filter-row { width: 100%; }
+      .filter-select, .filter-date { flex: 1; min-width: 0; }
+      .btn-update { width: 100%; }
+      .net-amount { font-size: 28px; }
+      .net-currency { font-size: 18px; }
+      .stats-bar { flex-direction: column; gap: 16px; }
+      .table-filters { flex-direction: column; align-items: flex-start; }
+      .search-bar { width: 100%; }
+      .table-filter-right { width: 100%; flex-wrap: wrap; }
+      .filter-select.processing { flex: 1; }
+      .pagination-info { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .content { padding: 16px 12px 40px; gap: 16px; }
+      .page-title { font-size: 20px; }
+      .net-amount { font-size: 22px; }
+      .stats-bar-value { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <h1 class="page-title">IB Report</h1>
+
+      <!-- ── Tabs ─────────────────────────────────────────── -->
+      <div class="tabs-bar">
+        <a class="tab active" href="#" data-tab="fund">Fund Report</a>
+        <a class="tab" href="#" data-tab="rebate">Rebate Report</a>
+      </div>
+
+      <!-- ══ Fund Report Panel ════════════════════════════════ -->
+      <div class="tab-panel active" id="panel-fund">
+
+        <!-- Summary Card -->
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <span class="summary-label">Net Funding</span>
+            <div class="filter-row">
+              <select class="filter-select">
+                <option selected>Month To Date</option>
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+                <option>Last 90 Days</option>
+                <option>Custom Range</option>
+              </select>
+              <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
+              <button class="btn-update">Update</button>
+            </div>
+          </div>
+
+          <!-- Net Amount -->
+          <div class="net-value-row">
+            <img class="net-flag" src="images/imgUsd.png" alt="USD" />
+            <span class="net-amount">1,000,000.00</span>
+            <span class="net-currency">USD</span>
+          </div>
+
+          <!-- Deposits / Withdraw Stats Bar -->
+          <div class="stats-bar">
+            <div class="stats-bar-item">
+              <span class="stats-bar-label">Deposits</span>
+              <div>
+                <span class="stats-bar-value">0.00</span>
+                <span class="stats-bar-currency">USD</span>
+              </div>
+            </div>
+            <div class="stats-bar-item">
+              <span class="stats-bar-label">Withdraw</span>
+              <div>
+                <span class="stats-bar-value">0.00</span>
+                <span class="stats-bar-currency">USD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Filters -->
+        <div class="table-filters">
+          <input type="text" class="search-bar" placeholder="Month To Date" />
+          <div class="table-filter-right">
+            <select class="filter-select processing">
+              <option selected>Processing time</option>
+              <option>Trade time</option>
+            </select>
+            <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
+            <button class="btn-download" title="Download">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-card">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>User ID</th>
+                  <th>Name</th>
+                  <th>Rebate Account</th>
+                  <th>Net Funding</th>
+                  <th>Deposit</th>
+                  <th>Withdraw</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>NZ$1,000.00</td><td>0.00</td><td>0.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-row">
+            <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
+            <button class="page-btn">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">4</button>
+            <button class="page-btn">5</button>
+            <button class="page-btn ellipsis">…</button>
+            <button class="page-btn">10</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+
+      </div><!-- /panel-fund -->
+
+      <!-- ══ Rebate Report Panel ═══════════════════════════════ -->
+      <div class="tab-panel" id="panel-rebate">
+
+        <!-- Summary Card -->
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <span class="summary-label">Total Rebate</span>
+            <div class="filter-row">
+              <select class="filter-select">
+                <option selected>Month To Date</option>
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+                <option>Last 90 Days</option>
+                <option>Custom Range</option>
+              </select>
+              <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
+              <button class="btn-update">Update</button>
+            </div>
+          </div>
+
+          <div class="net-value-row">
+            <img class="net-flag" src="images/imgUsd.png" alt="USD" />
+            <span class="net-amount">21.00</span>
+            <span class="net-currency">USD</span>
+          </div>
+
+          <div class="stats-bar">
+            <div class="stats-bar-item">
+              <span class="stats-bar-label">Commission</span>
+              <div>
+                <span class="stats-bar-value">21.00</span>
+                <span class="stats-bar-currency">USD</span>
+              </div>
+            </div>
+            <div class="stats-bar-item">
+              <span class="stats-bar-label">Spread Rebate</span>
+              <div>
+                <span class="stats-bar-value">0.00</span>
+                <span class="stats-bar-currency">USD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Filters -->
+        <div class="table-filters">
+          <input type="text" class="search-bar" placeholder="Month To Date" />
+          <div class="table-filter-right">
+            <select class="filter-select processing">
+              <option selected>Processing time</option>
+              <option>Trade time</option>
+            </select>
+            <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
+            <button class="btn-download" title="Download">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-card">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>User ID</th>
+                  <th>Name</th>
+                  <th>Rebate Account</th>
+                  <th>Rebate</th>
+                  <th>Commission</th>
+                  <th>Spread Rebate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-row">
+            <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
+            <button class="page-btn">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">4</button>
+            <button class="page-btn">5</button>
+            <button class="page-btn ellipsis">…</button>
+            <button class="page-btn">10</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+
+      </div><!-- /panel-rebate -->
+
+      <!-- ── Disclaimer ─────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', e => {
+        e.preventDefault();
+        const target = tab.dataset.tab;
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + target).classList.add('active');
+      });
+    });
+
+    // Pagination buttons
+    document.querySelectorAll('.pagination-row').forEach(row => {
+      row.querySelectorAll('.page-btn:not(.ellipsis)').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.textContent === '‹' || btn.textContent === '›') return;
+          row.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

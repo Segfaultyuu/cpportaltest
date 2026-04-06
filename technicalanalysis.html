@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Technical Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Hero BG ─────────────────────────────────────────── */
+    .hero-bg {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      height: 220px;
+      background: linear-gradient(to bottom, #e8f1ff 0%, #f9f9f9 100%);
+      z-index: 0;
+    }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ─── Page Header ─────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      text-transform: capitalize;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    /* ─── Tabs ────────────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      padding-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s;
+    }
+    .tab:hover { color: var(--blue); }
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    /* ─── Main Card ───────────────────────────────────────── */
+    .main-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* ─── Card Header ─────────────────────────────────────── */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .card-desc {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .btn-primary {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* ─── Asset Grid ──────────────────────────────────────── */
+    .asset-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .asset-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    .asset-tile {
+      flex: 1;
+      background: var(--bg-2);
+      border-radius: 10px;
+      height: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .asset-tile:hover { background: #eff3fb; }
+
+    .asset-tile img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .asset-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; }
+      .page-title { font-size: 24px; }
+      .tabs { gap: 16px; overflow-x: auto; padding-bottom: 0; }
+      .tab { white-space: nowrap; }
+      .main-card { padding: 24px 16px; }
+      .card-header { flex-direction: column; align-items: flex-start; }
+      .asset-row { flex-wrap: wrap; }
+      .asset-tile { flex: 0 0 calc(50% - 12px); height: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <!-- ── Page Header ───────────────────────────────────── -->
+      <div class="page-header">
+        <h1 class="page-title">Tools</h1>
+        <span class="page-subtitle">Technical Insights</span>
+      </div>
+
+      <!-- ── Tabs ─────────────────────────────────────────── -->
+      <div class="tabs">
+        <div class="tab">About Trading Edge+</div>
+        <div class="tab active">Research Newsletter</div>
+        <div class="tab">Research on Telegram</div>
+        <div class="tab">Research Center</div>
+        <div class="tab">Research Tools</div>
+      </div>
+
+      <!-- ── Main Card ─────────────────────────────────────── -->
+      <div class="main-card">
+
+        <div class="card-header">
+          <p class="card-desc">By subscribing to our newsletters, you will receive daily emails powered by Autochartist and give you a snapshot of global markets.</p>
+          <button class="btn-primary">Join Now</button>
+        </div>
+
+        <div class="asset-grid">
+          <div class="asset-row">
+            <div class="asset-tile">
+              <img src="images/figma_21d00c42.png" alt="Forex" />
+              <span class="asset-label">Forex</span>
+            </div>
+            <div class="asset-tile">
+              <img src="images/figma_dcadc0f0.png" alt="Crypto" />
+              <span class="asset-label">Crypto</span>
+            </div>
+            <div class="asset-tile">
+              <img src="images/figma_24a9523a.png" alt="Commodities" />
+              <span class="asset-label">Commodities</span>
+            </div>
+          </div>
+          <div class="asset-row">
+            <div class="asset-tile">
+              <img src="images/figma_39e7ceef.png" alt="Indices" />
+              <span class="asset-label">Indices</span>
+            </div>
+            <div class="asset-tile">
+              <img src="images/figma_715eaa39.png" alt="Metals" />
+              <span class="asset-label">Metals</span>
+            </div>
+            <div class="asset-tile">
+              <img src="images/figma_376372b4.png" alt="US Stocks" />
+              <span class="asset-label">US Stocks</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /main-card -->
+
+      <!-- ── Disclaimer ────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Promotion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-12: rgba(10, 54, 199, 0.12);
+      --green: #00b565;
+      --green-12: rgba(0, 181, 101, 0.12);
+      --red: #ff2c40;
+      --red-12: rgba(255, 44, 64, 0.12);
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-grey: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+      --shadow-card-hover: 0 8px 24px 0 rgba(168, 195, 206, 0.40);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Page title ──────────────────────────────────────── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    /* ─── Filter tabs ─────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .filter-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    /* ─── Promo Grid ──────────────────────────────────────── */
+    .promo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* ─── Promo Card ──────────────────────────────────────── */
+    .promo-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .promo-card:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+    }
+    .promo-card.expired { opacity: 0.7; }
+
+    .promo-card-img {
+      width: 100%;
+      aspect-ratio: 464 / 163;
+      object-fit: cover;
+      display: block;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .promo-card-body {
+      padding: 20px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .promo-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .promo-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      padding: 0 8px;
+      border-radius: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .badge-new      { background: var(--blue-12);  color: var(--blue); }
+    .badge-ongoing  { background: var(--green-12); color: var(--green); }
+    .badge-popular  { background: var(--red-12);   color: var(--red); }
+    .badge-expired  { background: var(--bg-grey);  color: var(--text-secondary); }
+
+    .promo-card-date {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ─── Footer Disclaimer ───────────────────────────────── */
+    .promo-disclaimer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .promo-disclaimer a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+    .promo-disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .promo-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; }
+      .page-title { font-size: 24px; margin-bottom: 20px; }
+      .promo-grid { grid-template-columns: 1fr; gap: 16px; }
+      .filter-bar { gap: 6px; margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+
+    <!-- ── Content ─────────────────────────────────────────── -->
+    <div class="content">
+      <h1 class="page-title">Promotion</h1>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">New</button>
+        <button class="filter-btn">Ongoing</button>
+        <button class="filter-btn">Popular</button>
+        <button class="filter-btn">Expired</button>
+      </div>
+
+      <!-- Promo grid -->
+      <div class="promo-grid">
+
+        <!-- Card 1: New + Ongoing + Popular -->
+        <div class="promo-card">
+          <img class="promo-card-img"
+               src="images/figma_f3074dd5-8bec-44a1-9c3b-23abd0c4a96a.png"
+               alt="Power up with $5,000 Deposit Bonus" />
+          <div class="promo-card-body">
+            <div class="promo-card-title">Power up with $5,000 Deposit Bonus</div>
+            <div class="promo-badges">
+              <span class="badge badge-new">New</span>
+              <span class="badge badge-ongoing">Ongoing</span>
+              <span class="badge badge-popular">Popular</span>
+            </div>
+            <div class="promo-card-date">06/11/2023 – 03/05/2025</div>
+          </div>
+        </div>
+
+        <!-- Card 2: New + Ongoing -->
+        <div class="promo-card">
+          <img class="promo-card-img"
+               src="images/figma_f3074dd5-8bec-44a1-9c3b-23abd0c4a96a.png"
+               alt="Exclusive Cashback Rebate Program" />
+          <div class="promo-card-body">
+            <div class="promo-card-title">Exclusive Cashback Rebate Program</div>
+            <div class="promo-badges">
+              <span class="badge badge-new">New</span>
+              <span class="badge badge-ongoing">Ongoing</span>
+            </div>
+            <div class="promo-card-date">06/11/2023 – 03/05/2025</div>
+          </div>
+        </div>
+
+        <!-- Card 3: New + Ongoing -->
+        <div class="promo-card">
+          <img class="promo-card-img"
+               src="images/figma_f3074dd5-8bec-44a1-9c3b-23abd0c4a96a.png"
+               alt="Zero Commission Trading Promo" />
+          <div class="promo-card-body">
+            <div class="promo-card-title">Zero Commission Trading Promo</div>
+            <div class="promo-badges">
+              <span class="badge badge-new">New</span>
+              <span class="badge badge-ongoing">Ongoing</span>
+            </div>
+            <div class="promo-card-date">06/11/2023 – 03/05/2025</div>
+          </div>
+        </div>
+
+        <!-- Card 4: Ongoing + Popular -->
+        <div class="promo-card">
+          <img class="promo-card-img"
+               src="images/figma_f3074dd5-8bec-44a1-9c3b-23abd0c4a96a.png"
+               alt="Refer a Friend & Earn Bonus" />
+          <div class="promo-card-body">
+            <div class="promo-card-title">Refer a Friend &amp; Earn Bonus</div>
+            <div class="promo-badges">
+              <span class="badge badge-ongoing">Ongoing</span>
+              <span class="badge badge-popular">Popular</span>
+            </div>
+            <div class="promo-card-date">06/11/2023 – 03/05/2025</div>
+          </div>
+        </div>
+
+        <!-- Card 5: Ongoing + Popular -->
+        <div class="promo-card">
+          <img class="promo-card-img"
+               src="images/figma_f3074dd5-8bec-44a1-9c3b-23abd0c4a96a.png"
+               alt="VT Markets Loyalty Rewards" />
+          <div class="promo-card-body">
+            <div class="promo-card-title">VT Markets Loyalty Rewards</div>
+            <div class="promo-badges">
+              <span class="badge badge-ongoing">Ongoing</span>
+              <span class="badge badge-popular">Popular</span>
+            </div>
+            <div class="promo-card-date">06/11/2023 – 03/05/2025</div>
+          </div>
+        </div>
+
+        <!-- Card 6: Expired -->
+        <div class="promo-card expired">
+          <img class="promo-card-img"
+               src="images/figma_f3074dd5-8bec-44a1-9c3b-23abd0c4a96a.png"
+               alt="Welcome Bonus for New Traders" />
+          <div class="promo-card-body">
+            <div class="promo-card-title">Welcome Bonus for New Traders</div>
+            <div class="promo-badges">
+              <span class="badge badge-expired">Expired</span>
+            </div>
+            <div class="promo-card-date">06/11/2023 – 03/05/2025</div>
+          </div>
+        </div>
+
+      </div><!-- /promo-grid -->
+
+      <!-- Disclaimer -->
+      <div class="promo-disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital.
+          Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration
+          your level of experience, investment objectives and seek independent financial advice if necessary. Please read
+          our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Filter tab interaction
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

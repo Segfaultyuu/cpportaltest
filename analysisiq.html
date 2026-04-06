@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Acuity AnalysisIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --green: #1db954;
+      --red: #e85445;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+
+    /* ─── Signal Grid ─────────────────────────────────────── */
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* ─── Signal Card ─────────────────────────────────────── */
+    .signal-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .signal-card-header {
+      padding: 12px 14px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .signal-asset {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .asset-flag {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .asset-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .signal-timeframe {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .signal-badge {
+      margin: 0 14px 10px;
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      align-self: flex-start;
+    }
+    .signal-badge.buy { background: var(--green); color: #fff; }
+    .signal-badge.sell { background: var(--red); color: #fff; }
+
+    .signal-body {
+      padding: 0 14px 10px;
+    }
+
+    .signal-data {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .signal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .signal-row-label {
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .signal-row-value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .signal-row-value.blue { color: var(--blue); }
+
+    .signal-confidence-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .signal-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 18px;
+    }
+
+    .chart-bar {
+      width: 6px;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .signal-footer {
+      padding: 6px 14px 12px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .btn-learn {
+      height: 28px;
+      padding: 0 20px;
+      border-radius: 4px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: opacity 0.15s;
+    }
+    .btn-learn:hover { opacity: 0.85; }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 24px 16px 40px; }
+      .page-title { font-size: 28px; }
+      .signal-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .signal-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+
+    <!-- ── Content ─────────────────────────────────────────── -->
+    <div class="content">
+      <h1 class="page-title">AnalysisIQ</h1>
+
+      <!-- Row 1 -->
+      <div class="signal-grid">
+
+        <!-- GBP/CHF -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag">🇬🇧</div>
+              <span class="asset-name">GBP/CHF</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge buy">Buy Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">1.06800</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">1.07460</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">1.06570</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:8px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:14px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:10px;background:var(--green)"></div>
+                    <div class="chart-bar" style="height:18px;background:var(--green)"></div>
+                    <div class="chart-bar" style="height:13px;background:var(--green)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">22h 33m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+        <!-- DE40 -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag">🇩🇪</div>
+              <span class="asset-name">DE40</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">25160.00</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">24760.00</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">25260.00</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:15px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:11px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:18px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:9px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:7px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">22h 33m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+        <!-- Copper -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag" style="background:#b87333;color:#fff;font-size:11px;font-weight:700">Cu</div>
+              <span class="asset-name">Copper</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">5.9100</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">5.6300</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">5.9800</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:12px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:18px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:14px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:9px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:6px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">22h 33m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+        <!-- Platinum -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag" style="background:#e5e4e2;color:#555;font-size:11px;font-weight:700">Pt</div>
+              <span class="asset-name">Platinum</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">2385.00</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">2165.00</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">2440.00</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:10px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:16px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:13px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:8px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:5px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">22h 33m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+      </div><!-- /row 1 -->
+
+      <!-- Row 2 -->
+      <div class="signal-grid" style="margin-top:16px;">
+
+        <!-- USD/CHF -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag">🇺🇸</div>
+              <span class="asset-name">USD/CHF</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">0.80250</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">0.79650</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">0.80480</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:13px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:18px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:11px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:7px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:5px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">20h 15m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+        <!-- EUR/USD -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag">🇪🇺</div>
+              <span class="asset-name">EUR/USD</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">1.16500</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">1.15900</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">1.16750</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:14px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:12px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:18px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:10px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:6px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">18h 42m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+        <!-- GBP/USD -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag">🇬🇧</div>
+              <span class="asset-name">GBP/USD</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">1.34180</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">1.33110</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">1.34560</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:9px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:15px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:18px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:12px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:8px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">16h 08m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+        <!-- GBP/JPY -->
+        <div class="signal-card">
+          <div class="signal-card-header">
+            <div class="signal-asset">
+              <div class="asset-flag">🇬🇧</div>
+              <span class="asset-name">GBP/JPY</span>
+            </div>
+            <span class="signal-timeframe">Intraday</span>
+          </div>
+          <span class="signal-badge sell">Sell Limit</span>
+          <div class="signal-body">
+            <div class="signal-data">
+              <div class="signal-row"><span class="signal-row-label">Entry</span><span class="signal-row-value">211.950</span></div>
+              <div class="signal-row"><span class="signal-row-label">Target</span><span class="signal-row-value">210.750</span></div>
+              <div class="signal-row"><span class="signal-row-label">Stop</span><span class="signal-row-value">212.380</span></div>
+              <div class="signal-row">
+                <span class="signal-row-label">Confidence</span>
+                <div class="signal-confidence-wrap">
+                  <div class="signal-chart">
+                    <div class="chart-bar" style="height:12px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:8px;background:#e8e9ea"></div>
+                    <div class="chart-bar" style="height:18px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:11px;background:var(--red)"></div>
+                    <div class="chart-bar" style="height:7px;background:var(--red)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="signal-row"><span class="signal-row-label">Expires</span><span class="signal-row-value blue">14h 55m</span></div>
+            </div>
+          </div>
+          <div class="signal-footer"><button class="btn-learn">Learn More</button></div>
+        </div>
+
+      </div><!-- /row 2 -->
+
+      <!-- ── Disclaimer ────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

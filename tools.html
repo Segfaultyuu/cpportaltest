@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+
+    /* ─── Card ────────────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 40px;
+      margin-bottom: 24px;
+    }
+
+    /* ─── Newsletter Feature Card ─────────────────────────── */
+    .newsletter-card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 40px;
+    }
+
+    .newsletter-layout {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .newsletter-img-wrap {
+      flex: 1;
+      min-width: 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .newsletter-img-wrap img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      max-height: 551px;
+      object-fit: cover;
+    }
+
+    .newsletter-features {
+      width: 350px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feature-title {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── How to Access Card ──────────────────────────────── */
+    .access-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .access-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .btn-primary {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+
+    .steps-grid {
+      display: flex;
+      gap: 24px;
+    }
+
+    .step-tile {
+      flex: 1;
+      background: var(--bg-2);
+      border-radius: 10px;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      min-height: 230px;
+      text-align: center;
+    }
+
+    .step-icon {
+      width: 100px;
+      height: 100px;
+      overflow: hidden;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .step-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .step-label a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+    .step-label a:hover { opacity: 0.8; }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Tablet (iPad) ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; }
+      .page-title { font-size: 22px; margin-bottom: 20px; }
+      .card { padding: 24px 16px; }
+      .newsletter-layout { align-items: flex-start; }
+      .newsletter-img-wrap { width: 140px; flex: none; }
+      .newsletter-features { width: auto; flex: 1; }
+      .access-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .steps-grid { flex-direction: column; }
+    }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .newsletter-layout { flex-direction: column; }
+      .newsletter-img-wrap { width: 100%; }
+      .newsletter-features { width: 100%; flex: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+      <h1 class="page-title">Tools</h1>
+
+      <!-- Daily Newsletter Feature Card -->
+      <div class="card">
+        <div class="newsletter-card-title">Empower your trades by getting up-to-date market insights everyday.</div>
+        <div class="newsletter-layout">
+          <div class="newsletter-img-wrap">
+            <img src="images/figma_3430753f-395b-4647-903e-76b7029f2fc9.png"
+                 alt="Market insights screenshot" />
+          </div>
+          <div class="newsletter-features">
+            <div class="feature-item">
+              <div class="feature-title">Market Wrap</div>
+              <div class="feature-desc">Stay ahead of the market with news and analysis from top experts on trending assets like currencies, commodities, and stocks.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-title">What to Expect Today</div>
+              <div class="feature-desc">Get insights on the top economic events of the day.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-title">Market Sentiment + Analyst Views</div>
+              <div class="feature-desc">See what the crowd is thinking to spark new trade ideas. You'll receive clear directional analysis from Trading Central's global team, all supported by proven indicators.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-title">Economic Calendar</div>
+              <div class="feature-desc">Our calendar shows you the key economic news that could affect this instrument.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Access Card -->
+      <div class="card">
+        <div class="access-header">
+          <div class="access-title">How to access the Daily Newsletter.</div>
+          <button class="btn-primary">Deposit Now</button>
+        </div>
+        <div class="steps-grid">
+          <div class="step-tile">
+            <div class="step-icon">
+              <img src="images/figma_eed11970-d22f-4868-95f7-467bf93c692a.png"
+                   alt="Deposit" />
+            </div>
+            <div class="step-label">1. Ensure your account is funded with a minimum of $50</div>
+          </div>
+          <div class="step-tile">
+            <div class="step-icon">
+              <img src="images/figma_f576685a-9f04-4442-bb18-8a57d6925748.png"
+                   alt="Terms accepted" />
+            </div>
+            <div class="step-label">2. Agree to the <a href="#">terms and conditions.</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

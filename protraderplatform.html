@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – ProTrader Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      text-transform: capitalize;
+    }
+
+    /* ─── Hero Banner ─────────────────────────────────────── */
+    .hero-banner {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .hero-laptop {
+      width: 170px;
+      height: 170px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .hero-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .hero-powered {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .hero-powered img {
+      height: 14px;
+      width: auto;
+    }
+
+    .hero-powered-brand {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* ─── TradingView Section ─────────────────────────────── */
+    .tv-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .tv-header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tv-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tv-logo {
+      height: 16px;
+      width: auto;
+    }
+
+    .tv-brand {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    .tv-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ─── Feature Cards Row ───────────────────────────────── */
+    .feature-row {
+      display: flex;
+      gap: 24px;
+      height: 377px;
+    }
+
+    /* Stats card (left) */
+    .stats-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      width: 360px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      justify-content: center;
+    }
+
+    .stats-icon {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    .stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-number {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .stat-num {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .stat-plus {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1e1e1e;
+      line-height: 1;
+      padding-bottom: 1px;
+    }
+
+    .stat-label {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    /* Right stacked cards */
+    .right-cards {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .info-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .info-card-icon {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .info-card-label {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      margin-top: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; gap: 20px; }
+      .page-title { font-size: 24px; }
+      .hero-banner { flex-direction: column; align-items: flex-start; padding: 24px 16px; gap: 16px; }
+      .hero-laptop { width: 120px; height: 120px; }
+      .hero-title { font-size: 24px; }
+      .feature-row { flex-direction: column; height: auto; }
+      .stats-card { width: 100%; }
+      .info-card-label { font-size: 18px; white-space: normal; }
+      .stat-label { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <h1 class="page-title">Tools</h1>
+
+      <!-- ── Hero Banner ─────────────────────────────────────── -->
+      <div class="hero-banner">
+        <img class="hero-laptop" src="images/figma_07fa1560.png" alt="ProTrader Platform" />
+        <div class="hero-info">
+          <div class="hero-title">ProTrader Platform</div>
+          <div class="hero-powered">
+            <span>Powered by</span>
+            <img src="images/tradingview.png" alt="TradingView logo" />
+            <span class="hero-powered-brand">Trading View</span>
+          </div>
+        </div>
+        <button class="btn-primary">Login ProTrader Platform</button>
+      </div>
+
+      <!-- ── TradingView Section ───────────────────────────── -->
+      <div class="tv-section">
+        <div class="tv-header">
+          <div class="tv-title-row">
+            <img class="tv-logo" src="images/tradingview.png" alt="TradingView" />
+            <span class="tv-brand">Trading View</span>
+          </div>
+          <p class="tv-desc">Introducing CHARTS by TradingView. VT Markets clients can now find trading ideas, spot trends and place live trades all through our inbuilt TradingView platform, CHARTS.</p>
+        </div>
+
+        <div class="feature-row">
+
+          <!-- Stats Card -->
+          <div class="stats-card">
+            <img class="stats-icon" src="images/figma_2b26bf0f.png" alt="Chart" />
+            <div class="stats-list">
+              <div class="stat-item">
+                <div class="stat-number">
+                  <span class="stat-num">20</span>
+                  <span class="stat-plus">+</span>
+                </div>
+                <span class="stat-label">Chart Layouts</span>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">
+                  <span class="stat-num">50</span>
+                  <span class="stat-plus">+</span>
+                </div>
+                <span class="stat-label">Smart Drawing Tools</span>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">
+                  <span class="stat-num">100</span>
+                  <span class="stat-plus">+</span>
+                </div>
+                <span class="stat-label">Technical Indicators</span>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">
+                  <span class="stat-num">12</span>
+                  <span class="stat-plus">+</span>
+                </div>
+                <span class="stat-label">Customisable Chart Types</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right stacked cards -->
+          <div class="right-cards">
+            <div class="info-card">
+              <img class="info-card-icon" src="images/figma_c269f25f.png" alt="Calendar" />
+              <span class="info-card-label">Multiple time frames</span>
+            </div>
+            <div class="info-card">
+              <img class="info-card-icon" src="images/figma_eb2ad929.png" alt="Alert" />
+              <span class="info-card-label">Built-in market news coverage</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Disclaimer ────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – VT-Wallet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
+      --green: #00b565;
+      --red: #ff2c40;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-1: #ffffff;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      --shadow-card: 0 4px 12px 0 rgba(168,195,206,0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-2);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ──────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      padding: 40px 40px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ─── Page Header ─────────────────────────────────────── */
+    .wallet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .wallet-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wallet-coin-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .wallet-coin {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      margin-right: -8px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+    .wallet-coin:last-child { margin-right: 0; }
+
+    .wallet-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-left: 10px;
+    }
+
+    .wallet-history-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .wallet-history-link:hover { color: var(--blue); }
+    .wallet-history-link svg { width: 16px; height: 16px; }
+
+    /* ─── Balance Card ────────────────────────────────────── */
+    .wallet-balance-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 40px 24px;
+      margin-bottom: 24px;
+    }
+
+    .wallet-balance-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .wallet-balance-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .wallet-balance-block {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 0 0 auto;
+      min-width: 320px;
+    }
+
+    .wallet-balance-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .wallet-balance-label svg { width: 20px; height: 20px; opacity: 0.6; }
+
+    .wallet-balance-amount-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .wallet-coin-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+      align-self: center;
+    }
+
+    .wallet-balance-amount {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .wallet-balance-unit {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .wallet-balance-chevron {
+      width: 16px;
+      height: 16px;
+      margin-bottom: 8px;
+      opacity: 0.6;
+      cursor: pointer;
+    }
+
+    .wallet-balance-usd {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .wallet-divider-v {
+      width: 1px;
+      height: 100px;
+      background: var(--border);
+      margin: 0 48px;
+      align-self: center;
+    }
+
+    /* ─── Action Buttons ──────────────────────────────────── */
+    .wallet-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .wallet-btn {
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Roboto', sans-serif;
+      transition: opacity 0.15s;
+    }
+    .wallet-btn:hover { opacity: 0.85; }
+
+    .wallet-btn-primary {
+      background: linear-gradient(225deg, #0a36c7 3.8%, #1e68f6 100%);
+      color: #fff;
+      min-width: 92px;
+    }
+
+    .wallet-btn-secondary {
+      background: var(--blue-light);
+      color: var(--blue);
+      min-width: 92px;
+    }
+
+    /* ─── Asset List ──────────────────────────────────────── */
+    .wallet-asset-section {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .wallet-asset-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 24px 24px 0;
+    }
+
+    .wallet-asset-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px 20px;
+    }
+
+    .asset-pill-tabs {
+      display: flex;
+      gap: 6px;
+      background: #f4f5f6;
+      border-radius: 20px;
+      padding: 4px;
+    }
+
+    .asset-pill-tab {
+      height: 30px;
+      padding: 0 16px;
+      border-radius: 16px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif;
+      cursor: pointer;
+      color: var(--text-secondary);
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .asset-pill-tab.active {
+      background: #fff;
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .asset-sub-table { display: none; }
+    .asset-sub-table.active { display: block; }
+
+    .btn-details {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--blue);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      padding: 0;
+      text-decoration: none;
+    }
+    .btn-details:hover { text-decoration: underline; }
+
+    /* Table */
+    .wallet-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .wallet-table thead tr {
+      background: #f4f5f6;
+    }
+
+    .wallet-table th {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 14px 24px;
+      white-space: nowrap;
+    }
+
+    .wallet-table td {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      padding: 0 24px;
+      height: 82px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wallet-table tbody tr:last-child td { border-bottom: none; }
+    .wallet-table tbody tr:hover { background: #fafbfc; }
+
+    .coin-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .coin-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .coin-info-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .coin-info-full {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.2;
+    }
+
+    .table-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .table-action-link {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--blue);
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .table-action-link:hover { text-decoration: underline; }
+
+    /* ─── Page Tabs ──────────────────────────────────────── */
+    .wallet-tabs {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .wallet-tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding-bottom: 8px;
+      margin-bottom: -1px;
+      cursor: pointer;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: none;
+      font-family: 'Roboto', sans-serif;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .wallet-tab:hover { color: var(--blue); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .wallet-tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+      font-weight: 600;
+    }
+
+    /* ─── Footer ──────────────────────────────────────────── */
+    .wallet-footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 20px;
+    }
+
+    .wallet-footer a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; }
+
+      /* Header */
+      .wallet-header { margin-bottom: 16px; }
+      .wallet-title { font-size: 22px; }
+      .wallet-coin { width: 26px; height: 26px; font-size: 9px; }
+
+      /* Balance card */
+      .wallet-balance-card { padding: 20px 16px; border-radius: 12px; }
+      .wallet-balance-top { flex-direction: column; gap: 20px; }
+      .wallet-balance-block { min-width: 0; width: 100%; }
+      .wallet-divider-v { display: none; }
+      .wallet-balance-amount { font-size: 28px; }
+      .wallet-divider-h {
+        height: 1px;
+        background: var(--border);
+        width: 100%;
+      }
+
+      /* Actions */
+      .wallet-actions { gap: 8px; flex-wrap: nowrap; }
+      .wallet-btn { padding: 0 12px; font-size: 13px; min-width: 0; flex: 1; }
+
+      /* Asset section */
+      .wallet-asset-section { border-radius: 12px; overflow: hidden; }
+
+      /* Hide table, show cards */
+      .wallet-table { display: none; }
+      .wallet-asset-cards { display: flex; flex-direction: column; }
+
+      .wallet-asset-card {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .wallet-asset-card:last-child { border-bottom: none; }
+
+      .wac-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .wac-balances {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 16px;
+        margin-bottom: 14px;
+      }
+
+      .wac-bal-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 2px;
+      }
+
+      .wac-bal-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .wac-bal-usd {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .wac-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .wac-btn {
+        flex: 1;
+        height: 34px;
+        border-radius: 6px;
+        border: none;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: 'Roboto', sans-serif;
+        cursor: pointer;
+      }
+
+      .wac-btn-primary {
+        background: linear-gradient(225deg, #0a36c7 3.8%, #1e68f6 100%);
+        color: #fff;
+      }
+
+      .wac-btn-secondary {
+        background: var(--blue-light);
+        color: var(--blue);
+      }
+    }
+
+    /* Desktop: hide mobile cards */
+    @media (min-width: 769px) {
+      .wallet-asset-cards { display: none; }
+      .wallet-divider-h { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="sidebar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TOPBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="topbar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="content">
+
+    <!-- Page Header -->
+    <div class="wallet-header">
+      <div class="wallet-title-row">
+        <div class="wallet-coin-stack">
+          <img class="wallet-coin" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+          <img class="wallet-coin" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+          <img class="wallet-coin" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+        </div>
+        <span class="wallet-title">VT-Wallet</span>
+      </div>
+      <a class="wallet-history-link" href="#">
+        History
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Page Tabs -->
+    <div class="wallet-tabs">
+      <button class="wallet-tab active">Overview</button>
+      <button class="wallet-tab">Funding</button>
+      <button class="wallet-tab">Earn</button>
+    </div>
+
+    <!-- ── Overview Panel ── -->
+    <div class="tab-panel active" data-tab="overview">
+
+    <!-- Balance Card -->
+    <div class="wallet-balance-card">
+      <div class="wallet-balance-inner">
+        <div class="wallet-balance-top">
+
+          <!-- Total Balance -->
+          <div class="wallet-balance-block">
+            <div class="wallet-balance-label">
+              Total balance
+              <img src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;" />
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="wallet-balance-amount-row">
+                <img class="wallet-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+                <span class="wallet-balance-amount">0.52720634</span>
+                <span class="wallet-balance-unit">BTC</span>
+                <svg class="wallet-balance-chevron" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1l7 7 7-7" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="wallet-balance-usd">≈ 29,869.32 USD</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="wallet-actions">
+          <button class="wallet-btn wallet-btn-primary">Deposit</button>
+          <button class="wallet-btn wallet-btn-secondary">Withdraw</button>
+          <button class="wallet-btn wallet-btn-secondary">Transfer</button>
+          <button class="wallet-btn wallet-btn-secondary">Convert</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assets -->
+    <div class="wallet-asset-section">
+      <div class="wallet-asset-title">Assets</div>
+
+      <div class="wallet-asset-toolbar">
+        <div class="asset-pill-tabs">
+          <button class="asset-pill-tab active" data-asset-tab="by-coin">By Coin</button>
+          <button class="asset-pill-tab" data-asset-tab="by-account">By Account</button>
+        </div>
+      </div>
+
+      <!-- By Coin table -->
+      <div class="asset-sub-table active" data-asset-panel="by-coin">
+        <table class="wallet-table">
+          <thead>
+            <tr>
+              <th>Coin</th>
+              <th>Balance</th>
+              <th>Est APR</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+                  <div>
+                    <div class="coin-info-name">BTC</div>
+                    <div class="coin-info-full">Bitcoin</div>
+                  </div>
+                </div>
+              </td>
+              <td>0.25971818</td>
+              <td>15,075.58 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+                  <div>
+                    <div class="coin-info-name">ETH</div>
+                    <div class="coin-info-full">Ethereum</div>
+                  </div>
+                </div>
+              </td>
+              <td>4.07465132</td>
+              <td>10,000.25 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+                  <div>
+                    <div class="coin-info-name">USDT</div>
+                    <div class="coin-info-full">Tether US</div>
+                  </div>
+                </div>
+              </td>
+              <td>3,500.1400</td>
+              <td>3,500.00 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" />
+                  <div>
+                    <div class="coin-info-name">USDC</div>
+                    <div class="coin-info-full">US Coins</div>
+                  </div>
+                </div>
+              </td>
+              <td>1,999.8100</td>
+              <td>2,000.00 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- By Account table -->
+      <div class="asset-sub-table" data-asset-panel="by-account">
+        <table class="wallet-table">
+          <thead>
+            <tr>
+              <th>Coin</th>
+              <th>Balance</th>
+              <th>Est APR</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+                  <div>
+                    <div class="coin-info-name">BTC</div>
+                    <div class="coin-info-full">Bitcoin</div>
+                  </div>
+                </div>
+              </td>
+              <td>0.25971818</td>
+              <td>15,075.58 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+                  <div>
+                    <div class="coin-info-name">ETH</div>
+                    <div class="coin-info-full">Ethereum</div>
+                  </div>
+                </div>
+              </td>
+              <td>4.07465132</td>
+              <td>10,000.25 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+                  <div>
+                    <div class="coin-info-name">USDT</div>
+                    <div class="coin-info-full">Tether US</div>
+                  </div>
+                </div>
+              </td>
+              <td>3,500.1400</td>
+              <td>3,500.00 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="coin-cell">
+                  <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" />
+                  <div>
+                    <div class="coin-info-name">USDC</div>
+                    <div class="coin-info-full">US Coins</div>
+                  </div>
+                </div>
+              </td>
+              <td>1,999.8100</td>
+              <td>2,000.00 USD</td>
+              <td><button class="btn-details">Details</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /wallet-asset-section -->
+
+    <!-- Footer -->
+    <div class="wallet-footer">
+      <p>Simply log in the VT Markets App with your portal email address and password. <a href="#">Click here to find out more.</a></p>
+      <br />
+      <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+    </div>
+
+    </div><!-- /tab-panel overview -->
+
+    <!-- ── Funding Panel ── -->
+    <div class="tab-panel" data-tab="funding">
+
+    <!-- Balance Card (USDT default) -->
+    <div class="wallet-balance-card">
+      <div class="wallet-balance-inner">
+        <div class="wallet-balance-top">
+
+          <!-- Total Balance -->
+          <div class="wallet-balance-block">
+            <div class="wallet-balance-label">
+              Total balance
+              <img src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;" />
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="wallet-balance-amount-row">
+                <img class="wallet-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+                <span class="wallet-balance-amount">3,500.1400</span>
+                <span class="wallet-balance-unit">USDT</span>
+                <svg class="wallet-balance-chevron" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1l7 7 7-7" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="wallet-balance-usd">≈ 3,500.00 USD</div>
+            </div>
+          </div>
+
+          <div class="wallet-divider-v"></div>
+          <div class="wallet-divider-h"></div>
+
+          <!-- Available Balance -->
+          <div class="wallet-balance-block">
+            <div class="wallet-balance-label">Available balance</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="wallet-balance-amount-row">
+                <span class="wallet-balance-amount">0.2000</span>
+                <span class="wallet-balance-unit">USDT</span>
+              </div>
+              <div class="wallet-balance-usd">≈ 0.20 USD</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="wallet-actions">
+          <button class="wallet-btn wallet-btn-primary">Deposit</button>
+          <button class="wallet-btn wallet-btn-secondary">Withdraw</button>
+          <button class="wallet-btn wallet-btn-secondary">Transfer</button>
+          <button class="wallet-btn wallet-btn-secondary">Convert</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Asset List -->
+    <div class="wallet-asset-section">
+      <div class="wallet-asset-title">Asset List</div>
+
+      <!-- Desktop Table -->
+      <table class="wallet-table">
+        <thead>
+          <tr>
+            <th>Coin</th>
+            <th>Balance</th>
+            <th>Equivalent</th>
+            <th>Available Balance</th>
+            <th>Frozen Balance</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="coin-cell">
+                <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+                <div>
+                  <div class="coin-info-name">BTC</div>
+                  <div class="coin-info-full">Bitcoin</div>
+                </div>
+              </div>
+            </td>
+            <td>0.25971818</td>
+            <td>15,075.58 USD</td>
+            <td>0.20000000</td>
+            <td>0.05971818</td>
+            <td>
+              <div class="table-actions">
+                <a class="table-action-link" href="#">Deposit</a>
+                <a class="table-action-link" href="#">Withdraw</a>
+                <a class="table-action-link" href="#">Transfer</a>
+                <a class="table-action-link" href="#">Convert</a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="coin-cell">
+                <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+                <div>
+                  <div class="coin-info-name">ETH</div>
+                  <div class="coin-info-full">Ethereum</div>
+                </div>
+              </div>
+            </td>
+            <td>4.07465132</td>
+            <td>10,000.25 USD</td>
+            <td>0.20000000</td>
+            <td>0.05971818</td>
+            <td>
+              <div class="table-actions">
+                <a class="table-action-link" href="#">Deposit</a>
+                <a class="table-action-link" href="#">Withdraw</a>
+                <a class="table-action-link" href="#">Transfer</a>
+                <a class="table-action-link" href="#">Convert</a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="coin-cell">
+                <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+                <div>
+                  <div class="coin-info-name">USDT</div>
+                  <div class="coin-info-full">Tether US</div>
+                </div>
+              </div>
+            </td>
+            <td>3,500.1400</td>
+            <td>3,500.00 USD</td>
+            <td>0.2000</td>
+            <td>0.0597</td>
+            <td>
+              <div class="table-actions">
+                <a class="table-action-link" href="#">Deposit</a>
+                <a class="table-action-link" href="#">Withdraw</a>
+                <a class="table-action-link" href="#">Transfer</a>
+                <a class="table-action-link" href="#">Convert</a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="coin-cell">
+                <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" />
+                <div>
+                  <div class="coin-info-name">USDC</div>
+                  <div class="coin-info-full">US Coins</div>
+                </div>
+              </div>
+            </td>
+            <td>1,999.8100</td>
+            <td>2,000.00 USD</td>
+            <td>0.2000</td>
+            <td>0.0597</td>
+            <td>
+              <div class="table-actions">
+                <a class="table-action-link" href="#">Deposit</a>
+                <a class="table-action-link" href="#">Withdraw</a>
+                <a class="table-action-link" href="#">Transfer</a>
+                <a class="table-action-link" href="#">Convert</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Mobile Cards -->
+      <div class="wallet-asset-cards">
+        <div class="wallet-asset-card">
+          <div class="wac-top">
+            <div class="coin-cell">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+              <div><div class="coin-info-name">BTC</div><div class="coin-info-full">Bitcoin</div></div>
+            </div>
+          </div>
+          <div class="wac-balances">
+            <div><div class="wac-bal-label">Balance</div><div class="wac-bal-value">0.25971818</div></div>
+            <div><div class="wac-bal-label">Equivalent</div><div class="wac-bal-value">15,075.58</div><div class="wac-bal-usd">USD</div></div>
+            <div><div class="wac-bal-label">Available</div><div class="wac-bal-value">0.20000000</div></div>
+            <div><div class="wac-bal-label">Frozen</div><div class="wac-bal-value">0.05971818</div></div>
+          </div>
+          <div class="wac-actions">
+            <button class="wac-btn wac-btn-primary">Deposit</button>
+            <button class="wac-btn wac-btn-secondary">Withdraw</button>
+            <button class="wac-btn wac-btn-secondary">Transfer</button>
+            <button class="wac-btn wac-btn-secondary">Convert</button>
+          </div>
+        </div>
+        <div class="wallet-asset-card">
+          <div class="wac-top">
+            <div class="coin-cell">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+              <div><div class="coin-info-name">ETH</div><div class="coin-info-full">Ethereum</div></div>
+            </div>
+          </div>
+          <div class="wac-balances">
+            <div><div class="wac-bal-label">Balance</div><div class="wac-bal-value">4.07465132</div></div>
+            <div><div class="wac-bal-label">Equivalent</div><div class="wac-bal-value">10,000.25</div><div class="wac-bal-usd">USD</div></div>
+            <div><div class="wac-bal-label">Available</div><div class="wac-bal-value">0.20000000</div></div>
+            <div><div class="wac-bal-label">Frozen</div><div class="wac-bal-value">0.05971818</div></div>
+          </div>
+          <div class="wac-actions">
+            <button class="wac-btn wac-btn-primary">Deposit</button>
+            <button class="wac-btn wac-btn-secondary">Withdraw</button>
+            <button class="wac-btn wac-btn-secondary">Transfer</button>
+            <button class="wac-btn wac-btn-secondary">Convert</button>
+          </div>
+        </div>
+        <div class="wallet-asset-card">
+          <div class="wac-top">
+            <div class="coin-cell">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+              <div><div class="coin-info-name">USDT</div><div class="coin-info-full">Tether US</div></div>
+            </div>
+          </div>
+          <div class="wac-balances">
+            <div><div class="wac-bal-label">Balance</div><div class="wac-bal-value">3,500.1400</div></div>
+            <div><div class="wac-bal-label">Equivalent</div><div class="wac-bal-value">3,500.00</div><div class="wac-bal-usd">USD</div></div>
+            <div><div class="wac-bal-label">Available</div><div class="wac-bal-value">0.2000</div></div>
+            <div><div class="wac-bal-label">Frozen</div><div class="wac-bal-value">0.0597</div></div>
+          </div>
+          <div class="wac-actions">
+            <button class="wac-btn wac-btn-primary">Deposit</button>
+            <button class="wac-btn wac-btn-secondary">Withdraw</button>
+            <button class="wac-btn wac-btn-secondary">Transfer</button>
+            <button class="wac-btn wac-btn-secondary">Convert</button>
+          </div>
+        </div>
+        <div class="wallet-asset-card">
+          <div class="wac-top">
+            <div class="coin-cell">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" />
+              <div><div class="coin-info-name">USDC</div><div class="coin-info-full">US Coins</div></div>
+            </div>
+          </div>
+          <div class="wac-balances">
+            <div><div class="wac-bal-label">Balance</div><div class="wac-bal-value">1,999.8100</div></div>
+            <div><div class="wac-bal-label">Equivalent</div><div class="wac-bal-value">2,000.00</div><div class="wac-bal-usd">USD</div></div>
+            <div><div class="wac-bal-label">Available</div><div class="wac-bal-value">0.2000</div></div>
+            <div><div class="wac-bal-label">Frozen</div><div class="wac-bal-value">0.0597</div></div>
+          </div>
+          <div class="wac-actions">
+            <button class="wac-btn wac-btn-primary">Deposit</button>
+            <button class="wac-btn wac-btn-secondary">Withdraw</button>
+            <button class="wac-btn wac-btn-secondary">Transfer</button>
+            <button class="wac-btn wac-btn-secondary">Convert</button>
+          </div>
+        </div>
+      </div><!-- /wallet-asset-cards -->
+    </div><!-- /wallet-asset-section -->
+
+    <!-- Footer -->
+    <div class="wallet-footer">
+      <p>Simply log in the VT Markets App with your portal email address and password. <a href="#">Click here to find out more.</a></p>
+      <br />
+      <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+    </div>
+
+    </div><!-- /tab-panel funding -->
+
+  </div>
+</main>
+
+<script src="sidebar.js?v=3"></script>
+<script src="topbar.js"></script>
+<script>
+  document.querySelectorAll('.wallet-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const label = tab.textContent.trim().toLowerCase();
+      document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel = document.querySelector(`.tab-panel[data-tab="${label}"]`);
+      if (panel) panel.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

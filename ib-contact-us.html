@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Contact Us</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── Layout ── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Subtitle ── */
+    .page-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      width: 100%;
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      width: 100%;
+    }
+
+    /* ── Contact row ── */
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .contact-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contact-label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 24px;
+    }
+    .contact-label a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .contact-label a:hover {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    /* ── Disclaimer ── */
+    .disclaimer {
+      margin-top: 36px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.7;
+      max-width: 900px;
+    }
+    .disclaimer a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-top: 56px; }
+      .content { padding: 20px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main" id="main-content">
+    <div class="content">
+
+    <h1 class="page-title">Contact Us</h1>
+
+    <p class="page-subtitle">
+      If you have questions or would like more information, please get in touch with us through one of the contact
+      details below. We will endeavour to respond to all queries within 24 hours.
+    </p>
+
+    <!-- Contact card -->
+    <div class="contact-card">
+
+      <!-- Email -->
+      <div class="contact-row">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="3.78" width="16" height="12.44" rx="1.778" stroke="#282D34" stroke-width="1.4"/>
+            <path d="M5.11 6.89L10 10.67L14.89 6.89" stroke="#282D34" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="contact-label">
+          <a href="mailto:support@vtmarkets.com">support@vtmarkets.com</a>
+        </span>
+      </div>
+
+      <!-- Live Chat -->
+      <div class="contact-row">
+        <div class="contact-icon">
+          <!-- Outlined live chat / speech bubble icon -->
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 2H15Q18 2 18 5V12Q18 15 15 15H8L5 18.5V15Q2 15 2 12V5Q2 2 5 2Z" stroke="#282D34" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7" cy="8.5" r="1" fill="#282D34"/>
+            <circle cx="10" cy="8.5" r="1" fill="#282D34"/>
+            <circle cx="13" cy="8.5" r="1" fill="#282D34"/>
+          </svg>
+        </div>
+        <span class="contact-label">Live Chat</span>
+      </div>
+
+    </div>
+
+    <!-- Disclaimer -->
+    <p class="disclaimer">
+      Simply log in the VT Markets App with your portal email address and password.
+      <a href="#">Click here to find out more.</a><br><br>
+      Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital.
+      Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration
+      your level of experience, investment objectives and seek independent financial advice if necessary.
+      Please read our legal documents on our website and ensure that you fully understand the risks before you make any
+      trading decisions.
+    </p>
+
+    </div>
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Earn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
+      --green: #00b565;
+      --orange: #f06030;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --shadow-card: 0 4px 12px 0 rgba(168,195,206,0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ───────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      padding: 40px 40px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ─── Hero Row ─────────────────────────────────────────── */
+    .earn-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+      align-items: stretch;
+    }
+
+    .earn-hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .earn-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .earn-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Promo Banner Card */
+    .earn-promo-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 110px;
+    }
+
+    .earn-promo-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .earn-promo-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .earn-promo-illo {
+      flex-shrink: 0;
+      width: 88px;
+      height: 88px;
+    }
+
+    /* ─── Stats Card ───────────────────────────────────────── */
+    .earn-stats-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+
+    .earn-stats-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .earn-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 40px;
+    }
+
+    .earn-stat-sep {
+      width: 1px;
+      height: 52px;
+      background: var(--border);
+      flex-shrink: 0;
+      margin-right: 40px;
+    }
+
+    .earn-stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .earn-stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.2;
+    }
+
+    .earn-stat-value.green { color: var(--green); }
+
+    .earn-stat-unit {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .earn-stat-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .earn-holdings-link {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .earn-holdings-link:hover { color: var(--blue); }
+
+
+    /* ─── Section Card ─────────────────────────────────────── */
+    .earn-section-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .earn-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 24px 24px 20px;
+    }
+
+    /* ─── Flexible Savings Table ────────────────────────────── */
+    .earn-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .earn-table thead tr { background: #f4f5f6; }
+
+    .earn-table th {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 12px 24px;
+      white-space: nowrap;
+    }
+
+    .earn-table th.sort-col {
+      cursor: pointer;
+      user-select: none;
+    }
+    .sort-th-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .caret-wrap {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      vertical-align: middle;
+    }
+    .caret-wrap svg {
+      display: block;
+      width: 10px;
+      height: 6px;
+      color: var(--text-tertiary);
+      transition: color 0.15s;
+    }
+    .caret-wrap .caret-up   { margin-bottom: 0; }
+    .caret-wrap .caret-down { margin-top: 0; }
+    /* active states */
+    th[data-sort="asc"]  .caret-up   { color: var(--blue); }
+    th[data-sort="desc"] .caret-down { color: var(--blue); }
+
+    .earn-table td {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      padding: 0 24px;
+      height: 80px;
+      border-bottom: 1px solid var(--border);
+    }
+    .earn-table tbody tr:last-child td { border-bottom: none; }
+    .earn-table tbody tr:hover { background: #fafbfc; }
+
+    .earn-coin-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .earn-coin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .earn-coin-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      padding: 0 7px;
+      border-radius: 4px;
+      background: #fff6ed;
+      border: 1px solid #f9c98e;
+      font-size: 10px;
+      font-weight: 600;
+      color: #d07520;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .earn-duration {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .earn-apr {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .btn-subscribe {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-74deg, #0a36c7 4%, #1e68f6 105%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Roboto', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .btn-subscribe:hover { opacity: 0.85; }
+
+    /* ─── FAQ ─────────────────────────────────────────────── */
+    .earn-faq-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .earn-faq-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      cursor: pointer;
+      gap: 12px;
+      user-select: none;
+    }
+    .faq-question:hover { background: #fafbfc; }
+
+    .faq-q-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .faq-chevron {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--text-secondary);
+      transition: transform 0.22s ease;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 800px; }
+
+    .faq-answer-inner {
+      padding: 4px 24px 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ─── Responsive ──────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .earn-hero { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; }
+      .earn-stats-row { flex-wrap: wrap; gap: 20px; }
+      .earn-stat-sep { display: none; }
+      .earn-stat-item { padding-right: 0; }
+      .earn-holdings-link { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="sidebar-root"></div>
+<div id="topbar-root"></div>
+
+<main class="main">
+  <div class="content">
+
+    <!-- ── Hero Row ─────────────────────────────────────────── -->
+    <div class="earn-hero">
+
+      <!-- Left: title + description -->
+      <div class="earn-hero-left">
+        <div class="earn-title">Earn</div>
+        <div class="earn-subtitle">Flexible Savings is a principal protected product. Enjoy greater flexibility and higher returns.</div>
+      </div>
+
+      <!-- Right: Promo banner card -->
+      <div class="earn-promo-card">
+        <div>
+          <div class="earn-promo-name">VT-Wallet Flexible Savings</div>
+          <div class="earn-promo-desc">Flexible access, effortless return!</div>
+        </div>
+        <img class="earn-promo-illo" src="images/earn.png" alt="Earn" />
+      </div>
+    </div>
+
+    <!-- ── Stats Card ────────────────────────────────────────── -->
+    <div class="earn-stats-card">
+      <div class="earn-stats-row">
+
+        <!-- Total Value -->
+        <div class="earn-stat-item">
+          <div class="earn-stat-label">Total Value</div>
+          <div class="earn-stat-value">
+            <img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png"
+                 alt="USDT" style="width:22px;height:22px;border-radius:50%;flex-shrink:0;" />
+            0.00
+            <span class="earn-stat-unit">USDT</span>
+          </div>
+          <div class="earn-stat-sub">≈ 0.00 USD</div>
+        </div>
+
+        <div class="earn-stat-sep"></div>
+
+        <!-- Yesterday's Yield -->
+        <div class="earn-stat-item">
+          <div class="earn-stat-label">Yesterday's Yield</div>
+          <div class="earn-stat-value green">
+            0.00
+            <span class="earn-stat-unit" style="color:var(--green);">USD</span>
+          </div>
+        </div>
+
+        <div class="earn-stat-sep"></div>
+
+        <!-- Total Yield -->
+        <div class="earn-stat-item">
+          <div class="earn-stat-label">Total Yield</div>
+          <div class="earn-stat-value green">
+            0.00
+            <span class="earn-stat-unit" style="color:var(--green);">USD</span>
+          </div>
+        </div>
+
+        <!-- My Holdings -->
+        <a class="earn-holdings-link" href="#">
+          My Holdings
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 4l4 4-4 4"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- ── Flexible Savings Table ─────────────────────────────── -->
+    <div class="earn-section-card">
+      <div class="earn-section-title">Flexible Savings</div>
+      <table class="earn-table">
+        <thead>
+          <tr>
+            <th>Coin</th>
+            <th>Duration</th>
+            <th class="sort-col" id="apr-sort-th">
+              <span class="sort-th-inner">
+                Est. APR
+                <span class="caret-wrap">
+                  <svg class="caret-up" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 5l4-4 4 4"/>
+                  </svg>
+                  <svg class="caret-down" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 1l4 4 4-4"/>
+                  </svg>
+                </span>
+              </span>
+            </th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- USDT -->
+          <tr>
+            <td>
+              <div class="earn-coin-cell">
+                <img class="earn-coin-avatar" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+                <span class="earn-coin-name">USDT</span>
+                <span class="platform-badge">Platform Rewards</span>
+              </div>
+            </td>
+            <td><span class="earn-duration">Flexible</span></td>
+            <td><span class="earn-apr">0.60% – 5.60%</span></td>
+            <td><button class="btn-subscribe">Subscribe</button></td>
+          </tr>
+          <!-- USDC -->
+          <tr>
+            <td>
+              <div class="earn-coin-cell">
+                <img class="earn-coin-avatar" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" />
+                <span class="earn-coin-name">USDC</span>
+              </div>
+            </td>
+            <td><span class="earn-duration">Flexible</span></td>
+            <td><span class="earn-apr">0.80%</span></td>
+            <td><button class="btn-subscribe">Subscribe</button></td>
+          </tr>
+          <!-- ETH -->
+          <tr>
+            <td>
+              <div class="earn-coin-cell">
+                <img class="earn-coin-avatar" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+                <span class="earn-coin-name">ETH</span>
+              </div>
+            </td>
+            <td><span class="earn-duration">Flexible</span></td>
+            <td><span class="earn-apr">0.80%</span></td>
+            <td><button class="btn-subscribe">Subscribe</button></td>
+          </tr>
+          <!-- BTC -->
+          <tr>
+            <td>
+              <div class="earn-coin-cell">
+                <img class="earn-coin-avatar" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+                <span class="earn-coin-name">BTC</span>
+              </div>
+            </td>
+            <td><span class="earn-duration">Flexible</span></td>
+            <td><span class="earn-apr">0.30%</span></td>
+            <td><button class="btn-subscribe">Subscribe</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── FAQ ──────────────────────────────────────────────── -->
+    <div class="earn-faq-card">
+      <div class="earn-faq-title">FAQ</div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">1. What is Flexible Savings?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Flexible Savings supports crypto such as USDT, USDC, and BTC, providing stable annualized returns in line with market conditions. Users can apply for subscribe immediately and redeem at any time.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">2. How are my yields generated?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p style="margin-bottom:12px;"><strong>For Flexible Term Products:</strong></p>
+            <p style="margin-bottom:10px;">Your daily yield depends on the type and quantity of assets invested. It is automatically calculated and updated every hour based on the token type and market conditions. The APR may change accordingly.</p>
+            <p style="margin-bottom:10px;">Yield starts accumulating at the beginning of the next hour and is credited to your Funding Account daily at 1:00AM UTC. No yield is earned for the hour in which you redeem your assets.</p>
+            <p style="margin-bottom:8px;"><strong>Example:</strong></p>
+            <p style="margin-bottom:10px;">Jackson invests 2,000 USDT on Jun 1, 2025, at 7:30AM UTC. Yield starts accumulating from 8AM UTC. The total yield is credited to her Funding Account daily at 1:00AM UTC.</p>
+            <p style="margin-bottom:6px;">If Jackson redeems 100 USDT at 11:30PM UTC, he will receive:</p>
+            <ul style="margin:0 0 10px 18px;display:flex;flex-direction:column;gap:4px;">
+              <li>Yield up to 11:30PM and the principal of 100 USDT.</li>
+              <li>Additional yield from the remaining 1,900 USDT during the final hour.</li>
+            </ul>
+            <p>If Jackson invests an additional 10,000 USDT on Jun 2, 2025, at 7:30AM UTC, the yield for the new investment starts from 8AM UTC and is credited to his Funding Account at 1:00AM UTC on Jun 3, 2025.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">3. When can I redeem tokens I've invested in?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p style="margin-bottom:10px;"><strong>For Flexible Term Products:</strong> You can redeem your invested assets at any time, and they will be immediately credited to your Funding Account. To redeem, go to your Earn Account.</p>
+            <p>Please note that if the asset pool is fully utilized, the redeemable amount may be slightly lower than your invested amount.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">4. What is the effective investing amount?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>The Effective Investing Amount refers to the assets currently contributing to yield calculation. Newly invested assets become effective starting the next hour. For example, if you invest 66,000 USDT at 10AM UTC on Jun 1, 2025, your Effective Investing Amount will be updated at 11AM UTC to ensure accurate yield calculations.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">5. What is the Tier APRs?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p style="margin-bottom:10px;">Savings APR tiers offer different interest rates based on the amount you stake under the Flexible Term. Rates vary by tier and may change with market conditions. To view detailed APRs, hover over the tier box on desktop or tap the info icon in the App.</p>
+            <p>For Flexible Savings, yields may include platform rewards plus a basic APR. The basic APR is floating and calculated hourly.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">6. Are there any investment amount limits?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes. The minimum and maximum investment amounts vary by asset. You can view the specific limits when placing an order. Please note that your investment amount cannot exceed the maximum limit or the remaining pool size, whichever is lower.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">7. Am I guaranteed to receive my yield even if the market price of the crypto asset drops?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p style="margin-bottom:10px;">For Flexible Term products, your yield is determined by the APR, which may fluctuate based on market conditions. The displayed APR is for reference only and is not guaranteed.</p>
+            <p>The product is principal-protected in token amount, meaning you'll receive at least the same number of tokens you invested. However, the actual fiat value of those tokens may fluctuate depending on market prices.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">8. How is the yield distributed?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p style="margin-bottom:6px;"><strong>Flexible Term:</strong></p>
+            <p style="margin-bottom:10px;">Yes. The redeemed principal and any yield accrued up to the time of redemption will be distributed immediately.</p>
+            <p>Please note that if the remaining investment amount falls below the minimum limit after partial redemption, the remaining assets will no longer generate yield.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">9. Are there any other charges?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>No. At present, the platform waives subscription fees and redemption fees, and does not charge management fees either.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">10. During the holding period, will I be notified if the annualized yield rate of the current product is adjusted?</span>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>At present, users will not receive adjustment notifications. The annualized rate of return varies with market conditions.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /faq -->
+
+  </div><!-- /content -->
+</main>
+
+<script src="sidebar.js?v=3"></script>
+<script src="topbar.js"></script>
+<script>
+  /* FAQ accordion */
+  document.querySelectorAll('.faq-question').forEach(function(q) {
+    q.addEventListener('click', function() {
+      q.closest('.faq-item').classList.toggle('open');
+    });
+  });
+
+  /* APR sort */
+  (function() {
+    var th   = document.getElementById('apr-sort-th');
+    var tbody = th.closest('table').querySelector('tbody');
+    var dir  = 'none'; // 'none' | 'desc' | 'asc'
+
+    /* Parse the max APR value from a cell text like "0.60% – 5.60%" or "0.80%" */
+    function parseApr(td) {
+      var text = td.querySelector('.earn-apr').textContent;
+      var nums = text.match(/[\d.]+/g);
+      return nums ? parseFloat(nums[nums.length - 1]) : 0;
+    }
+
+    th.addEventListener('click', function() {
+      /* Cycle: none → desc → asc → desc … */
+      dir = (dir === 'desc') ? 'asc' : 'desc';
+      th.setAttribute('data-sort', dir);
+
+      var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+      rows.sort(function(a, b) {
+        var aVal = parseApr(a);
+        var bVal = parseApr(b);
+        return dir === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+      rows.forEach(function(row) { tbody.appendChild(row); });
+    });
+  })();
+</script>
+</body>
+</html>

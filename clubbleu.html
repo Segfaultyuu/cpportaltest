@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – ClubBleu Pass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-12: rgba(10, 54, 199, 0.12);
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+      --shadow-voucher: 0 0 20px 0 rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Member Card ─────────────────────────────────────── */
+    .member-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    /* ─── Display Card ────────────────────────────────────── */
+    .display-card {
+      width: 340px;
+      height: 210px;
+      border-radius: 12px;
+      position: relative;
+      overflow: visible;
+      flex-shrink: 0;
+      background: #1b1b24;
+    }
+
+    .display-card-bg-wrap {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .display-card-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+    }
+
+    .display-card-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, #afeef1 1.3%, #effafc 50.1%, #afeef1 99%);
+      mix-blend-mode: overlay;
+    }
+
+    .display-card-header {
+      position: absolute;
+      top: 20px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .display-card-logo {
+      height: 20px;
+      width: 110px;
+      object-fit: contain;
+      object-position: left center;
+    }
+
+    .display-card-tier {
+      font-size: 18px;
+      font-weight: 800;
+      color: #031f45;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .display-card-info {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .display-card-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .display-card-id {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* ─── Points Section ──────────────────────────────────── */
+    .points-section {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .points-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .available-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .redeem-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .redeem-link:hover { color: var(--blue); }
+    .redeem-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .points-value {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      line-height: 1;
+    }
+    .points-number {
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1;
+    }
+    .points-label {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1;
+    }
+
+    /* ─── Progress Bar ────────────────────────────────────── */
+    .progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 5px;
+      position: relative;
+      width: 100%;
+    }
+
+    .progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 4px;
+      width: 26%;
+      border-radius: 5px;
+      background: linear-gradient(to right, #00f0ff, #0a36c7);
+    }
+
+    .progress-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .progress-text {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-68deg, #0a36c7 4%, #1e68f6 105%, #4d8aff 105%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-secondary {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue-12);
+      color: var(--blue);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-secondary:hover { opacity: 0.85; }
+
+    /* ─── Tabs ────────────────────────────────────────────── */
+    .tabs-bar {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    .tab-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 28px;
+      padding-bottom: 0;
+      border-bottom: 2px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    .tab-item:hover { color: var(--blue); }
+    .tab-item.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    .tab-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: inherit;
+    }
+
+    /* ─── Dropdown ────────────────────────────────────────── */
+    .dropdown-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-btn {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 160px;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .dropdown-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ─── Voucher Grid ────────────────────────────────────── */
+    .voucher-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* ─── Voucher Card ────────────────────────────────────── */
+    .voucher-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-voucher);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: visible;
+    }
+
+    .voucher-body {
+      flex: 1;
+      padding: 70px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+      min-height: 240px;
+    }
+
+    .voucher-amount {
+      display: flex;
+      align-items: flex-start;
+      gap: 2px;
+      line-height: 1;
+    }
+
+    .voucher-currency {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-top: 8px;
+    }
+
+    .voucher-number {
+      font-size: 64px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .voucher-suffix {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-top: 8px;
+    }
+
+    .voucher-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .voucher-note {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .voucher-availability {
+      font-size: 12px;
+      font-weight: 500;
+      color: #ff2c40;
+    }
+
+    .voucher-footer {
+      background: var(--bg-field);
+      border-radius: 0 0 12px 12px;
+      padding: 15px 37px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .voucher-footer.active-footer {
+      background: var(--blue-light);
+    }
+
+    .btn-redeem-disabled {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: #eeeef0;
+      color: var(--text-tertiary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: not-allowed;
+      width: 100%;
+    }
+
+    .btn-redeem-active {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.15s;
+    }
+    .btn-redeem-active:hover { opacity: 0.9; }
+
+    /* ─── Voucher Badge ───────────────────────────────────── */
+    .voucher-badge {
+      position: absolute;
+      top: 20px;
+      right: -2px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      z-index: 3;
+    }
+
+    .voucher-badge-pill {
+      background: #e85445;
+      border-radius: 20px 0 0 20px;
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .voucher-badge-star {
+      width: 13px;
+      height: 13px;
+      object-fit: contain;
+    }
+
+    .voucher-badge-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .voucher-badge-corner {
+      width: 3px;
+      height: 3px;
+      object-fit: contain;
+    }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 1200px) {
+      .voucher-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .voucher-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; gap: 24px; }
+      .page-title { font-size: 24px; }
+      .member-card { flex-direction: column; }
+      .display-card { width: 100%; height: 180px; }
+      .voucher-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .progress-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <!-- Page Title -->
+      <h1 class="page-title">ClubBleu Pass</h1>
+
+      <!-- ── Member Card ──────────────────────────────────── -->
+      <div class="member-card">
+
+        <!-- Display Card -->
+        <div class="display-card">
+          <div class="display-card-bg-wrap">
+            <img class="display-card-bg"
+                 src="images/figma_2b696fd8-165a-43bb-a573-8d6673be93ab.svg"
+                 alt="" />
+            <div class="display-card-gradient"></div>
+          </div>
+          <div class="display-card-header">
+            <img class="display-card-logo"
+                 src="images/figma_6c4aa08b-487f-4e0a-89fd-6f5cd6f57836.svg"
+                 alt="VT Markets" />
+            <span class="display-card-tier">Member</span>
+          </div>
+          <div class="display-card-info">
+            <div class="display-card-name">TESTAPP TESTSHRMTYONONTHRE</div>
+            <div class="display-card-id">731394</div>
+          </div>
+        </div>
+
+        <!-- Points Section -->
+        <div class="points-section">
+          <div class="points-top-row">
+            <span class="available-label">AVAILABLE FOR REDEMPTION</span>
+            <a class="redeem-link" href="#">
+              Redeem Cash
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="points-value">
+            <span class="points-number">66</span>
+            <span class="points-label">Points</span>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="progress-bottom">
+              <span class="progress-text">Deposit $2,000.00 more to unlock Silver Tier for greater benefits</span>
+              <div class="btn-group">
+                <button class="btn-primary">View Details</button>
+                <button class="btn-secondary">Trade Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /member-card -->
+
+      <!-- ── Tabs ─────────────────────────────────────────── -->
+      <div class="tabs-bar">
+        <div class="tab-item active" data-tab="claim">
+          <!-- Star icon -->
+          <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 1.5L9.545 5.635L14 6.18L10.818 9.165L11.708 13.5L8 11.318L4.292 13.5L5.182 9.165L2 6.18L6.455 5.635L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="currentColor" fill-opacity="0.15"/>
+          </svg>
+          Claim Rewards
+        </div>
+        <div class="tab-item" data-tab="vouchers">
+          <!-- Voucher/coupon icon -->
+          <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 5.5C1.5 5.5 2.5 5.5 2.5 4.5C2.5 3.5 1.5 3.5 1.5 3.5V2.5C1.5 2 2 1.5 2.5 1.5H13.5C14 1.5 14.5 2 14.5 2.5V3.5C14.5 3.5 13.5 3.5 13.5 4.5C13.5 5.5 14.5 5.5 14.5 5.5V6.5C14.5 7 14 7.5 13.5 7.5H2.5C2 7.5 1.5 7 1.5 6.5V5.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M1.5 10.5C1.5 10.5 2.5 10.5 2.5 9.5C2.5 8.5 1.5 8.5 1.5 8.5V9.5C1.5 9.5 2.5 9.5 2.5 10.5Z" fill="currentColor"/>
+            <path d="M2.5 8.5C2.5 8.5 1.5 8.5 1.5 9.5V10.5C1.5 11 2 11.5 2.5 11.5H13.5C14 11.5 14.5 11 14.5 10.5V9.5C14.5 9.5 13.5 9.5 13.5 8.5C13.5 7.5 14.5 7.5 14.5 7.5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M6 4L10.5 4M6 10L10.5 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <rect x="4.5" y="3" width="1" height="2" rx="0.5" fill="currentColor"/>
+            <rect x="4.5" y="9" width="1" height="2" rx="0.5" fill="currentColor"/>
+          </svg>
+          My Vouchers
+        </div>
+        <div class="tab-item" data-tab="activities">
+          <!-- Clock/history icon -->
+          <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M8 5.5V8.5L10 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          My Activities
+        </div>
+      </div>
+
+      <!-- ── All Rewards Dropdown ─────────────────────────── -->
+      <div class="dropdown-wrap">
+        <button class="dropdown-btn">
+          All Rewards
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ── Voucher Grid ──────────────────────────────────── -->
+      <div class="voucher-grid">
+
+        <!-- Card 1: USD 10 PROFIT BOOSTER - 3000 pts -->
+        <div class="voucher-card">
+          <div class="voucher-body">
+            <div class="voucher-amount">
+              <span class="voucher-currency">USD</span>
+              <span class="voucher-number">10</span>
+            </div>
+            <div class="voucher-title">PROFIT BOOSTER</div>
+            <div class="voucher-note">*For 1 closed trade only</div>
+            <div class="voucher-availability">Available 2/2</div>
+          </div>
+          <div class="voucher-footer">
+            <button class="btn-redeem-disabled" disabled>Redeem</button>
+          </div>
+          <div class="voucher-badge">
+            <div class="voucher-badge-pill">
+              <img class="voucher-badge-star" src="images/figma_e4ff38d3-f8fb-40c7-86d8-22a6d5221da8.svg" alt="★" />
+              <span class="voucher-badge-text">3000 points</span>
+            </div>
+            <img class="voucher-badge-corner" src="images/figma_89420126-74e4-40a9-a5b9-0b148cf70fb9.svg" alt="" />
+          </div>
+        </div>
+
+        <!-- Card 2: USD 30 LOSS RESCUE - 6000 pts -->
+        <div class="voucher-card">
+          <div class="voucher-body">
+            <div class="voucher-amount">
+              <span class="voucher-currency">USD</span>
+              <span class="voucher-number">30</span>
+            </div>
+            <div class="voucher-title">LOSS RESCUE</div>
+            <div class="voucher-note">*For 1 closed trade only</div>
+            <div class="voucher-availability">Available 2/2</div>
+          </div>
+          <div class="voucher-footer">
+            <button class="btn-redeem-disabled" disabled>Redeem</button>
+          </div>
+          <div class="voucher-badge">
+            <div class="voucher-badge-pill">
+              <img class="voucher-badge-star" src="images/figma_e4ff38d3-f8fb-40c7-86d8-22a6d5221da8.svg" alt="★" />
+              <span class="voucher-badge-text">6000 points</span>
+            </div>
+            <img class="voucher-badge-corner" src="images/figma_89420126-74e4-40a9-a5b9-0b148cf70fb9.svg" alt="" />
+          </div>
+        </div>
+
+        <!-- Card 3: $50 OFF DEPOSIT DISCOUNT - 4500 pts -->
+        <div class="voucher-card">
+          <div class="voucher-body">
+            <div class="voucher-amount">
+              <span class="voucher-currency">$</span>
+              <span class="voucher-number">50</span>
+              <span class="voucher-suffix">OFF</span>
+            </div>
+            <div class="voucher-title">DEPOSIT DISCOUNT</div>
+            <div class="voucher-note">*Min deposit of 500 account base currncy</div>
+            <div class="voucher-availability">Available 2/2</div>
+          </div>
+          <div class="voucher-footer">
+            <button class="btn-redeem-disabled" disabled>Redeem</button>
+          </div>
+          <div class="voucher-badge">
+            <div class="voucher-badge-pill">
+              <img class="voucher-badge-star" src="images/figma_e4ff38d3-f8fb-40c7-86d8-22a6d5221da8.svg" alt="★" />
+              <span class="voucher-badge-text">4500 points</span>
+            </div>
+            <img class="voucher-badge-corner" src="images/figma_89420126-74e4-40a9-a5b9-0b148cf70fb9.svg" alt="" />
+          </div>
+        </div>
+
+        <!-- Card 4: USD 10 LOSS RESCUE - 30000 pts -->
+        <div class="voucher-card">
+          <div class="voucher-body">
+            <div class="voucher-amount">
+              <span class="voucher-currency">USD</span>
+              <span class="voucher-number">10</span>
+            </div>
+            <div class="voucher-title">LOSS RESCUE</div>
+            <div class="voucher-note">*For 1 closed trade only</div>
+            <div class="voucher-availability">Available 2/2</div>
+          </div>
+          <div class="voucher-footer">
+            <button class="btn-redeem-disabled" disabled>Redeem</button>
+          </div>
+          <div class="voucher-badge">
+            <div class="voucher-badge-pill">
+              <img class="voucher-badge-star" src="images/figma_e4ff38d3-f8fb-40c7-86d8-22a6d5221da8.svg" alt="★" />
+              <span class="voucher-badge-text">30000 points</span>
+            </div>
+            <img class="voucher-badge-corner" src="images/figma_89420126-74e4-40a9-a5b9-0b148cf70fb9.svg" alt="" />
+          </div>
+        </div>
+
+        <!-- Card 5: $30 OFF DEPOSIT DISCOUNT - 3000 pts -->
+        <div class="voucher-card">
+          <div class="voucher-body">
+            <div class="voucher-amount">
+              <span class="voucher-currency">$</span>
+              <span class="voucher-number">30</span>
+              <span class="voucher-suffix">OFF</span>
+            </div>
+            <div class="voucher-title">DEPOSIT DISCOUNT</div>
+            <div class="voucher-note">*Min deposit of 500 account base currncy</div>
+            <div class="voucher-availability">Available 2/2</div>
+          </div>
+          <div class="voucher-footer">
+            <button class="btn-redeem-disabled" disabled>Redeem</button>
+          </div>
+          <div class="voucher-badge">
+            <div class="voucher-badge-pill">
+              <img class="voucher-badge-star" src="images/figma_e4ff38d3-f8fb-40c7-86d8-22a6d5221da8.svg" alt="★" />
+              <span class="voucher-badge-text">3000 points</span>
+            </div>
+            <img class="voucher-badge-corner" src="images/figma_89420126-74e4-40a9-a5b9-0b148cf70fb9.svg" alt="" />
+          </div>
+        </div>
+
+        <!-- Card 6: USD 30 LOSS RESCUE - 6000 pts (active) -->
+        <div class="voucher-card">
+          <div class="voucher-body">
+            <div class="voucher-amount">
+              <span class="voucher-currency">USD</span>
+              <span class="voucher-number">30</span>
+            </div>
+            <div class="voucher-title">LOSS RESCUE</div>
+            <div class="voucher-note">*For 1 closed trade only</div>
+            <div class="voucher-availability">Available 2/2</div>
+          </div>
+          <div class="voucher-footer active-footer">
+            <button class="btn-redeem-active">Redeem</button>
+          </div>
+          <div class="voucher-badge">
+            <div class="voucher-badge-pill">
+              <img class="voucher-badge-star" src="images/figma_e4ff38d3-f8fb-40c7-86d8-22a6d5221da8.svg" alt="★" />
+              <span class="voucher-badge-text">6000 points</span>
+            </div>
+            <img class="voucher-badge-corner" src="images/figma_89420126-74e4-40a9-a5b9-0b148cf70fb9.svg" alt="" />
+          </div>
+        </div>
+
+      </div><!-- /voucher-grid -->
+
+      <!-- ── Disclaimer ────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

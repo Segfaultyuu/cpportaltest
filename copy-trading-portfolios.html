@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – My Portfolios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
+      --green: #00b565;
+      --red: #ff2c40;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-1: #ffffff;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-2);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ── Page entrance animation (bottom-to-top) ──────────── */
+    @keyframes contentSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .content {
+      padding: 40px 40px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      animation: contentSlideUp 0.45s 0.08s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .page-actions { display: flex; gap: 12px; }
+
+    .btn-primary {
+      height: 44px;
+      padding: 0 24px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-54deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .tabs-wrapper {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    .tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding-bottom: 12px;
+      margin-bottom: -1px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      text-decoration: none;
+    }
+
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+      font-weight: 600;
+    }
+
+    .tab:hover { color: var(--blue); }
+
+    .portfolio-grid {
+      animation: contentSlideUp 0.5s 0.14s cubic-bezier(0.4, 0, 0.2, 1) both;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .portfolio-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(168, 195, 206, 0.25);
+    }
+
+    .portfolio-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .portfolio-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .portfolio-meta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .portfolio-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .portfolio-providers {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .portfolio-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .stat-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-value.positive { color: var(--green); }
+    .stat-value.negative { color: var(--red); }
+
+    .portfolio-footer {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      height: 36px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary:hover { background: var(--bg-1); }
+
+    .btn-action {
+      flex: 1;
+      height: 36px;
+      border-radius: 6px;
+      border: none;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-action:hover { background: rgba(10, 54, 199, 0.15); }
+
+    @media (max-width: 1200px) {
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .main { margin-left: 64px; }
+      .content { padding: 20px; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+      <div class="page-header">
+        <h1 class="page-title">My Portfolios</h1>
+        <div class="page-actions">
+          <button class="btn-primary">+ Create Portfolio</button>
+        </div>
+      </div>
+
+      <div class="tabs-wrapper">
+        <a href="copy-trading.html" class="tab">Overview</a>
+        <a href="copy-trading-portfolios.html" class="tab active">My Portfolios</a>
+        <a href="copy-trading-providers.html" class="tab">Signal Providers</a>
+      </div>
+
+      <div class="portfolio-grid">
+        <div class="portfolio-card">
+          <div class="portfolio-header">
+            <img class="portfolio-avatar" src="images/avatar1st.png" alt="Portfolio avatar" />
+            <div class="portfolio-meta">
+              <div class="portfolio-name">Elite Traders</div>
+              <div class="portfolio-providers">3 signal providers</div>
+            </div>
+          </div>
+
+          <div class="portfolio-stats">
+            <div class="stat-row">
+              <span class="stat-label">Total Profit</span>
+              <span class="stat-value positive">+$2,450</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">ROI</span>
+              <span class="stat-value positive">+8.24%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Active Trades</span>
+              <span class="stat-value">12</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Invested</span>
+              <span class="stat-value">$29,800</span>
+            </div>
+          </div>
+
+          <div class="portfolio-footer">
+            <button class="btn-secondary">Pause</button>
+            <button class="btn-action">Manage</button>
+          </div>
+        </div>
+
+        <div class="portfolio-card">
+          <div class="portfolio-header">
+            <img class="portfolio-avatar" src="images/avatar2nd.png" alt="Portfolio avatar" />
+            <div class="portfolio-meta">
+              <div class="portfolio-name">Scalper's Edge</div>
+              <div class="portfolio-providers">2 signal providers</div>
+            </div>
+          </div>
+
+          <div class="portfolio-stats">
+            <div class="stat-row">
+              <span class="stat-label">Total Profit</span>
+              <span class="stat-value positive">+$945</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">ROI</span>
+              <span class="stat-value positive">+3.45%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Active Trades</span>
+              <span class="stat-value">8</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Invested</span>
+              <span class="stat-value">$27,400</span>
+            </div>
+          </div>
+
+          <div class="portfolio-footer">
+            <button class="btn-secondary">Pause</button>
+            <button class="btn-action">Manage</button>
+          </div>
+        </div>
+
+        <div class="portfolio-card">
+          <div class="portfolio-header">
+            <img class="portfolio-avatar" src="images/avatar3rd.png" alt="Portfolio avatar" />
+            <div class="portfolio-meta">
+              <div class="portfolio-name">Day Traders Club</div>
+              <div class="portfolio-providers">1 signal provider</div>
+            </div>
+          </div>
+
+          <div class="portfolio-stats">
+            <div class="stat-row">
+              <span class="stat-label">Total Profit</span>
+              <span class="stat-value negative">-$825</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">ROI</span>
+              <span class="stat-value negative">-2.15%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Active Trades</span>
+              <span class="stat-value">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Invested</span>
+              <span class="stat-value">$38,350</span>
+            </div>
+          </div>
+
+          <div class="portfolio-footer">
+            <button class="btn-secondary">Resume</button>
+            <button class="btn-action">Manage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

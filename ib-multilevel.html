@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Multi-Level IB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --green: #00b565;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* ─── Page title ──────────────────────────────────────── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Controls row ────────────────────────────────────── */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .account-select {
+      height: 40px;
+      min-width: 200px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 16px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    .account-select:focus { outline: none; border-color: var(--blue); }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 24px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--green);
+      border-radius: 26px;
+      transition: background 0.2s;
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:not(:checked) ~ .toggle-track { background: #ccc; }
+    .toggle-switch input:not(:checked) ~ .toggle-knob { transform: translateX(-16px); }
+
+    /* ─── Tree ────────────────────────────────────────────── */
+    .tree-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* Root node */
+    .tree-root {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+    }
+
+    .root-card {
+      background: var(--blue-light);
+      border-radius: 12px;
+      padding: 24px;
+      width: 200px;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      position: relative;
+    }
+
+    .root-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--bg-field);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .root-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .root-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .root-id {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* Connector line from root to levels */
+    .connector-v {
+      width: 2px;
+      height: 32px;
+      background: var(--blue);
+      margin-left: 99px;
+      opacity: 0.35;
+    }
+
+    /* Level section */
+    .level-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .level-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 0;
+    }
+
+    .level-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .level-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Level nodes row */
+    .level-nodes {
+      display: flex;
+      gap: 24px;
+      padding-left: 40px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .level-nodes::-webkit-scrollbar { height: 4px; }
+    .level-nodes::-webkit-scrollbar-track { background: transparent; }
+    .level-nodes::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* Level 1 card */
+    .node-card-l1 {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 180px;
+      min-height: 196px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .node-card-l1:hover { box-shadow: 0 4px 16px rgba(10,54,199,0.1); }
+
+    /* Level 2 card */
+    .node-card-l2 {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 160px;
+      min-height: 174px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .node-card-l2:hover { box-shadow: 0 4px 16px rgba(10,54,199,0.1); }
+
+    /* Avatar in node cards */
+    .node-avatar-l1 {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-field);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .node-avatar-l2 {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-field);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .node-name-l1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .node-name-l2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .node-id-l1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .node-id-l2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* Avatar images in node cards */
+    .node-avatar-l1 img,
+    .node-avatar-l2 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .content { padding: 28px 24px 48px; gap: 28px; }
+    }
+
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; gap: 24px; }
+      .page-title { font-size: 24px; }
+      .controls-row { flex-direction: column; align-items: flex-start; }
+      .account-select { width: 100%; }
+      .root-card { width: 160px; min-height: 200px; gap: 16px; }
+      .root-avatar { width: 52px; height: 52px; }
+      .root-name { font-size: 15px; }
+      .root-id { font-size: 14px; }
+      .connector-v { margin-left: 79px; }
+      .node-card-l1 { width: 150px; min-height: 170px; }
+      .node-card-l2 { width: 136px; min-height: 155px; }
+      .node-name-l1 { font-size: 15px; }
+      .node-name-l2 { font-size: 14px; }
+      .level-nodes { padding-left: 20px; gap: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .content { padding: 16px 12px 40px; gap: 20px; }
+      .page-title { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <h1 class="page-title">Multi-Level IB</h1>
+
+      <!-- Controls -->
+      <div class="controls-row">
+        <select class="account-select">
+          <option selected>Demo account</option>
+          <option>Live account</option>
+        </select>
+        <label class="toggle-row">
+          <span class="toggle-label">Hide Archive Accounts</span>
+          <span class="toggle-switch">
+            <input type="checkbox" checked />
+            <span class="toggle-track"></span>
+            <span class="toggle-knob"></span>
+          </span>
+        </label>
+      </div>
+
+      <!-- Tree -->
+      <div class="tree-wrap">
+
+        <!-- Root node -->
+        <div class="tree-root">
+          <div class="root-card">
+            <div class="root-avatar">
+              <img src="images/avatar1st.png" alt="Avatar" />
+            </div>
+            <div class="root-name">Strategy Name<br/>Strategy Name</div>
+            <div class="root-id">805391468</div>
+          </div>
+          <div class="connector-v"></div>
+        </div>
+
+        <!-- Level 1 -->
+        <div class="level-section">
+          <div class="level-header">
+            <span class="level-dot"></span>
+            <span class="level-label">Level 1</span>
+          </div>
+          <div class="level-nodes">
+            <!-- 7 level-1 nodes -->
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar1st.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar2nd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar3rd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar1st.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar2nd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar3rd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+            <div class="node-card-l1">
+              <div class="node-avatar-l1">
+                <img src="images/avatar1st.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l1">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l1">805391468</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Level 2 -->
+        <div class="level-section">
+          <div class="level-header">
+            <span class="level-dot"></span>
+            <span class="level-label">Level 2</span>
+          </div>
+          <div class="level-nodes">
+            <!-- 8 level-2 nodes -->
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar2nd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar3rd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar1st.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar2nd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar3rd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar1st.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar2nd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+            <div class="node-card-l2">
+              <div class="node-avatar-l2">
+                <img src="images/avatar3rd.png" alt="Avatar" />
+              </div>
+              <div class="node-name-l2">Strategy Name<br/>Strategy Name</div>
+              <div class="node-id-l2">805391468</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /tree-wrap -->
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Toggle switch interaction
+    const toggleInput = document.querySelector('.toggle-switch input');
+    toggleInput.addEventListener('change', function () {
+      // Could filter archived accounts here
+    });
+  </script>
+</body>
+</html>

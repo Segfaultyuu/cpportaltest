@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Fund History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-2);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ──────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    /* ─── Page Header ─────────────────────────────────────── */
+    .page-header { margin-bottom: 32px; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+    .back-link:hover { color: var(--blue); }
+    .back-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Tabs ────────────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      gap: 0;
+    }
+    .tab {
+      padding: 0 0 10px;
+      margin-right: 28px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab:hover { color: var(--text-primary); }
+    .tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+    /* ─── Filters ─────────────────────────────────────────── */
+    .filter-dropdowns {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .dropdown-select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      white-space: nowrap;
+      min-width: 160px;
+    }
+    .dropdown-select svg { flex-shrink: 0; color: var(--text-secondary); }
+
+    .date-range {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .date-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 40px;
+      padding: 0 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      min-width: 160px;
+    }
+    .date-range-sep {
+      width: 8px;
+      height: 1px;
+      background: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    /* ─── Table ───────────────────────────────────────────── */
+    .table-wrap {
+      background: #fff;
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-card);
+    }
+
+    .table-inner { min-width: 900px; }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      height: 52px;
+      padding: 0 24px;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .th {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+    }
+    .th-action { flex: none; width: 60px; text-align: right; }
+
+    .table-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      height: 60px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: #fafafa; }
+
+    .td {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .td-coin {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .td-action {
+      flex: none;
+      width: 60px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* Coin icon */
+    .coin-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    /* Details link */
+    .details-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: underline;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Roboto', sans-serif;
+      padding: 0;
+    }
+    .details-link:hover { color: var(--blue); }
+
+    /* ─── Pagination ──────────────────────────────────────── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      height: 55px;
+      border-top: 1px solid rgba(30,30,30,0.12);
+      padding: 0 24px;
+    }
+    .page-info {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+    .page-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .page-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 400;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-tertiary);
+      font-family: 'Roboto', sans-serif;
+      transition: color 0.15s;
+    }
+    .page-btn:hover { color: var(--text-primary); }
+    .page-btn.active { color: var(--text-primary); font-weight: 600; }
+    .page-arrow {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      border: none;
+      background: none;
+    }
+    .page-arrow:hover { color: var(--text-primary); }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 24px 16px 40px; }
+      .page-title { font-size: 24px; }
+      .filter-dropdowns { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <!-- ── Page Header ──────────────────────────────────── -->
+      <div class="page-header">
+        <a class="back-link" href="wallet.html">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back
+        </a>
+        <h1 class="page-title">History</h1>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <a class="tab active" href="fundhistory.html">Fund History</a>
+        <a class="tab" href="transactionhistory.html">Transaction History</a>
+      </div>
+
+      <!-- Dropdowns + Date range -->
+      <div class="filter-dropdowns">
+        <div class="dropdown-select">
+          All Coins
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="dropdown-select">
+          All Types
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="date-range">
+          <div class="date-input">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="11" rx="2" stroke="#7a8699" stroke-width="1.3"/>
+              <path d="M2 7h12" stroke="#7a8699" stroke-width="1.3"/>
+              <path d="M5 2v2M11 2v2" stroke="#7a8699" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            25/08/2025
+          </div>
+          <div class="date-range-sep"></div>
+          <div class="date-input">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="11" rx="2" stroke="#7a8699" stroke-width="1.3"/>
+              <path d="M2 7h12" stroke="#7a8699" stroke-width="1.3"/>
+              <path d="M5 2v2M11 2v2" stroke="#7a8699" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            26/08/2025
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <div class="table-inner">
+          <!-- Header -->
+          <div class="table-header">
+            <div class="th">Type</div>
+            <div class="th">Coin</div>
+            <div class="th">Amount</div>
+            <div class="th">Available Balance</div>
+            <div class="th">Time</div>
+            <div class="th th-action">Action</div>
+          </div>
+
+          <!-- Deposit BTC -->
+          <div class="table-row">
+            <div class="td">Deposit</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+              BTC
+            </div>
+            <div class="td">+0.52720634 BTC</div>
+            <div class="td">0.00000010 BTC</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Withdraw ETH -->
+          <div class="table-row">
+            <div class="td">Withdraw</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+              ETH
+            </div>
+            <div class="td">-0.01000000 ETH</div>
+            <div class="td">0.01000000 ETH</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Transfer USDT -->
+          <div class="table-row">
+            <div class="td">Transfer</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+              USDT
+            </div>
+            <div class="td">+10000.0000 USDT</div>
+            <div class="td">500.0000 USDT</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Transfer USDC -->
+          <div class="table-row">
+            <div class="td">Transfer</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" />
+              USDC
+            </div>
+            <div class="td">-10000.0000 USDC</div>
+            <div class="td">500.0000 USDT</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Convert USDT -->
+          <div class="table-row">
+            <div class="td">Convert</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+              USDT
+            </div>
+            <div class="td">+10000.0000 USDT</div>
+            <div class="td">500.0000 USDT</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Convert BTC -->
+          <div class="table-row">
+            <div class="td">Convert</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+              USDT
+            </div>
+            <div class="td">-0.52720634 BTC</div>
+            <div class="td">0.52720634 BTC</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Deposit USDT -->
+          <div class="table-row">
+            <div class="td">Deposit</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+              USDT
+            </div>
+            <div class="td">+0.52720634 BTC</div>
+            <div class="td">0.00000010 BTC</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Withdraw ETH -->
+          <div class="table-row">
+            <div class="td">Withdraw</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" />
+              ETH
+            </div>
+            <div class="td">-0.01000000 ETH</div>
+            <div class="td">0.01000000 ETH</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Convert USDT -->
+          <div class="table-row">
+            <div class="td">Convert</div>
+            <div class="td td-coin">
+              <img class="coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
+              USDT
+            </div>
+            <div class="td">-0.52720634 BTC</div>
+            <div class="td">0.52720634 BTC</div>
+            <div class="td">2025-09-18 12:30:15</div>
+            <div class="td td-action"><button class="details-link">Details</button></div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <span class="page-info">Total of 100 data</span>
+            <span class="page-info">5 pages</span>
+            <div class="page-nav">
+              <button class="page-arrow">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 10.5L5 7l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn">4</button>
+              <button class="page-btn">5</button>
+              <button class="page-arrow">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3.5L9 7l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /table-inner -->
+      </div><!-- /table-wrap -->
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

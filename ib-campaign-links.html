@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – IB Campaign Links</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── Layout ── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Search inputs row ── */
+    .search-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 320px;
+    }
+    .search-input-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-tertiary);
+    }
+    .search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px 0 38px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input::placeholder { color: var(--text-tertiary); }
+    .search-input:focus { border-color: var(--blue); }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    /* ── Card header ── */
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── Toggle switch ── */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 4px;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #ccc;
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-track {
+      background: #00b565;
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: left 0.2s;
+      pointer-events: none;
+    }
+    .toggle-switch input:checked ~ .toggle-knob {
+      left: 21px;
+    }
+
+    /* ── New campaign button ── */
+    .btn-new-campaign {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 16px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-new-campaign:hover { opacity: 0.88; }
+    .btn-new-campaign svg { flex-shrink: 0; }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      padding: 12px 24px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: left;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    thead th:last-child { text-align: center; }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafbff; }
+    tbody td {
+      padding: 16px 24px;
+      font-size: 13px;
+      color: var(--text-primary);
+      vertical-align: top;
+    }
+    tbody td:last-child { text-align: center; }
+
+    /* ── Campaign cell ── */
+    .campaign-cell { display: flex; flex-direction: column; gap: 6px; }
+    .campaign-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .campaign-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .date-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      background: var(--bg-field);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .status-badge.active {
+      background: rgba(0, 181, 101, 0.12);
+      color: #00874a;
+    }
+    .status-badge.archived {
+      background: rgba(255, 44, 64, 0.12);
+      color: #c81f30;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-badge.active .status-dot { background: #00b565; }
+    .status-badge.archived .status-dot { background: #ff2c40; }
+
+    .edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      color: var(--text-tertiary);
+      display: inline-flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+    .edit-btn:hover { color: var(--blue); }
+
+    /* ── Clicks cell ── */
+    .clicks-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ── Links cell ── */
+    .links-cell { display: flex; flex-direction: column; gap: 6px; }
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .link-url {
+      font-size: 12px;
+      color: var(--blue);
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 260px;
+    }
+    .link-url:hover { text-decoration: underline; }
+    .copy-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .copy-btn:hover { color: var(--blue); }
+    .link-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .link-count-select {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: var(--bg-field);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .add-link-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--blue);
+      text-decoration: underline;
+      padding: 0;
+      transition: opacity 0.15s;
+    }
+    .add-link-btn:hover { opacity: 0.75; }
+
+    /* ── Pagination ── */
+    .pagination-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .pagination-info {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-right: 12px;
+    }
+    .pagination-pages {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-right: 12px;
+    }
+    .page-btn {
+      min-width: 30px;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .page-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .page-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      font-weight: 600;
+    }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .page-ellipsis {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      padding: 0 4px;
+    }
+
+    /* ── Disclaimer ── */
+    .disclaimer {
+      margin-top: 20px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main" id="main-content">
+    <div class="content">
+
+    <!-- Page title -->
+    <h1 class="page-title">Campaign Links</h1>
+
+    <!-- Search inputs row -->
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="7.5" cy="7.5" r="5.5" stroke="#C2C7D0" stroke-width="1.3"/>
+          <path d="M11.5 11.5L14 14" stroke="#C2C7D0" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input class="search-input" type="text" placeholder="Please enter" />
+      </div>
+      <div class="search-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="7.5" cy="7.5" r="5.5" stroke="#C2C7D0" stroke-width="1.3"/>
+          <path d="M11.5 11.5L14 14" stroke="#C2C7D0" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input class="search-input" type="text" placeholder="Please enter" />
+      </div>
+    </div>
+
+    <!-- Main card -->
+    <div class="card">
+      <!-- Card header -->
+      <div class="card-header">
+        <div class="card-header-title">
+          Share using short link
+          <svg class="info-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7" stroke="#C2C7D0" stroke-width="1.2"/>
+            <path d="M8 7.5V11" stroke="#C2C7D0" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="8" cy="5.5" r="0.75" fill="#C2C7D0"/>
+          </svg>
+        </div>
+        <!-- Toggle switch -->
+        <div class="toggle-wrap">
+          <label class="toggle-switch">
+            <input type="checkbox" checked />
+            <span class="toggle-track"></span>
+            <span class="toggle-knob"></span>
+          </label>
+        </div>
+        <!-- New campaign button -->
+        <button class="btn-new-campaign">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 2V12M2 7H12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          New campaign
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Clicks</th>
+              <th>Links</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 -->
+            <tr>
+              <td>
+                <div class="campaign-cell">
+                  <div class="campaign-name">
+                    Super ratio plan Super ratio plan
+                    <button class="edit-btn" title="Edit">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.5 1.5L12.5 4.5M1 13L1.75 10L10.25 1.5C10.6642 1.08579 11.3358 1.08579 11.75 1.5L12.5 2.25C12.9142 2.66421 12.9142 3.33579 12.5 3.75L4 12.25L1 13Z" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="campaign-meta">
+                    <span class="date-badge">13 May 2024</span>
+                    <span class="status-badge active"><span class="status-dot"></span>Active</span>
+                  </div>
+                </div>
+              </td>
+              <td><div class="clicks-value">2231</div></td>
+              <td>
+                <div class="links-cell">
+                  <div class="link-row">
+                    <a class="link-url" href="#" title="https://www.vtradings.com/campaign/?&ls=abc123">https://www.vtradings.com/campaign/?&amp;ls=abc123</a>
+                    <button class="copy-btn" title="Copy">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="#7A8699" stroke-width="1.2"/>
+                        <path d="M9.5 4.5V3C9.5 2.17157 8.82843 1.5 8 1.5H3C2.17157 1.5 1.5 2.17157 1.5 3V8C1.5 8.82843 2.17157 9.5 3 9.5H4.5" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="link-actions">
+                    <span class="link-count-select">3 ▾</span>
+                    <button class="add-link-btn">Add link</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 2 -->
+            <tr>
+              <td>
+                <div class="campaign-cell">
+                  <div class="campaign-name">
+                    Standard welcome bonus
+                    <button class="edit-btn" title="Edit">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.5 1.5L12.5 4.5M1 13L1.75 10L10.25 1.5C10.6642 1.08579 11.3358 1.08579 11.75 1.5L12.5 2.25C12.9142 2.66421 12.9142 3.33579 12.5 3.75L4 12.25L1 13Z" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="campaign-meta">
+                    <span class="date-badge">02 Jan 2024</span>
+                    <span class="status-badge active"><span class="status-dot"></span>Active</span>
+                  </div>
+                </div>
+              </td>
+              <td><div class="clicks-value">874</div></td>
+              <td>
+                <div class="links-cell">
+                  <div class="link-row">
+                    <a class="link-url" href="#" title="https://www.vtradings.com/campaign/?&ls=def456">https://www.vtradings.com/campaign/?&amp;ls=def456</a>
+                    <button class="copy-btn" title="Copy">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="#7A8699" stroke-width="1.2"/>
+                        <path d="M9.5 4.5V3C9.5 2.17157 8.82843 1.5 8 1.5H3C2.17157 1.5 1.5 2.17157 1.5 3V8C1.5 8.82843 2.17157 9.5 3 9.5H4.5" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="link-actions">
+                    <span class="link-count-select">1 ▾</span>
+                    <button class="add-link-btn">Add link</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 3 -->
+            <tr>
+              <td>
+                <div class="campaign-cell">
+                  <div class="campaign-name">
+                    Premium trader referral
+                    <button class="edit-btn" title="Edit">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.5 1.5L12.5 4.5M1 13L1.75 10L10.25 1.5C10.6642 1.08579 11.3358 1.08579 11.75 1.5L12.5 2.25C12.9142 2.66421 12.9142 3.33579 12.5 3.75L4 12.25L1 13Z" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="campaign-meta">
+                    <span class="date-badge">15 Mar 2024</span>
+                    <span class="status-badge archived"><span class="status-dot"></span>Archived</span>
+                  </div>
+                </div>
+              </td>
+              <td><div class="clicks-value">3102</div></td>
+              <td>
+                <div class="links-cell">
+                  <div class="link-row">
+                    <a class="link-url" href="#" title="https://www.vtradings.com/campaign/?&ls=ghi789">https://www.vtradings.com/campaign/?&amp;ls=ghi789</a>
+                    <button class="copy-btn" title="Copy">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="#7A8699" stroke-width="1.2"/>
+                        <path d="M9.5 4.5V3C9.5 2.17157 8.82843 1.5 8 1.5H3C2.17157 1.5 1.5 2.17157 1.5 3V8C1.5 8.82843 2.17157 9.5 3 9.5H4.5" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="link-actions">
+                    <span class="link-count-select">5 ▾</span>
+                    <button class="add-link-btn">Add link</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 4 -->
+            <tr>
+              <td>
+                <div class="campaign-cell">
+                  <div class="campaign-name">
+                    Summer promotion 2024
+                    <button class="edit-btn" title="Edit">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.5 1.5L12.5 4.5M1 13L1.75 10L10.25 1.5C10.6642 1.08579 11.3358 1.08579 11.75 1.5L12.5 2.25C12.9142 2.66421 12.9142 3.33579 12.5 3.75L4 12.25L1 13Z" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="campaign-meta">
+                    <span class="date-badge">01 Jun 2024</span>
+                    <span class="status-badge active"><span class="status-dot"></span>Active</span>
+                  </div>
+                </div>
+              </td>
+              <td><div class="clicks-value">568</div></td>
+              <td>
+                <div class="links-cell">
+                  <div class="link-row">
+                    <a class="link-url" href="#" title="https://www.vtradings.com/campaign/?&ls=jkl012">https://www.vtradings.com/campaign/?&amp;ls=jkl012</a>
+                    <button class="copy-btn" title="Copy">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="#7A8699" stroke-width="1.2"/>
+                        <path d="M9.5 4.5V3C9.5 2.17157 8.82843 1.5 8 1.5H3C2.17157 1.5 1.5 2.17157 1.5 3V8C1.5 8.82843 2.17157 9.5 3 9.5H4.5" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="link-actions">
+                    <span class="link-count-select">2 ▾</span>
+                    <button class="add-link-btn">Add link</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 5 -->
+            <tr>
+              <td>
+                <div class="campaign-cell">
+                  <div class="campaign-name">
+                    High volume IB incentive
+                    <button class="edit-btn" title="Edit">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.5 1.5L12.5 4.5M1 13L1.75 10L10.25 1.5C10.6642 1.08579 11.3358 1.08579 11.75 1.5L12.5 2.25C12.9142 2.66421 12.9142 3.33579 12.5 3.75L4 12.25L1 13Z" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="campaign-meta">
+                    <span class="date-badge">20 Jul 2024</span>
+                    <span class="status-badge archived"><span class="status-dot"></span>Archived</span>
+                  </div>
+                </div>
+              </td>
+              <td><div class="clicks-value">1447</div></td>
+              <td>
+                <div class="links-cell">
+                  <div class="link-row">
+                    <a class="link-url" href="#" title="https://www.vtradings.com/campaign/?&ls=mno345">https://www.vtradings.com/campaign/?&amp;ls=mno345</a>
+                    <button class="copy-btn" title="Copy">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="#7A8699" stroke-width="1.2"/>
+                        <path d="M9.5 4.5V3C9.5 2.17157 8.82843 1.5 8 1.5H3C2.17157 1.5 1.5 2.17157 1.5 3V8C1.5 8.82843 2.17157 9.5 3 9.5H4.5" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="link-actions">
+                    <span class="link-count-select">4 ▾</span>
+                    <button class="add-link-btn">Add link</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-wrap">
+        <span class="pagination-info">Total of 100 data</span>
+        <span class="pagination-pages">5 Pages</span>
+        <button class="page-btn" id="prev-btn" disabled>&#8592;</button>
+        <button class="page-btn active" data-page="1">1</button>
+        <button class="page-btn" data-page="2">2</button>
+        <button class="page-btn" data-page="3">3</button>
+        <button class="page-btn" data-page="4">4</button>
+        <button class="page-btn" data-page="5">5</button>
+        <span class="page-ellipsis">…</span>
+        <button class="page-btn" data-page="10">10</button>
+        <button class="page-btn" id="next-btn">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <p class="disclaimer">
+      * Campaign link performance data is updated periodically. Click counts may reflect a delay of up to 24 hours.
+      Short links are subject to platform terms and conditions.
+    </p>
+
+    </div>
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Pagination interaction
+    const pageBtns = document.querySelectorAll('.page-btn[data-page]');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    let currentPage = 1;
+    const totalPages = 10;
+
+    function setActivePage(page) {
+      currentPage = page;
+      pageBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.page) === page);
+      });
+      prevBtn.disabled = page === 1;
+      nextBtn.disabled = page === totalPages;
+    }
+
+    pageBtns.forEach(btn => {
+      btn.addEventListener('click', () => setActivePage(parseInt(btn.dataset.page)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) setActivePage(currentPage - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < totalPages) setActivePage(currentPage + 1);
+    });
+
+    // Copy button feedback
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const linkEl = btn.previousElementSibling;
+        if (linkEl && navigator.clipboard) {
+          navigator.clipboard.writeText(linkEl.href).catch(() => {});
+        }
+        btn.style.color = '#00b565';
+        setTimeout(() => { btn.style.color = ''; }, 1200);
+      });
+    });
+  </script>
+</body>
+</html>

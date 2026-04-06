@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Referral Links</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-12: rgba(10, 54, 199, 0.12);
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── Layout ── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-top: 40px;
+      margin-bottom: 24px;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .tab-item {
+      padding-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-item.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    /* ── Toolbar row ── */
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toolbar-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .lang-select {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      outline: none;
+      width: 160px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── Toggle switch ── */
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 24px;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #ccc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-track { background: #00b565; }
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: left 0.2s;
+      pointer-events: none;
+    }
+    .toggle-switch input:checked ~ .toggle-knob { left: 19px; }
+
+    /* ── Section heading ── */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .section-heading-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .section-heading-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .section-heading-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* ── Link card ── */
+    .link-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      flex: 1 1 280px;
+      max-width: calc(33.333% - 16px);
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .link-card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 28px;
+      margin-bottom: 10px;
+    }
+    .link-card-urls {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .link-card-url {
+      font-size: 14px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 22px;
+    }
+    .link-card-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 22px;
+    }
+    .link-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+    .link-card-actions {
+      display: flex;
+      gap: 16px;
+    }
+    .btn-link {
+      flex: 1;
+      height: 32px;
+      background: var(--blue-12);
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-link:hover { opacity: 0.8; }
+
+    /* ── Full-width card (IB Agreement) ── */
+    .link-card-wide {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .btn-download {
+      height: 48px;
+      padding: 0 24px;
+      background: var(--blue);
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .btn-download:hover { opacity: 0.88; }
+
+    /* ── Telegram section separator ── */
+    .section-divider {
+      border: none;
+      border-bottom: 1px solid var(--border);
+      margin: 0 0 24px;
+    }
+
+    /* ── Disclaimer ── */
+    .disclaimer {
+      margin-top: 36px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.7;
+    }
+    .disclaimer a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      .link-card { max-width: calc(50% - 12px); }
+    }
+    @media (max-width: 600px) {
+      .main { margin-left: 0 !important; padding-top: 56px; }
+      .content { padding: 20px 16px 40px; }
+      .link-card { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main" id="main-content">
+    <div class="content">
+
+    <h1 class="page-title">Referral Links</h1>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab-item" data-tab="client">Client Referral Links</div>
+      <div class="tab-item active" data-tab="sub-ib">Sub-IB Referral links</div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar-row">
+      <div class="toolbar-left">
+        <span class="toolbar-label">Campaign Language</span>
+        <select class="lang-select">
+          <option>English</option>
+          <option>Chinese</option>
+          <option>Arabic</option>
+        </select>
+      </div>
+      <div class="toolbar-right">
+        <span class="toolbar-label">Hide Archive Accounts</span>
+        <svg class="info-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="7" stroke="#C2C7D0" stroke-width="1.2"/>
+          <path d="M8 7.5V11" stroke="#C2C7D0" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="8" cy="5.5" r="0.75" fill="#C2C7D0"/>
+        </svg>
+        <label class="toggle-switch">
+          <input type="checkbox" checked />
+          <span class="toggle-track"></span>
+          <span class="toggle-knob"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Row 1: Live account | Demo account | Home page -->
+    <div class="cards-grid">
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Live account</div>
+          <div class="link-card-urls">
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+          </div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+          <button class="btn-link">Share QR code</button>
+        </div>
+      </div>
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Demo account</div>
+          <div class="link-card-urls">
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+          </div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+        </div>
+      </div>
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Home page</div>
+          <div class="link-card-urls">
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+          </div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Download app | Event promotion link -->
+    <div class="cards-grid">
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Download app</div>
+          <div class="link-card-urls">
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+          </div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+          <button class="btn-link">Share QR code</button>
+        </div>
+      </div>
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Event promotion link</div>
+          <div class="link-card-urls">
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+            <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+          </div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telegram MiniAPP section -->
+    <div class="section-heading">
+      <!-- Telegram outlined icon -->
+      <svg class="section-heading-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#0a36c7" stroke-width="1.5"/>
+        <path d="M7 12L10.5 15.5L17 8.5" stroke="#0a36c7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 11.5L10 13.5L16.5 8" stroke="#229ED9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Telegram paper plane icon -->
+        <path d="M5.5 12L9.5 13.8L17.5 7.5L11 15.5V18.5L13.2 16.3" stroke="#229ED9" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="section-heading-title">Telegram MiniAPP Links</span>
+    </div>
+    <p class="section-heading-desc">
+      When a user completes registration through your mini program link, you will receive a commission for the user's transaction.
+    </p>
+
+    <!-- Telegram card row (with bottom border) -->
+    <div style="border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 24px;">
+      <div class="cards-grid" style="margin-bottom: 0;">
+        <div class="link-card">
+          <div class="link-card-body">
+            <div class="link-card-title">IB - Telegram MiniAPP</div>
+            <div class="link-card-urls">
+              <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+              <div class="link-card-url">https://ibportal-core-au.crm-alpha.com/referral...</div>
+            </div>
+          </div>
+          <div class="link-card-actions">
+            <button class="btn-link">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promotion Invitation Codes row -->
+    <div class="cards-grid">
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Promotion Invitation Code</div>
+          <div class="link-card-value">VT88888</div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+          <button class="btn-link">Share QR code</button>
+        </div>
+      </div>
+      <div class="link-card">
+        <div class="link-card-body">
+          <div class="link-card-title">Promotion Invitation Code</div>
+          <div class="link-card-value">zpBNw9Lb</div>
+        </div>
+        <div class="link-card-actions">
+          <button class="btn-link">Copy</button>
+          <button class="btn-link">Customize</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IB Agreement full-width card -->
+    <div class="link-card-wide">
+      <div>
+        <div class="link-card-title" style="margin-bottom: 8px;">IB Agreement</div>
+        <div class="link-card-value">Rebate account 83672. Signed at 2024-06-21</div>
+      </div>
+      <button class="btn-download">Download</button>
+    </div>
+
+    <!-- Disclaimer -->
+    <p class="disclaimer">
+      Simply log in the VT Markets App with your portal email address and password.
+      <a href="#">Click here to find out more.</a><br><br>
+      Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital.
+      Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration
+      your level of experience, investment objectives and seek independent financial advice if necessary.
+      Please read our legal documents on our website and ensure that you fully understand the risks before you make any
+      trading decisions.
+    </p>
+
+    </div>
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Copy button feedback
+    document.querySelectorAll('.btn-link').forEach(btn => {
+      if (btn.textContent.trim() === 'Copy') {
+        btn.addEventListener('click', () => {
+          const orig = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.style.color = '#00b565';
+          setTimeout(() => {
+            btn.textContent = orig;
+            btn.style.color = '';
+          }, 1200);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

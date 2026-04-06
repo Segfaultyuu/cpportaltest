@@ -181,7 +181,7 @@
       <div class="topbar-avatar-wrap" id="topbar-avatar-wrap">
         <div class="topbar-avatar" id="topbar-avatar" title="Profile"><img src="images/img7.png" width="32" height="32" alt="Profile" /></div>
         <div class="topbar-dropdown" id="topbar-dropdown">
-          <div class="topbar-dd-header">
+          <div class="topbar-dd-header" onclick="window.location.href=document.body.classList.contains('ib-mode')?'ib-profile.html':'profile.html'">
             <div class="topbar-dd-av"><img src="images/img7.png" alt="Profile" /></div>
             <div class="topbar-dd-info">
               <div class="topbar-dd-name">User Name</div>
@@ -217,6 +217,14 @@
   const root = document.getElementById('topbar-root');
   root.innerHTML = html;
 
+  /* ── Set initial active state based on current page ─────── */
+  const _pg = location.pathname.split('/').pop() || 'index.html';
+  if (_pg.startsWith('ib-')) {
+    root.querySelectorAll('.topbar-toggle-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.trim().toLowerCase() === 'ib');
+    });
+  }
+
   /* ── Attach behaviour ────────────────────────────────────── */
   document.getElementById('topbar-hamburger').addEventListener('click', () => {
     document.dispatchEvent(new CustomEvent('sidebar-mobile-toggle'));
@@ -224,8 +232,61 @@
 
   document.querySelectorAll('.topbar-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      const mode = btn.textContent.trim().toLowerCase(); // 'client' or 'ib'
+      const pg = location.pathname.split('/').pop() || 'index.html';
+      const needsNav = (mode === 'ib' && !pg.startsWith('ib-')) || (mode === 'client' && pg.startsWith('ib-'));
+
       document.querySelectorAll('.topbar-toggle-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      document.dispatchEvent(new CustomEvent('topbar-mode-change', { detail: { mode } }));
+
+      if (needsNav) {
+        // Show full-page loader
+        const label = mode === 'ib' ? 'Switching to IB' : 'Switching to Client';
+        const loader = document.createElement('div');
+        loader.id = 'mode-switch-loader';
+        loader.innerHTML = `
+          <div class="msl-inner">
+            <div class="msl-spinner"></div>
+            <div class="msl-text">${label}</div>
+          </div>`;
+        const loaderStyle = document.createElement('style');
+        loaderStyle.textContent = `
+          #mode-switch-loader {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            animation: mslFadeIn 0.18s ease;
+          }
+          @keyframes mslFadeIn { from { opacity: 0; } to { opacity: 1; } }
+          .msl-inner {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+          }
+          .msl-spinner {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 3px solid #e8f1ff;
+            border-top-color: #0a36c7;
+            animation: mslSpin 0.7s linear infinite;
+          }
+          @keyframes mslSpin { to { transform: rotate(360deg); } }
+          .msl-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px; font-weight: 600; color: #282d34;
+            letter-spacing: 0.01em;
+          }
+        `;
+        document.head.appendChild(loaderStyle);
+        document.body.appendChild(loader);
+
+        setTimeout(() => {
+          if (mode === 'ib') {
+            window.location.href = 'ib-dashboard.html';
+          } else {
+            window.location.href = 'index.html';
+          }
+        }, 600);
+      }
     });
   });
 

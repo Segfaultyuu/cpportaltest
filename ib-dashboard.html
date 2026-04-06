@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – IB Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ─── Hero Row ───────────────────────────────────────── */
+    .hero-row {
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .commission-card {
+      flex: 1.65;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .links-card {
+      flex: 1;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Commission card */
+    .cc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 24px 0;
+    }
+
+    .cc-account-select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .cc-tx-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .cc-tx-link:hover { color: var(--blue); }
+
+    .cc-body {
+      padding: 20px 24px 16px;
+      flex: 1;
+    }
+
+    .cc-commission-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .cc-value-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .cc-value-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cc-flag { font-size: 26px; line-height: 1; flex-shrink: 0; }
+
+    .cc-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .cc-currency {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 4px;
+    }
+
+    .cc-apply-rebate {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .cc-apply-rebate:hover { opacity: 0.8; }
+
+    .cc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 24px;
+    }
+
+    .cc-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 24px;
+      gap: 12px;
+    }
+
+    .cc-avail-balance {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .cc-avail-amount {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .cc-footer-btns { display: flex; gap: 12px; }
+
+    .btn-withdraw {
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--blue);
+      background: #fff;
+      color: var(--blue);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-withdraw:hover { background: var(--blue-light); }
+
+    .btn-transfer-rebate {
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-transfer-rebate:hover { opacity: 0.9; }
+
+    /* Links card */
+    .lc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 24px 0;
+    }
+
+    .lc-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .lc-more {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .lc-more:hover { color: var(--blue); }
+
+    .lc-section { padding: 20px 24px 0; }
+
+    .lc-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .lc-link-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .lc-link-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lc-copy-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lc-copy-btn:hover { background: var(--blue-light); color: var(--blue); }
+
+    .lc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 24px 0;
+    }
+
+    /* ─── Section title ──────────────────────────────────── */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ─── Performance ────────────────────────────────────── */
+    .perf-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .perf-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .perf-select {
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 12px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .perf-date-range {
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 12px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .btn-update {
+      height: 40px;
+      padding: 0 24px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-update:hover { opacity: 0.9; }
+
+    .perf-content {
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    /* Stat grid */
+    .perf-grid-wrap { flex: 1.35; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      height: 100%;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .stat-card.rebate { background: #fff; }
+    .stat-card:hover { box-shadow: 0 4px 16px rgba(10, 54, 199, 0.12); }
+
+    .stat-card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .stat-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .stat-card-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    .stat-card-arrow {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .stat-card-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 24px;
+    }
+
+    .stat-card-currency {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 4px;
+    }
+
+    .stat-card-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    /* Chart card */
+    .chart-card {
+      flex: 1;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      padding: 20px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .chart-wrap {
+      flex: 1;
+      min-height: 160px;
+    }
+    .chart-wrap svg { width: 100%; height: 100%; }
+
+    .chart-x-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+
+    .chart-x-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* ─── Most Trade Instruments ─────────────────────────── */
+    .instruments-row {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .instruments-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .instruments-left {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .toggle-pills {
+      display: flex;
+      background: var(--bg-2);
+      border-radius: 8px;
+      padding: 4px;
+      width: fit-content;
+    }
+
+    .pill-btn {
+      height: 32px;
+      padding: 0 20px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .pill-btn.active {
+      background: #fff;
+      font-weight: 600;
+      color: var(--text-primary);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .donut-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .donut-chart-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .donut-chart {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #8b5cf6 0% 28%,
+        #06b6d4 28% 48%,
+        #ec4899 48% 62%,
+        #3b82f6 62% 77%,
+        #10b981 77% 92%,
+        #ef4444 92% 100%
+      );
+    }
+
+    .donut-hole {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 96px;
+      height: 96px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .instruments-right {
+      flex: 1;
+      background: var(--bg-2);
+      border-radius: 12px;
+      padding: 24px 32px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .instruments-detail-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .instruments-detail-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .instruments-detail-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    /* ─── Tables ─────────────────────────────────────────── */
+    .tables-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .table-card {
+      flex: 1;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .table-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 24px 24px 20px;
+    }
+
+    .table-wrap { padding: 0 24px 24px; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 0 8px 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table td {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      padding: 14px 8px 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* ─── Disclaimer ─────────────────────────────────────── */
+    .disclaimer {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Tablet (≤ 1024px) ─────────────────────────────── */
+    @media (max-width: 1024px) {
+      .content { padding: 28px 24px 48px; gap: 24px; }
+      .hero-row { gap: 16px; }
+      .commission-card { flex: 1.3; }
+      .cc-amount { font-size: 26px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .perf-content { flex-direction: column; }
+      .perf-grid-wrap { width: 100%; }
+      .chart-card { width: 100%; min-height: 200px; }
+      .instruments-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .instruments-right { width: 100%; }
+      .tables-row { flex-direction: column; }
+    }
+
+    /* ─── Mobile (≤ 768px) ───────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; gap: 20px; }
+      .page-title { font-size: 22px; }
+
+      /* Hero */
+      .hero-row { flex-direction: column; gap: 16px; }
+      .commission-card, .links-card { flex: none; width: 100%; }
+
+      /* Commission card internals */
+      .cc-header { padding: 18px 18px 0; flex-wrap: wrap; gap: 8px; }
+      .cc-body { padding: 14px 18px 12px; }
+      .cc-amount { font-size: 24px; }
+      .cc-value-row { flex-wrap: wrap; gap: 10px; }
+      .cc-apply-rebate { font-size: 13px; }
+      .cc-divider { margin: 0 18px; }
+      .cc-footer { padding: 14px 18px 18px; flex-wrap: wrap; gap: 10px; }
+      .cc-footer-btns { width: 100%; }
+      .btn-withdraw, .btn-transfer-rebate { flex: 1; justify-content: center; }
+
+      /* Links card */
+      .lc-header { padding: 18px 18px 0; }
+      .lc-section { padding: 16px 18px 0; }
+      .lc-divider { margin: 16px 18px 0; }
+
+      /* Performance */
+      .section-title { font-size: 18px; }
+      .perf-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .perf-controls { width: 100%; flex-wrap: wrap; gap: 8px; }
+      .perf-select, .perf-date-range { flex: 1; min-width: 120px; }
+      .btn-update { width: 100%; }
+      .perf-content { flex-direction: column; gap: 16px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+      /* Chart */
+      .chart-card { min-height: 180px; }
+
+      /* Instruments */
+      .instruments-card { padding: 18px; gap: 16px; }
+      .donut-row { flex-wrap: wrap; gap: 16px; }
+      .donut-chart-wrap { width: 140px; height: 140px; }
+      .donut-chart { width: 140px; height: 140px; }
+      .donut-hole { width: 84px; height: 84px; }
+
+      /* Tables */
+      .tables-row { flex-direction: column; gap: 16px; }
+      .table-card-title { font-size: 16px; padding: 18px 18px 14px; }
+      .table-wrap { padding: 0 18px 18px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .data-table { min-width: 360px; }
+    }
+
+    /* ─── Small mobile (≤ 480px) ─────────────────────────── */
+    @media (max-width: 480px) {
+      .content { padding: 16px 12px 40px; gap: 16px; }
+      .page-title { font-size: 20px; }
+
+      /* Commission */
+      .cc-header { padding: 14px 14px 0; }
+      .cc-body { padding: 12px 14px 10px; }
+      .cc-amount { font-size: 22px; }
+      .cc-currency { font-size: 14px; }
+      .cc-commission-label { font-size: 12px; }
+      .cc-divider { margin: 0 14px; }
+      .cc-footer { padding: 12px 14px 16px; }
+      .btn-withdraw, .btn-transfer-rebate { height: 36px; font-size: 13px; padding: 0 12px; }
+
+      /* Links */
+      .lc-header { padding: 14px 14px 0; }
+      .lc-section { padding: 14px 14px 0; }
+      .lc-divider { margin: 14px 14px 0; }
+
+      /* Stat grid: 1 column on tiny screens */
+      .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 12px; }
+      .stat-card-value { font-size: 17px; }
+      .stat-card-icon { width: 32px; height: 32px; }
+
+      /* Instruments */
+      .instruments-card { padding: 14px; }
+      .instruments-detail-name { font-size: 20px; }
+
+      /* Table */
+      .table-card-title { font-size: 15px; padding: 14px 14px 12px; }
+      .table-wrap { padding: 0 14px 14px; }
+      .data-table { min-width: 320px; }
+      .data-table th, .data-table td { font-size: 12px; padding-right: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <h1 class="page-title">Dashboard</h1>
+
+      <!-- ── Hero Row ──────────────────────────────────────── -->
+      <div class="hero-row">
+
+        <!-- Commission Card -->
+        <div class="commission-card">
+          <div class="cc-header">
+            <div class="cc-account-select">
+              <span>Rebate Account 805315476</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <a class="cc-tx-link" href="#">
+              <span>Transaction History</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="cc-body">
+            <div class="cc-commission-label">
+              <span>Total Commission (USD)</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M8 7V11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="8" cy="5" r="0.8" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="cc-value-row">
+              <div class="cc-value-left">
+                <img src="images/imgUsd.png" alt="USD" class="cc-flag" style="width:32px;height:32px;object-fit:contain;" />
+                <div>
+                  <span class="cc-amount">1,000,000.00</span>
+                  <span class="cc-currency">USD</span>
+                </div>
+              </div>
+              <a class="cc-apply-rebate" href="#">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="10" cy="6" r="2.5"/><circle cx="4" cy="10" r="2.5"/>
+                  <path d="M7.5 6.5l-1 3"/>
+                </svg>
+                <span>Apply For Rebate</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="cc-divider"></div>
+
+          <div class="cc-footer">
+            <div class="cc-avail-balance">
+              <span>Available Balance</span>
+              <span class="cc-avail-amount">0.00 USD</span>
+            </div>
+            <div class="cc-footer-btns">
+              <button class="btn-withdraw">Withdraw Rebate</button>
+              <button class="btn-transfer-rebate">Transfer Rebate</button>
+            </div>
+          </div>
+        </div><!-- /commission-card -->
+
+        <!-- Links Card -->
+        <div class="links-card">
+          <div class="lc-header">
+            <span class="lc-title">Link</span>
+            <a class="lc-more" href="#">
+              <span>More</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="lc-section">
+            <div class="lc-section-title">Referral Links</div>
+            <div class="lc-link-row">
+              <span class="lc-link-text">Register Online: https://Vtm.Pro/GGiyh5f</span>
+              <button class="lc-copy-btn" title="Copy link" onclick="navigator.clipboard?.writeText('https://Vtm.Pro/GGiyh5f')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="6" width="8" height="8" rx="1.5"/>
+                  <path d="M4 10H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="lc-divider"></div>
+
+          <div class="lc-section" style="padding-bottom: 24px; flex: 1;">
+            <div class="lc-section-title">Promotion Invitation Code</div>
+            <div class="lc-link-row">
+              <span class="lc-link-text">DKFHFFFG</span>
+              <button class="lc-copy-btn" title="Copy code" onclick="navigator.clipboard?.writeText('DKFHFFFG')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="6" width="8" height="8" rx="1.5"/>
+                  <path d="M4 10H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div><!-- /links-card -->
+
+      </div><!-- /hero-row -->
+
+      <!-- ── Performance ────────────────────────────────────── -->
+      <div class="perf-header">
+        <span class="section-title">Performance</span>
+        <div class="perf-controls">
+          <div class="perf-select">
+            <span>Month To Date</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6L8 10L12 6" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="perf-date-range">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="#7a8699" stroke-width="1.2"/>
+              <path d="M5 2v2M11 2v2M2 7h12" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <span>25/08/2025 – 02/09/2025</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6L8 10L12 6" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <button class="btn-update">Update</button>
+        </div>
+      </div>
+
+      <div class="perf-content">
+
+        <!-- Stat Grid -->
+        <div class="perf-grid-wrap">
+          <div class="stat-grid">
+
+            <div class="stat-card rebate">
+              <div class="stat-card-info">
+                <div class="stat-card-header">
+                  <span class="stat-card-label">Rebate</span>
+                  <span class="stat-card-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+                <div class="stat-card-value">21.00 <span class="stat-card-currency">USD</span></div>
+              </div>
+              <img class="stat-card-icon" src="images/icon-rebate.png" alt="Rebate" />
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <div class="stat-card-header">
+                  <span class="stat-card-label">Notional Value</span>
+                  <span class="stat-card-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+                <div class="stat-card-value">21.00 <span class="stat-card-currency">USD</span></div>
+              </div>
+              <img class="stat-card-icon" src="images/icon-notional.png" alt="Notional Value" />
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <div class="stat-card-header">
+                  <span class="stat-card-label">Net Funding</span>
+                  <span class="stat-card-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+                <div class="stat-card-value">21.00 <span class="stat-card-currency">USD</span></div>
+              </div>
+              <img class="stat-card-icon" src="images/icon-netfunding.png" alt="Net Funding" />
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <div class="stat-card-header">
+                  <span class="stat-card-label">Deposits</span>
+                  <span class="stat-card-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+                <div class="stat-card-value">21.00 <span class="stat-card-currency">USD</span></div>
+              </div>
+              <img class="stat-card-icon" src="images/icon-deposits.png" alt="Deposits" />
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <div class="stat-card-header">
+                  <span class="stat-card-label">Withdraw</span>
+                  <span class="stat-card-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+                <div class="stat-card-value">21.00 <span class="stat-card-currency">USD</span></div>
+              </div>
+              <img class="stat-card-icon" src="images/icon-withdraw.png" alt="Withdraw" />
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <div class="stat-card-header">
+                  <span class="stat-card-label">Opened Account</span>
+                  <span class="stat-card-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+                <div class="stat-card-value">21.00 <span class="stat-card-currency">USD</span></div>
+              </div>
+              <img class="stat-card-icon" src="images/icon-openedaccount.png" alt="Opened Account" />
+            </div>
+
+          </div>
+        </div><!-- /perf-grid-wrap -->
+
+        <!-- Line Chart Card -->
+        <div class="chart-card">
+          <div class="chart-title">Rebate</div>
+          <div class="chart-wrap">
+            <svg viewBox="0 0 530 190" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- Grid lines -->
+              <line x1="22" y1="2"   x2="530" y2="2"   stroke="#e8e9ea" stroke-width="0.8"/>
+              <line x1="22" y1="40"  x2="530" y2="40"  stroke="#e8e9ea" stroke-width="0.8"/>
+              <line x1="22" y1="78"  x2="530" y2="78"  stroke="#e8e9ea" stroke-width="0.8"/>
+              <line x1="22" y1="116" x2="530" y2="116" stroke="#e8e9ea" stroke-width="0.8"/>
+              <line x1="22" y1="154" x2="530" y2="154" stroke="#e8e9ea" stroke-width="0.8"/>
+              <line x1="22" y1="188" x2="530" y2="188" stroke="#e8e9ea" stroke-width="0.8"/>
+              <!-- Y-axis labels -->
+              <text x="0" y="6"   font-size="10" fill="#7a8699" font-family="Roboto,sans-serif">5</text>
+              <text x="0" y="44"  font-size="10" fill="#7a8699" font-family="Roboto,sans-serif">4</text>
+              <text x="0" y="82"  font-size="10" fill="#7a8699" font-family="Roboto,sans-serif">3</text>
+              <text x="0" y="120" font-size="10" fill="#7a8699" font-family="Roboto,sans-serif">2</text>
+              <text x="0" y="158" font-size="10" fill="#7a8699" font-family="Roboto,sans-serif">1</text>
+              <text x="0" y="190" font-size="10" fill="#7a8699" font-family="Roboto,sans-serif">0</text>
+              <!-- Area fill -->
+              <path d="M 35,186 C 60,184 75,183 110,180 C 140,178 158,175 185,170 C 212,163 232,154 262,140 C 290,126 310,110 342,92 C 368,76 392,55 422,34 C 445,17 475,8 530,4 L 530,190 L 35,190 Z" fill="url(#chartGrad)"/>
+              <!-- Line -->
+              <path d="M 35,186 C 60,184 75,183 110,180 C 140,178 158,175 185,170 C 212,163 232,154 262,140 C 290,126 310,110 342,92 C 368,76 392,55 422,34 C 445,17 475,8 530,4" fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="chart-x-labels">
+            <span class="chart-x-label">07/12</span>
+            <span class="chart-x-label">07/13</span>
+            <span class="chart-x-label">07/14</span>
+            <span class="chart-x-label">07/15</span>
+            <span class="chart-x-label">07/16</span>
+            <span class="chart-x-label">07/17</span>
+            <span class="chart-x-label">07/18</span>
+            <span class="chart-x-label">Today</span>
+          </div>
+        </div><!-- /chart-card -->
+
+      </div><!-- /perf-content -->
+
+      <!-- ── Most Trade Instruments ───────────────────────── -->
+      <div class="instruments-row">
+        <span class="section-title">Most Trade instruments</span>
+        <div class="instruments-card">
+
+          <div class="instruments-left">
+            <div class="toggle-pills">
+              <button class="pill-btn active" id="pill-standard">Standard</button>
+              <button class="pill-btn" id="pill-micro">Micro Lots</button>
+            </div>
+            <div class="donut-row">
+              <div class="donut-chart-wrap">
+                <div class="donut-chart"></div>
+                <div class="donut-hole">XAUUSDco</div>
+              </div>
+              <div class="donut-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>NZDSGD+</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#06b6d4"></span>XAUUSDco</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ec4899"></span>CHFSGD+</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span>XAUUSDco</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981"></span>AUDSGD+</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>AUDCNH</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="instruments-right">
+            <div class="instruments-detail-name">XAUUSDco</div>
+            <div class="instruments-detail-row">
+              <span>Notional Volume</span>
+              <span class="instruments-detail-value">1.6000000</span>
+            </div>
+          </div>
+
+        </div><!-- /instruments-card -->
+      </div><!-- /instruments-row -->
+
+      <!-- ── Tables ─────────────────────────────────────────── -->
+      <div class="tables-row">
+
+        <!-- Top Performing Account -->
+        <div class="table-card">
+          <div class="table-card-title">Top Performing Account this month</div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Account No</th>
+                  <th>Name</th>
+                  <th>Volume</th>
+                  <th>Rebate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td><td>10</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td><td>10</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td><td>10</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td><td>10</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td><td>10</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recently Opened Accounts -->
+        <div class="table-card">
+          <div class="table-card-title">Recently opened accounts</div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Account No</th>
+                  <th>Name</th>
+                  <th>Volume</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td></tr>
+                <tr><td>2481187164(USD)</td><td>David Beckham</td><td>NZ$1,000.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /tables-row -->
+
+      <!-- ── Disclaimer ────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    // Pill toggle
+    document.getElementById('pill-standard').addEventListener('click', function () {
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+    document.getElementById('pill-micro').addEventListener('click', function () {
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  </script>
+</body>
+</html>

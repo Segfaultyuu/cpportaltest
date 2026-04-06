@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Downloads</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── App Banner ──────────────────────────────────────── */
+    .app-banner {
+      position: relative;
+      width: 100%;
+      height: 275px;
+      overflow: hidden;
+      background: linear-gradient(to right, #000 3%, #034854 117%);
+    }
+    .app-banner-bg {
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      opacity: 0.55;
+    }
+    /* fade edges */
+    .app-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+    }
+    .app-banner-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .app-banner-text {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .app-banner-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .app-banner-sub {
+      font-size: 16px;
+      font-weight: 500;
+      color: #c2c7d0;
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+    .app-banner-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .app-banner-cta-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #fff;
+    }
+    .app-store-btns {
+      display: flex;
+      gap: 19.2px;
+      align-items: center;
+    }
+    .store-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 33px;
+      background: rgba(24,24,24,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .store-btn:hover { background: rgba(24,24,24,0.45); }
+    .store-btn img { width: 24px; height: 24px; object-fit: contain; }
+
+    .app-banner-phones {
+      position: absolute;
+      right: 40px;
+      bottom: -20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      z-index: 2;
+    }
+    .phone-img-sm {
+      width: 116px;
+      border-radius: 13px;
+      box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+      display: block;
+    }
+    .phone-img-lg {
+      width: 154px;
+      border-radius: 13px;
+      display: block;
+    }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+
+    /* ─── Platform Section ────────────────────────────────── */
+    .platform-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .platform-header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .platform-title-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .platform-icon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .platform-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 24px;
+    }
+
+    .platform-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 24px;
+    }
+
+    /* ─── Download Grid ───────────────────────────────────── */
+    .download-grid {
+      background: var(--bg-2);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .dl-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 17px;
+      flex: 1;
+      cursor: pointer;
+      padding: 12px 8px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .dl-item:hover { background: rgba(10,54,199,0.05); }
+
+    .dl-icon-wrap {
+      width: 50px;
+      height: 50px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .dl-icon-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .dl-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .app-banner { height: auto; min-height: 180px; }
+      .app-banner-inner { padding: 24px 16px; flex-direction: column; align-items: flex-start; justify-content: center; }
+      .app-banner-title { font-size: 22px; }
+      .app-banner-sub { font-size: 13px; }
+      .app-banner-phones { display: none; }
+      .content { padding: 16px 16px 40px; }
+      .page-title { font-size: 22px; margin-bottom: 20px; }
+      .download-grid { flex-wrap: wrap; gap: 8px; justify-content: center; }
+      .dl-item { flex: 0 0 calc(33% - 8px); min-width: 80px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+
+    <!-- ── App Banner ─────────────────────────────────────── -->
+    <div class="app-banner">
+      <img class="app-banner-bg"
+           src="images/figma_9e051fd1-671c-4d03-a415-432bbd25ee85.png"
+           alt="" />
+      <div class="app-banner-inner">
+        <div class="app-banner-text">
+          <div>
+            <div class="app-banner-title">VT Markets APP</div>
+            <div class="app-banner-sub">Download the VT Markets App on App Store and Google Play Store</div>
+          </div>
+          <div class="app-banner-cta">
+            <div class="app-banner-cta-label">Get the app</div>
+            <div class="app-store-btns">
+              <!-- Google Play -->
+              <div class="store-btn">
+                <img src="images/figma_50db4ef0-32da-4476-bfed-1f665c0cf8df.svg" alt="Google Play" />
+              </div>
+              <!-- App Store -->
+              <div class="store-btn">
+                <img src="images/figma_ce8be87b-2365-4065-a607-2cc16f9f2782.svg" alt="App Store" />
+              </div>
+              <!-- Huawei -->
+              <div class="store-btn">
+                <img src="images/figma_584f1c74-b6f8-466c-9913-8d840b961381.svg" alt="Huawei AppGallery" />
+              </div>
+              <!-- APK Direct -->
+              <div class="store-btn">
+                <img src="images/figma_cf998300-8b36-48d2-b401-e47f04f916b8.svg" alt="Direct APK" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone mockups -->
+        <div class="app-banner-phones">
+          <img class="phone-img-sm"
+               src="images/phone-left.png"
+               alt="VT Markets App screenshot" />
+          <img class="phone-img-lg"
+               src="images/phone-right.png"
+               alt="VT Markets App screenshot" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Content ─────────────────────────────────────────── -->
+    <div class="content">
+      <h1 class="page-title">Download</h1>
+
+      <!-- MetaTrader 4 -->
+      <div class="platform-section">
+        <div class="platform-header">
+          <div class="platform-title-row">
+            <img class="platform-icon"
+                 src="images/mt4.png"
+                 alt="MetaTrader 4" />
+            <span class="platform-name">MetaTrader 4</span>
+          </div>
+          <p class="platform-desc">Download MetaTrader 4 for PC, web browsers, smartphones, and tablets</p>
+        </div>
+
+        <div class="download-grid">
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/windows.png" alt="Windows" />
+            </div>
+            <span class="dl-label">Windows</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_79a348ba-581a-43cb-b4ad-fc5573223a22.svg" alt="Mac OS" />
+            </div>
+            <span class="dl-label">Mac OS</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_9687ff7c-da9b-4610-a3ad-bda385ec0233.svg" alt="iPhone/iPad" />
+            </div>
+            <span class="dl-label">iPhone/iPad</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_c785a832-2f81-4db8-ad3e-67002b4c1525.svg" alt="Android/Tablet" />
+            </div>
+            <span class="dl-label">Android/Tablet</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_39695e56-18b6-485e-8dae-a9e16fcbfe81.svg" alt="WebTrader" />
+            </div>
+            <span class="dl-label">WebTrader</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MetaTrader 5 -->
+      <div class="platform-section">
+        <div class="platform-header">
+          <div class="platform-title-row">
+            <img class="platform-icon"
+                 src="images/mt5.png"
+                 alt="MetaTrader 5" />
+            <span class="platform-name">MetaTrader 5</span>
+          </div>
+          <p class="platform-desc">Download MetaTrader 5 for PC, web browsers, smartphones, and tablets</p>
+        </div>
+
+        <div class="download-grid">
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/windows.png" alt="Windows" />
+            </div>
+            <span class="dl-label">Windows</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_79a348ba-581a-43cb-b4ad-fc5573223a22.svg" alt="Mac OS" />
+            </div>
+            <span class="dl-label">Mac OS</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_9687ff7c-da9b-4610-a3ad-bda385ec0233.svg" alt="iPhone/iPad" />
+            </div>
+            <span class="dl-label">iPhone/iPad</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_c785a832-2f81-4db8-ad3e-67002b4c1525.svg" alt="Android/Tablet" />
+            </div>
+            <span class="dl-label">Android/Tablet</span>
+          </div>
+          <div class="dl-item">
+            <div class="dl-icon-wrap">
+              <img src="images/figma_39695e56-18b6-485e-8dae-a9e16fcbfe81.svg" alt="WebTrader" />
+            </div>
+            <span class="dl-label">WebTrader</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

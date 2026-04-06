@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – IB Funds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ──────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ─── Page title ──────────────────────────────────────── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Summary Card ────────────────────────────────────── */
+    .summary-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Gray inner section */
+    .net-funding-section {
+      background: var(--bg-field);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .net-funding-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .net-funding-label-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .net-funding-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .info-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Net value row */
+    .net-value-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .net-value-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .net-flag {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .net-amount {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.22;
+    }
+
+    .net-currency {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Apply For Rebate link */
+    .apply-rebate {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .apply-rebate-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .apply-rebate-text {
+      font-size: 16px;
+      font-weight: 500;
+      background: linear-gradient(-47deg, #0a36c7 4%, #1e68f6 98%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+
+    /* Available balance row */
+    .balance-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .balance-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .balance-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .balance-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .balance-currency {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .balance-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      height: 40px;
+      padding: 0 16px;
+      min-width: 103px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-secondary {
+      height: 40px;
+      padding: 0 16px;
+      min-width: 103px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg-field);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: var(--border); }
+
+    /* ─── Tabs ────────────────────────────────────────────── */
+    .tabs-bar {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding-bottom: 6px;
+      margin-bottom: -1px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+    .tab:hover { color: var(--blue); }
+
+    /* ─── Tab Panels ──────────────────────────────────────── */
+    .tab-panel { display: none; flex-direction: column; gap: 24px; }
+    .tab-panel.active { display: flex; }
+
+    /* ─── Filter Row ──────────────────────────────────────── */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-selects {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      height: 40px;
+      min-width: 160px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 16px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    .filter-select:focus { outline: none; border-color: var(--blue); }
+
+    /* Date range selector */
+    .date-range-btn {
+      height: 40px;
+      min-width: 230px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 40px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      text-align: left;
+      background-image:
+        url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='3' width='12' height='11' rx='2' stroke='%237a8699' stroke-width='1.3'/%3E%3Cpath d='M2 7h12' stroke='%237a8699' stroke-width='1.3'/%3E%3Cpath d='M5 2v2M11 2v2' stroke='%237a8699' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat, no-repeat;
+      background-position: right 12px center, left 14px center;
+      background-size: 16px 16px, 16px 16px;
+      border: 1px solid var(--border);
+    }
+    .date-range-btn:focus { outline: none; border-color: var(--blue); }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn-update {
+      height: 40px;
+      padding: 0 24px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-update:hover { opacity: 0.88; }
+
+    .btn-download {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg-field);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-download:hover { background: var(--border); }
+
+    /* ─── Table Card ──────────────────────────────────────── */
+    .table-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-wrap::-webkit-scrollbar { height: 4px; }
+    .table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .data-table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+    }
+
+    .data-table thead tr {
+      background: var(--bg-field);
+      border-bottom: 1px solid var(--bg-field);
+    }
+    .data-table thead th {
+      padding: 0 24px;
+      height: 52px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--bg-field);
+      transition: background 0.12s;
+    }
+    .data-table tbody tr:last-child { border-bottom: none; }
+    .data-table tbody tr:hover { background: #fafbff; }
+
+    .data-table tbody td {
+      padding: 0 24px;
+      height: 60px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    /* ─── Pagination ──────────────────────────────────────── */
+    .pagination-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 14px 24px;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      flex-wrap: wrap;
+    }
+
+    .pag-info {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+      padding: 0 12px;
+    }
+
+    .pag-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .pag-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+    }
+    .pag-btn:hover { color: var(--blue); }
+    .pag-btn.active {
+      background: var(--bg-field);
+      color: var(--text-primary);
+    }
+    .pag-btn.nav {
+      color: var(--text-primary);
+    }
+    .pag-btn.nav:hover { color: var(--blue); }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .content { padding: 28px 24px 48px; gap: 24px; }
+    }
+
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; gap: 20px; }
+      .page-title { font-size: 24px; }
+      .net-amount { font-size: 28px; }
+      .net-currency { font-size: 20px; }
+      .balance-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .balance-actions { width: 100%; justify-content: flex-end; }
+      .filter-row { flex-direction: column; align-items: stretch; }
+      .filter-selects { flex-direction: column; }
+      .filter-select,
+      .date-range-btn { width: 100%; }
+      .filter-actions { justify-content: flex-end; }
+      .tabs-bar { gap: 16px; }
+      .net-value-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .pagination-row { gap: 8px; }
+    }
+
+    @media (max-width: 480px) {
+      .content { padding: 16px 12px 32px; }
+      .page-title { font-size: 20px; }
+      .net-funding-section { padding: 16px; }
+      .summary-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main" id="main-content">
+    <div class="content">
+
+      <!-- Page Title -->
+      <h1 class="page-title">Funds</h1>
+
+      <!-- ── Summary Card ─────────────────────────────────── -->
+      <div class="summary-card">
+
+        <!-- Gray: Net Funding section -->
+        <div class="net-funding-section">
+          <div class="net-funding-header">
+            <div class="net-funding-label-wrap">
+              <span class="net-funding-label">Net Funding</span>
+              <span class="info-icon" title="Net Funding information">i</span>
+            </div>
+          </div>
+          <div class="net-value-row">
+            <div class="net-value-left">
+              <img class="net-flag" src="images/imgUsd.png" alt="USD" />
+              <span class="net-amount">1,000,000.00</span>
+              <span class="net-currency">USD</span>
+            </div>
+            <a class="apply-rebate" href="#">
+              <svg class="apply-rebate-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 2.5C9.31 2.5 8.63 2.57 7.97 2.7L7.3 1.5C6.97 1.5 6.67 1.67 6.5 1.95L5.5 3.7C4.2 4.43 3.13 5.5 2.4 6.8L0.65 7.8C0.37 7.97 0.2 8.27 0.2 8.6L0.2 10.6C0.2 10.93 0.37 11.23 0.65 11.4L2.4 12.4C3.13 13.7 4.2 14.77 5.5 15.5L6.5 17.25C6.67 17.53 6.97 17.7 7.3 17.7H9.3C9.63 17.7 9.93 17.53 10.1 17.25L11.1 15.5C12.4 14.77 13.47 13.7 14.2 12.4L15.95 11.4C16.23 11.23 16.4 10.93 16.4 10.6V8.6C16.4 8.27 16.23 7.97 15.95 7.8L14.2 6.8C13.47 5.5 12.4 4.43 11.1 3.7L10.1 1.95C9.93 1.67 9.63 1.5 9.3 1.5" stroke="url(#rebate-grad)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8.3" cy="9.6" r="3" stroke="url(#rebate-grad)" stroke-width="1.3"/>
+                <defs>
+                  <linearGradient id="rebate-grad" x1="0" y1="0" x2="16" y2="16" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#0a36c7"/>
+                    <stop offset="1" stop-color="#4d8aff"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <span class="apply-rebate-text">Apply For Rebate</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Available Balance + Actions row -->
+        <div class="balance-row">
+          <div class="balance-left">
+            <span class="balance-label">Available Balance</span>
+            <span class="balance-amount">0.00</span>
+            <span class="balance-currency">USD</span>
+          </div>
+          <div class="balance-actions">
+            <button class="btn-primary">Withdraw</button>
+            <button class="btn-secondary">Transfer</button>
+          </div>
+        </div>
+
+      </div><!-- /summary-card -->
+
+      <!-- ── Tabs ─────────────────────────────────────────── -->
+      <div class="tabs-bar" id="tabs-bar">
+        <span class="tab active" data-tab="rebates">Rebates</span>
+        <span class="tab" data-tab="withdrawals">Withdrawals</span>
+        <span class="tab" data-tab="transfers">Transfers</span>
+      </div>
+
+      <!-- ── Tab: Rebates ──────────────────────────────────── -->
+      <div class="tab-panel active" id="panel-rebates">
+
+        <!-- Filters -->
+        <div class="filter-row">
+          <div class="filter-selects">
+            <select class="filter-select">
+              <option>Sub IB Account</option>
+              <option>Sub IB Account 1</option>
+              <option>Sub IB Account 2</option>
+            </select>
+            <button class="date-range-btn">25/08/2025 - 02/09/2025</button>
+          </div>
+          <div class="filter-actions">
+            <button class="btn-update">Update</button>
+            <button class="btn-download" title="Download">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Date Range</th>
+                  <th>Destination</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+                <tr><td>31/10/2025</td><td>31/10/2025 - 10/10/2025</td><td>123456787654</td><td>Dylan Rix</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-row">
+            <span class="pag-info">Total of 100 data</span>
+            <span class="pag-info">5 Pages</span>
+            <div class="pag-controls">
+              <button class="pag-btn nav">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="pag-btn active">1</button>
+              <button class="pag-btn">2</button>
+              <button class="pag-btn">3</button>
+              <button class="pag-btn">4</button>
+              <button class="pag-btn">5</button>
+              <button class="pag-btn">...</button>
+              <button class="pag-btn">10</button>
+              <button class="pag-btn nav">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-rebates -->
+
+      <!-- ── Tab: Withdrawals ──────────────────────────────── -->
+      <div class="tab-panel" id="panel-withdrawals">
+
+        <!-- Filters -->
+        <div class="filter-row">
+          <div class="filter-selects">
+            <select class="filter-select">
+              <option>Sub IB Account</option>
+              <option>Sub IB Account 1</option>
+            </select>
+            <button class="date-range-btn">25/08/2025 - 02/09/2025</button>
+          </div>
+          <div class="filter-actions">
+            <button class="btn-update">Update</button>
+            <button class="btn-download" title="Download">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Date Range</th>
+                  <th>Destination</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>28/10/2025</td><td>28/10/2025 - 05/10/2025</td><td>987654321234</td><td>Sarah Kim</td></tr>
+                <tr><td>26/10/2025</td><td>26/10/2025 - 04/10/2025</td><td>112233445566</td><td>Michael Chen</td></tr>
+                <tr><td>24/10/2025</td><td>24/10/2025 - 02/10/2025</td><td>223344556677</td><td>Emma Johnson</td></tr>
+                <tr><td>22/10/2025</td><td>22/10/2025 - 30/09/2025</td><td>334455667788</td><td>James Wilson</td></tr>
+                <tr><td>20/10/2025</td><td>20/10/2025 - 28/09/2025</td><td>445566778899</td><td>Lisa Park</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-row">
+            <span class="pag-info">Total of 24 data</span>
+            <span class="pag-info">3 Pages</span>
+            <div class="pag-controls">
+              <button class="pag-btn nav">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="pag-btn active">1</button>
+              <button class="pag-btn">2</button>
+              <button class="pag-btn">3</button>
+              <button class="pag-btn nav">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-withdrawals -->
+
+      <!-- ── Tab: Transfers ────────────────────────────────── -->
+      <div class="tab-panel" id="panel-transfers">
+
+        <!-- Filters -->
+        <div class="filter-row">
+          <div class="filter-selects">
+            <select class="filter-select">
+              <option>Sub IB Account</option>
+              <option>Sub IB Account 1</option>
+            </select>
+            <button class="date-range-btn">25/08/2025 - 02/09/2025</button>
+          </div>
+          <div class="filter-actions">
+            <button class="btn-update">Update</button>
+            <button class="btn-download" title="Download">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Date Range</th>
+                  <th>Destination</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>30/10/2025</td><td>30/10/2025 - 08/10/2025</td><td>556677889900</td><td>Tom Baker</td></tr>
+                <tr><td>27/10/2025</td><td>27/10/2025 - 05/10/2025</td><td>667788990011</td><td>Olivia Moore</td></tr>
+                <tr><td>25/10/2025</td><td>25/10/2025 - 03/10/2025</td><td>778899001122</td><td>Alex Turner</td></tr>
+                <tr><td>23/10/2025</td><td>23/10/2025 - 01/10/2025</td><td>889900112233</td><td>Chloe Davis</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-row">
+            <span class="pag-info">Total of 18 data</span>
+            <span class="pag-info">2 Pages</span>
+            <div class="pag-controls">
+              <button class="pag-btn nav">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="pag-btn active">1</button>
+              <button class="pag-btn">2</button>
+              <button class="pag-btn nav">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-transfers -->
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const panelId = 'panel-' + tab.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(panelId).classList.add('active');
+      });
+    });
+
+    // Pagination active state per panel
+    document.querySelectorAll('.pag-controls').forEach(controls => {
+      controls.querySelectorAll('.pag-btn:not(.nav)').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.textContent.trim() === '...') return;
+          controls.querySelectorAll('.pag-btn:not(.nav)').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    });
+  </script>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

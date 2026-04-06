@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – ProTrader Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Hero Card ───────────────────────────────────────── */
+    .hero-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .hero-img {
+      width: 170px;
+      height: 170px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .hero-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .hero-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hero-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .hero-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .hero-tc {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .hero-tc input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .hero-tc a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+    .hero-tc a:hover { opacity: 0.8; }
+
+    .btn-optin {
+      align-self: flex-start;
+      height: 40px;
+      padding: 0 24px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-62deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-optin:hover { opacity: 0.9; }
+
+    /* ─── Section Title ───────────────────────────────────── */
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    /* ─── Feature Grid ────────────────────────────────────── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: calc(100% - 80px);
+    }
+
+    .feature-card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .feature-card-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .feature-card-icon {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; gap: 24px; }
+      .page-title { font-size: 24px; }
+      .hero-card { flex-direction: column; align-items: flex-start; gap: 24px; padding: 24px; }
+      .hero-img { width: 120px; height: 120px; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <h1 class="page-title">Tools</h1>
+
+      <!-- ── Hero Opt-in Card ──────────────────────────────── -->
+      <div class="hero-card">
+        <img class="hero-img"
+             src="images/3D FX currency.png"
+             alt="ProTrader Tools" />
+
+        <div class="hero-body">
+          <div class="hero-title">ProTrader Tools</div>
+
+          <div class="hero-steps">
+            <div class="hero-step">
+              <div class="hero-step-num">1</div>
+              <span>Ensure your account is funded with a minimum of $500 (or equivalent) in a live trading account.</span>
+            </div>
+            <div class="hero-step">
+              <div class="hero-step-num">2</div>
+              <span>Agree to the Terms and Conditions by checking the box below.</span>
+            </div>
+            <div class="hero-step">
+              <div class="hero-step-num">3</div>
+              <span>Click "Opt-in" to activate your ProTrader Tools access.</span>
+            </div>
+          </div>
+
+          <label class="hero-tc">
+            <input type="checkbox" />
+            I agree to the <a href="#">Terms and Conditions</a>
+          </label>
+
+          <button class="btn-optin">Opt-in</button>
+        </div>
+      </div>
+
+      <!-- ── Feature Cards ─────────────────────────────────── -->
+      <div class="section-title">Features</div>
+
+      <div class="feature-grid">
+
+        <!-- Marketbuzz -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Marketbuzz</div>
+            <div class="feature-card-desc">Get a quick audio or text summary of the global markets to stay informed in minutes.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_e6daa3de-5f82-41e2-90e1-46fc475da9ef.png"
+               alt="Marketbuzz" />
+        </div>
+
+        <!-- Technical Insights -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Technical Insights</div>
+            <div class="feature-card-desc">Access automated technical analysis with buy/sell signals across multiple timeframes.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_c4932f98-e8f0-47c8-8023-c5b150bbf2d5.png"
+               alt="Technical Insights" />
+        </div>
+
+        <!-- Featured Ideas -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Featured Ideas</div>
+            <div class="feature-card-desc">Explore curated trade ideas from expert analysts to inspire your next move.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_bbd3d066-aaf1-4c93-bcaf-63b8dc78ff1f.png"
+               alt="Featured Ideas" />
+        </div>
+
+        <!-- Economic Calendar -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Economic Calendar</div>
+            <div class="feature-card-desc">Track key economic events and data releases that can impact your trades.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_fa35a137-ca74-47cb-800c-b18988bf3a18.png"
+               alt="Economic Calendar" />
+        </div>
+
+        <!-- Analyst Views -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Analyst Views</div>
+            <div class="feature-card-desc">See directional calls from Trading Central's global team with supporting indicators.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_ab374dd8-0db0-4ac2-afc8-c473c0aa021f.png"
+               alt="Analyst Views" />
+        </div>
+
+        <!-- Trading Indicators -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Trading Indicators</div>
+            <div class="feature-card-desc">Use professional-grade indicators to identify trends, momentum, and entry points.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_474d4d82-5574-4704-81c6-cf2f96c2841c.png"
+               alt="Trading Indicators" />
+        </div>
+
+        <!-- Video Tutorial -->
+        <div class="feature-card">
+          <div class="feature-card-top">
+            <div class="feature-card-title">Video Tutorial</div>
+            <div class="feature-card-desc">Learn how to use each ProTrader tool with step-by-step video guides.</div>
+          </div>
+          <img class="feature-card-icon"
+               src="images/figma_9fbc426d-3aad-42ad-aee4-e68a3e4f3edc.png"
+               alt="Video Tutorial" />
+        </div>
+
+      </div><!-- /feature-grid -->
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>

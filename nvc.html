@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Notional Volume Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --blue-12: rgba(10, 54, 199, 0.12);
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    /* ─── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Two-col Layout ──────────────────────────────────── */
+    .cols {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    /* ─── Calculator Card ─────────────────────────────────── */
+    .calc-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ─── Field Group ─────────────────────────────────────── */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .field-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: capitalize;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    .field-row .field-group { flex: 1; }
+
+    /* ─── Select / Input ──────────────────────────────────── */
+    .select-field {
+      height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .select-field svg { flex-shrink: 0; color: var(--text-secondary); }
+
+    .input-field {
+      height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 16px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      width: 100%;
+      outline: none;
+    }
+    .input-field:focus { border-color: var(--blue); }
+
+    /* ─── Info Bar ────────────────────────────────────────── */
+    .info-bar {
+      background: var(--bg-2);
+      border-radius: 8px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .info-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+    }
+
+    .info-bar-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .info-bar-value {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ─── Buttons ─────────────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-reset {
+      flex: 1;
+      height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue-12);
+      color: var(--blue);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-reset:hover { opacity: 0.8; }
+
+    .btn-calculate {
+      flex: 1;
+      height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(-27deg, #0a36c7 4%, #1e68f6 98%);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-calculate:hover { opacity: 0.9; }
+
+    /* ─── Result Box ──────────────────────────────────────── */
+    .result-box {
+      background: var(--blue-light);
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-label-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .result-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .result-label svg {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .result-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ─── How It Works Card ───────────────────────────────── */
+    .how-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      width: 420px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .how-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    .how-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .how-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .how-q {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .how-a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .how-a a { color: var(--blue); text-decoration: underline; }
+
+    /* ─── Disclaimer ──────────────────────────────────────── */
+    .disclaimer {
+      margin-top: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .disclaimer a { color: var(--blue); text-decoration: underline; }
+    .disclaimer a:hover { opacity: 0.8; }
+
+    /* ─── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 16px 16px 40px; gap: 20px; }
+      .page-title { font-size: 24px; }
+      .cols { flex-direction: column; }
+      .how-card { width: 100%; }
+      .field-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main">
+    <div class="content">
+
+      <h1 class="page-title">Notional Volume Calculator</h1>
+
+      <div class="cols">
+
+        <!-- ── Calculator ──────────────────────────────────── -->
+        <div class="calc-card">
+
+          <!-- Product -->
+          <div class="field-group">
+            <div class="field-label">Product*</div>
+            <div class="select-field">
+              <span>Select Account</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Trading Lots + Close Price -->
+          <div class="field-row">
+            <div class="field-group">
+              <div class="field-label">Trading Lots*</div>
+              <input class="input-field" type="number" value="0.000" step="0.001" min="0" />
+            </div>
+            <div class="field-group">
+              <div class="field-label">Close Price*</div>
+              <input class="input-field" type="number" value="0.000" step="0.001" min="0" />
+            </div>
+          </div>
+
+          <!-- Contract Size + Exchange Rate -->
+          <div class="info-bar">
+            <div class="info-bar-item">
+              <span class="info-bar-label">Contract Size</span>
+              <span class="info-bar-value">-</span>
+            </div>
+            <div class="info-bar-item">
+              <span class="info-bar-label">Exchange Rate</span>
+              <span class="info-bar-value">-</span>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="btn-row">
+            <button class="btn-reset">Reset</button>
+            <button class="btn-calculate">Calculate</button>
+          </div>
+
+          <!-- Result -->
+          <div class="result-box">
+            <div class="result-label-row">
+              <span class="result-label">Approx. Notional Volume (USD)</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M8 7V11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="8" cy="5" r="0.8" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="result-value">97,101,220.00</div>
+          </div>
+
+        </div><!-- /calc-card -->
+
+        <!-- ── How It Works ────────────────────────────────── -->
+        <div class="how-card">
+          <div class="how-title">How Does It Work?</div>
+          <div class="how-body">
+
+            <div class="how-section">
+              <div class="how-q">How do you calculate notional volume with VT Markets?</div>
+              <div class="how-a">At VT Markets, most of the promotions adopt notional volume (USD) as one of the key criteria to be eligible for rewards offered in each promotion.</div>
+            </div>
+
+            <div class="how-section">
+              <div class="how-q">Here is how the notional volume in USD is calculated:</div>
+              <div class="how-a">Notional Volume (USD) = Trading lot × Contract size × Closing price of the underlying assets × End of day product exchange rate</div>
+            </div>
+
+            <div class="how-section">
+              <div class="how-q">To get the notional volume in millions (USD):</div>
+              <div class="how-a">Notional Volume in millions (USD) = Notional Volume (USD) ÷ 1,000,000</div>
+            </div>
+
+            <div class="how-section">
+              <div class="how-q">Example:</div>
+              <div class="how-a">
+                If you are trading 1 lot of <a href="#">SPY ETF</a> with a closing price of $3800, and a contract size of 1000, the calculation will be as follows:<br/>
+                Notional Volume (USD) = 1 × 1000 × 3800 × 1<br/>
+                Notional Volume (USD) = $3,800,000<br/>
+                Notional Volume in millions (USD) = 3,800,000 ÷ 1,000,000 = 3.8 million USD
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /how-card -->
+
+      </div><!-- /cols -->
+
+      <!-- ── Disclaimer ────────────────────────────────────── -->
+      <div class="disclaimer">
+        <p>Simply log in the VT Markets App with your portal email address and password.
+          <a href="#">Click here to find out more.</a>
+        </p>
+        <br />
+        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
+          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
+          please take into consideration your level of experience, investment objectives and seek independent
+          financial advice if necessary. Please read our legal documents on our website and ensure that you
+          fully understand the risks before you make any trading decisions.</p>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+</body>
+</html>
