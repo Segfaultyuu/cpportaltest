@@ -55,6 +55,34 @@
 
     .topbar-icon-btn:hover { background: var(--bg-2); }
 
+    .topbar-lang-wrap { position: relative; }
+
+    .topbar-lang-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      width: 220px; max-height: 420px; overflow-y: auto;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      z-index: 300;
+    }
+    .topbar-lang-dropdown.open { display: block; }
+
+    .topbar-lang-dropdown::-webkit-scrollbar { width: 4px; }
+    .topbar-lang-dropdown::-webkit-scrollbar-track { background: transparent; }
+    .topbar-lang-dropdown::-webkit-scrollbar-thumb { background: #e8e9ea; border-radius: 2px; }
+
+    .topbar-lang-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; cursor: pointer; transition: background 0.12s;
+      border-bottom: 1px solid #f4f5f6;
+    }
+    .topbar-lang-item:last-child { border-bottom: none; }
+    .topbar-lang-item:hover { background: #f4f6f9; }
+    .topbar-lang-item.active { background: #e8f1ff; }
+    .topbar-lang-flag { font-size: 18px; line-height: 1; flex-shrink: 0; }
+    .topbar-lang-name { font-size: 14px; font-weight: 500; color: #282d34; flex: 1; }
+    .topbar-lang-check { flex-shrink: 0; color: #0a36c7; }
+    .topbar-lang-item:not(.active) .topbar-lang-check { display: none; }
+
     .topbar-avatar {
       width: 32px; height: 32px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -151,7 +179,7 @@
       .topbar-avatar { display: none !important; }
       .topbar-avatar-wrap { display: none !important; }
       .topbar-right-icons { flex: 1; justify-content: flex-end; gap: 16px; }
-      .topbar-language { display: none !important; }
+      .topbar-lang-wrap { display: none !important; }
       .topbar-webtrader-mobile { display: flex !important; }
       .topbar-download { display: flex !important; }
       .topbar-dropdown { display: none !important; }
@@ -174,7 +202,39 @@
       <div class="topbar-right-icons">
         <button class="topbar-webtrader-mobile">Webtrader+</button>
         <div class="topbar-icon-btn" title="Coupons"><img src="images/imgCoupons.svg" width="20" height="20" alt="Coupons" /></div>
-        <div class="topbar-icon-btn topbar-language" title="Language"><img src="images/imgIcoLanguage.svg" width="20" height="20" alt="Language" /></div>
+        <div class="topbar-lang-wrap">
+          <div class="topbar-icon-btn topbar-language" id="topbar-lang-btn" title="Language"><img src="images/imgIcoLanguage.svg" width="20" height="20" alt="Language" /></div>
+          <div class="topbar-lang-dropdown" id="topbar-lang-dropdown">
+            <div class="topbar-lang-item active" data-lang="en"><span class="topbar-lang-flag">🇬🇧</span><span class="topbar-lang-name">English</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="zh-cn"><span class="topbar-lang-flag">🇨🇳</span><span class="topbar-lang-name">简体中文</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="zh-tw"><span class="topbar-lang-flag">🇭🇰</span><span class="topbar-lang-name">繁體中文</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="fr"><span class="topbar-lang-flag">🇫🇷</span><span class="topbar-lang-name">Français</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="ko"><span class="topbar-lang-flag">🇰🇷</span><span class="topbar-lang-name">한국어</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="ja"><span class="topbar-lang-flag">🇯🇵</span><span class="topbar-lang-name">日本語</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="th"><span class="topbar-lang-flag">🇹🇭</span><span class="topbar-lang-name">ภาษาไทย</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="vi"><span class="topbar-lang-flag">🇻🇳</span><span class="topbar-lang-name">Tiếng Việt</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="es"><span class="topbar-lang-flag">🇪🇸</span><span class="topbar-lang-name">Español (Intl.)</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="pt"><span class="topbar-lang-flag">🇵🇹</span><span class="topbar-lang-name">Português (Intl.)</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="de"><span class="topbar-lang-flag">🇩🇪</span><span class="topbar-lang-name">Deutsch</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="id"><span class="topbar-lang-flag">🇮🇩</span><span class="topbar-lang-name">Bahasa Indonesia</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="ar"><span class="topbar-lang-flag">🇦🇪</span><span class="topbar-lang-name">عربي</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="ru"><span class="topbar-lang-flag">🇷🇺</span><span class="topbar-lang-name">Русский</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="mn"><span class="topbar-lang-flag">🇲🇳</span><span class="topbar-lang-name">Монгол</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="km"><span class="topbar-lang-flag">🇰🇭</span><span class="topbar-lang-name">ខ្មែរ</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="nl"><span class="topbar-lang-flag">🇳🇱</span><span class="topbar-lang-name">Nederlands</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="it"><span class="topbar-lang-flag">🇮🇹</span><span class="topbar-lang-name">Italian</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="ms"><span class="topbar-lang-flag">🇲🇾</span><span class="topbar-lang-name">Malaysia</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="tl"><span class="topbar-lang-flag">🇵🇭</span><span class="topbar-lang-name">Tagalog</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="uz"><span class="topbar-lang-flag">🇺🇿</span><span class="topbar-lang-name">Uzbekistan</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="es-br"><span class="topbar-lang-flag">🇧🇷</span><span class="topbar-lang-name">Español (Brasil)</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="pt-br"><span class="topbar-lang-flag">🇧🇷</span><span class="topbar-lang-name">Português (Brasil)</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="tr"><span class="topbar-lang-flag">🇹🇷</span><span class="topbar-lang-name">Turkish</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="pl"><span class="topbar-lang-flag">🇵🇱</span><span class="topbar-lang-name">Polski</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="fa"><span class="topbar-lang-flag">🇮🇷</span><span class="topbar-lang-name">فارسی</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="hi"><span class="topbar-lang-flag">🇮🇳</span><span class="topbar-lang-name">हिंदी</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+            <div class="topbar-lang-item" data-lang="sv"><span class="topbar-lang-flag">🇸🇪</span><span class="topbar-lang-name">Sweden</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+          </div>
+        </div>
         <div class="topbar-icon-btn" title="Price Alert"><img src="images/imgFrame.svg" width="20" height="20" alt="Price Alert" /></div>
         <button class="topbar-download" title="Download"><img src="images/Download.png" width="24" height="24" alt="Download" /></button>
       </div>
@@ -198,7 +258,7 @@
             <div class="topbar-dd-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M15 9h2M15 13h2M5 17a4 4 0 0 1 8 0"/></svg></div>
             <span class="topbar-dd-label">Verification</span>
           </div>
-          <div class="topbar-dd-item">
+          <div class="topbar-dd-item" onclick="window.location.href='downloads.html'">
             <div class="topbar-dd-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 14l4 4 4-4"/></svg></div>
             <span class="topbar-dd-label">Download</span>
           </div>
@@ -308,5 +368,32 @@
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') dropdown.classList.remove('open');
+  });
+
+  /* ── Language dropdown ───────────────────────────────────── */
+  const langBtn      = document.getElementById('topbar-lang-btn');
+  const langDropdown = document.getElementById('topbar-lang-dropdown');
+  langBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.remove('open');
+    langDropdown.classList.toggle('open');
+  });
+
+  document.querySelectorAll('.topbar-lang-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.topbar-lang-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      langDropdown.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!langDropdown.contains(e.target) && e.target !== langBtn) {
+      langDropdown.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') langDropdown.classList.remove('open');
   });
 })();

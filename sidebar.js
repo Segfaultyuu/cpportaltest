@@ -267,7 +267,8 @@
     if (href === 'protraderplatform.html' && page === 'protraderplatform.html') return true;
     if (href === 'nvc.html' && page === 'nvc.html') return true;
     if (href === 'analysisiq.html' && page === 'analysisiq.html') return true;
-    if (href === 'transactionhistory.html' && (page === 'transactionhistory.html' || page === 'fundhistory.html')) return true;
+    if (href === 'transactionhistory.html' && page === 'transactionhistory.html') return true;
+    if (href === 'fundhistory.html' && page === 'fundhistory.html') return true;
     if (href === 'earn.html' && page === 'earn.html') return true;
     if (href === 'profile.html' && page === 'profile.html') return true;
     if (href === 'clubbleu.html' && page === 'clubbleu.html') return true;
