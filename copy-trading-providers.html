@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Client Portal – Signal Providers</title>
+  <title>Client Portal – Signal Provider</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -41,45 +41,118 @@
 
     body.sidebar-collapsed .main { margin-left: 64px; }
 
-    /* ── Page entrance animation (bottom-to-top) ──────────── */
-    @keyframes contentSlideUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
     .content {
       padding: 40px 40px 60px;
       max-width: 1440px;
       margin: 0 auto;
     }
 
+    /* ─── Page Header ──────────────────────────────────────── */
     .page-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 44px;
-      margin-bottom: 32px;
-      animation: contentSlideUp 0.45s 0.08s cubic-bezier(0.4, 0, 0.2, 1) both;
+      margin-bottom: 20px;
     }
 
     .page-title {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 700;
       color: var(--text-primary);
-      line-height: 1.2;
     }
 
-    .page-actions { display: flex; gap: 12px; }
+    .faq-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+    }
 
+    .faq-link:hover { color: var(--blue); }
+
+    /* ─── Account Info Card ────────────────────────────────── */
+    .account-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .account-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+
+    .account-flag {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .account-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .account-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .account-dropdown-icon {
+      margin-left: 4px;
+      color: var(--text-secondary);
+    }
+
+    .account-stats {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 16px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #7A8699;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-value.positive {
+      color: var(--green);
+    }
+
+    /* ─── Tabs ──────────────────────────────────────────────── */
     .tabs-wrapper {
       display: flex;
-      gap: 24px;
+      gap: 32px;
       border-bottom: 1px solid var(--border);
       margin-bottom: 32px;
     }
 
     .tab {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 500;
       color: var(--text-secondary);
       padding-bottom: 12px;
@@ -89,470 +162,499 @@
       white-space: nowrap;
       transition: color 0.15s, border-color 0.15s;
       text-decoration: none;
+      position: relative;
     }
 
     .tab.active {
-      color: var(--blue);
+      color: var(--text-primary);
       border-bottom-color: var(--blue);
       font-weight: 600;
     }
 
-    .tab:hover { color: var(--blue); }
+    .tab:hover { color: var(--text-primary); }
 
-    .filters-bar {
-      animation: contentSlideUp 0.45s 0.12s cubic-bezier(0.4, 0, 0.2, 1) both;
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-      align-items: center;
-    }
-
-    .filter-btn {
-      height: 36px;
-      padding: 0 16px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text-primary);
-      font-family: 'Roboto', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .filter-btn.active {
-      background: var(--blue-light);
-      border-color: var(--blue);
-      color: var(--blue);
-      font-weight: 600;
-    }
-
-    .filter-btn:hover { border-color: var(--blue); }
-
-    .providers-list {
-      animation: contentSlideUp 0.5s 0.16s cubic-bezier(0.4, 0, 0.2, 1) both;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .provider-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: var(--shadow-card);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s;
-    }
-
-    .provider-card:hover {
-      background: #f9f9f9;
-      box-shadow: 0 6px 16px rgba(168, 195, 206, 0.25);
-    }
-
-    .provider-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex: 1;
-    }
-
-    .provider-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-
-    .provider-info {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex: 1;
-    }
-
-    .provider-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .provider-meta {
-      display: flex;
-      gap: 20px;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .meta-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .provider-center {
-      display: flex;
-      gap: 40px;
-      margin: 0 40px;
-      align-items: center;
-    }
-
-    .metric {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    /* ─── Empty State ───────────────────────────────────────── */
+    .empty-state {
+      padding: 80px 40px;
       text-align: center;
     }
 
-    .metric-label {
-      font-size: 11px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
+    .empty-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .metric-value {
-      font-size: 16px;
+    .empty-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .empty-title {
+      font-size: 24px;
       font-weight: 700;
       color: var(--text-primary);
+      margin-bottom: 16px;
     }
 
-    .metric-value.positive { color: var(--green); }
-    .metric-value.negative { color: var(--red); }
+    .empty-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
 
-    .provider-right {
+    .empty-description strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .empty-description a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .empty-description a:hover {
+      text-decoration: underline;
+    }
+
+    .submit-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 48px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .declaration-check {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-end;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .custom-checkbox {
+      margin-top: 2px;
+    }
+
+    .declaration-check > label:last-child {
+      flex: 0 1 auto;
+    }
+
+    .custom-checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      position: relative;
       flex-shrink: 0;
     }
 
-    .btn-follow {
-      height: 36px;
-      width: 110px;
-      padding: 0;
-      border-radius: 6px;
-      border: 1.5px solid var(--blue);
-      background: transparent;
+    .custom-checkbox input {
+      display: none;
+    }
+
+    .checkbox-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+
+    .checkbox-unchecked {
+      display: block;
+    }
+
+    .checkbox-checked {
+      display: none;
+    }
+
+    .custom-checkbox input:checked ~ .checkbox-unchecked {
+      display: none;
+    }
+
+    .custom-checkbox input:checked ~ .checkbox-checked {
+      display: block;
+    }
+
+    .declaration-check a {
       color: var(--blue);
-      font-family: 'Roboto', sans-serif;
+      text-decoration: none;
+    }
+
+    .declaration-check a:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── Footer Notice ─────────────────────────────────────── */
+    .notice {
+      margin-top: 40px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 12px;
       font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
+      line-height: 1.6;
+      color: var(--text-secondary);
     }
 
-    .btn-follow:hover { background: var(--blue-light); }
-
-    .btn-follow.following {
-      background: var(--blue-light);
-      border-color: var(--blue);
+    .notice p {
+      margin-bottom: 12px;
     }
 
-    .risk-badge {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 8px;
-      border-radius: 4px;
+    .notice p:last-child {
+      margin-bottom: 0;
     }
 
-    .risk-badge.low { background: #e7f7ee; color: var(--green); }
-    .risk-badge.medium { background: #fff3e0; color: #ff9800; }
-    .risk-badge.high { background: #ffebee; color: var(--red); }
-
-    .meta-icon { width: 12px; height: 12px; flex-shrink: 0; }
-    .badge-icon { width: 11px; height: 11px; flex-shrink: 0; }
-
-    @media (max-width: 1200px) {
-      .provider-center { gap: 20px; margin: 0 20px; }
+    .notice a {
+      color: var(--blue);
+      text-decoration: none;
     }
 
+    .notice a:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── Responsive Layout ────────────────────────────────── */
+
+    /* Tablet (max-width: 1024px) */
+    @media (max-width: 1024px) {
+      .content {
+        padding: 32px 24px 60px;
+      }
+
+      .account-stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+
+      .page-title {
+        font-size: 28px;
+      }
+    }
+
+    /* Mobile landscape / Small tablet (max-width: 768px) */
     @media (max-width: 768px) {
-      .main { margin-left: 64px; }
-      .content { padding: 20px; }
-      .provider-card { flex-direction: column; gap: 16px; }
-      .provider-left { width: 100%; }
-      .provider-center { display: none; }
-      .provider-right { width: 100%; align-items: stretch; }
-      .btn-follow { width: 100%; }
+      .main {
+        margin-left: 0 !important;
+        padding-top: 56px;
+      }
+
+      .content {
+        padding: 20px 16px 60px;
+      }
+
+      .page-header {
+        margin-bottom: 16px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .faq-link {
+        font-size: 12px;
+      }
+
+      .account-card {
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .account-selector {
+        margin-bottom: 12px;
+      }
+
+      .account-name {
+        font-size: 13px;
+      }
+
+      .account-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 8px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+      }
+
+      .stat-value {
+        font-size: 14px;
+      }
+
+      .tabs-wrapper {
+        gap: 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        margin-bottom: 24px;
+      }
+
+      .tabs-wrapper::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        font-size: 14px;
+        padding-bottom: 10px;
+      }
+
+      .empty-state {
+        padding: 40px 20px;
+      }
+
+      .empty-icon {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 24px;
+      }
+
+      .empty-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+
+      .empty-description {
+        font-size: 13px;
+        margin-bottom: 24px;
+        padding: 0 10px;
+      }
+
+      .submit-btn {
+        padding: 12px 32px;
+        font-size: 15px;
+      }
+
+      .declaration-check {
+        gap: 8px;
+        margin-top: 16px;
+        padding: 0 16px;
+        font-size: 12px;
+      }
+
+      .notice {
+        margin-top: 32px;
+        padding: 16px;
+        font-size: 11px;
+      }
+    }
+
+    /* Mobile portrait (max-width: 480px) */
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 20px;
+      }
+
+      .account-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .stat-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .stat-item:last-child {
+        border-bottom: none;
+      }
+
+      .stat-label {
+        font-size: 12px;
+      }
+
+      .stat-value {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .empty-icon {
+        width: 80px;
+        height: 80px;
+      }
+
+      .empty-title {
+        font-size: 18px;
+      }
+
+      .empty-description {
+        font-size: 12px;
+      }
+
+      .submit-btn {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .declaration-check {
+        padding: 0;
+        font-size: 11px;
+      }
+    }
+
+    /* Extra small mobile (max-width: 360px) */
+    @media (max-width: 360px) {
+      .content {
+        padding: 16px 12px 60px;
+      }
+
+      .page-title {
+        font-size: 18px;
+      }
+
+      .account-card {
+        padding: 12px;
+      }
+
+      .empty-state {
+        padding: 32px 16px;
+      }
+
+      .empty-description {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="sidebar-root"></div>
-  <div id="topbar-root"></div>
 
-  <main class="main">
-    <div class="content">
-      <div class="page-header">
-        <h1 class="page-title">Signal Providers</h1>
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="sidebar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TOPBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="topbar-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Signal Provider</h1>
+      <a href="#" class="faq-link">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M8 7v3.5M8 5.5h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        FAQ
+      </a>
+    </div>
+
+    <!-- Account Info Card -->
+    <div class="account-card">
+      <div class="account-selector">
+        <div class="account-flag">
+          <img src="images/imgUsd.png" alt="USD" />
+        </div>
+        <span class="account-name">XXXXXX-USD-Copy Trading</span>
+        <svg class="account-dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="margin-left: auto;">
+          <circle cx="8" cy="8" r="7" stroke="#7a8699" stroke-width="1.2"/>
+          <path d="M8 7v3.5M8 5.5h.01" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
       </div>
 
-      <div class="tabs-wrapper">
-        <a href="copy-trading.html" class="tab">Overview</a>
-        <a href="copy-trading-portfolios.html" class="tab">My Portfolios</a>
-        <a href="copy-trading-providers.html" class="tab active">Signal Providers</a>
-      </div>
-
-      <div class="filters-bar">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">Low Risk</button>
-        <button class="filter-btn">Medium Risk</button>
-        <button class="filter-btn">Following</button>
-      </div>
-
-      <div class="providers-list">
-
-        <!-- SVG icon templates (reused via inline) -->
-        <!-- star icon -->
-        <!-- ⭐ → filled star -->
-        <!-- 👥 → two persons -->
-        <!-- 📅 → calendar -->
-        <!-- 🛡️ → shield -->
-        <!-- ⚠️ → triangle warning -->
-
-        <div class="provider-card">
-          <div class="provider-left">
-            <img class="provider-avatar" src="images/avatar1st.png" alt="Provider avatar" />
-            <div class="provider-info">
-              <div class="provider-name">FX Master Pro</div>
-              <div class="provider-meta">
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L7.35 4.27L11 4.64L8.4 6.93L9.18 10.5L6 8.67L2.82 10.5L3.6 6.93L1 4.64L4.65 4.27L6 1Z" fill="#FFB800"/></svg>
-                  4.8/5 (1,243 reviews)
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M1 10c0-2 1.5-3 3.5-3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/><circle cx="8.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M11 10c0-2-1.5-3-3.5-3s-3.5 1-3.5 3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  2,450 followers
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2.5" width="10" height="9" rx="1.5" stroke="#7a8699" stroke-width="1.1"/><path d="M1 5.5h10" stroke="#7a8699" stroke-width="1.1"/><path d="M4 1v3M8 1v3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  Trading since 2020
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="provider-center">
-            <div class="metric">
-              <span class="metric-label">Avg. Monthly Return</span>
-              <span class="metric-value positive">+24.5%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Win Rate</span>
-              <span class="metric-value positive">72%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Max Drawdown</span>
-              <span class="metric-value">-8.2%</span>
-            </div>
-          </div>
-
-          <div class="provider-right">
-            <span class="risk-badge low">
-              <svg class="badge-icon" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1L1 3v3.5c0 2.5 2 4.5 4.5 5 2.5-.5 4.5-2.5 4.5-5V3L5.5 1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M3.5 6l1.5 1.5L7.5 5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Low Risk
-            </span>
-            <button class="btn-follow">Follow</button>
-          </div>
+      <div class="account-stats">
+        <div class="stat-item">
+          <span class="stat-label">Equity(USD)</span>
+          <span class="stat-value">100.00</span>
         </div>
-
-        <div class="provider-card">
-          <div class="provider-left">
-            <img class="provider-avatar" src="images/avatar2nd.png" alt="Provider avatar" />
-            <div class="provider-info">
-              <div class="provider-name">Crypto Surge</div>
-              <div class="provider-meta">
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L7.35 4.27L11 4.64L8.4 6.93L9.18 10.5L6 8.67L2.82 10.5L3.6 6.93L1 4.64L4.65 4.27L6 1Z" fill="#FFB800"/></svg>
-                  4.6/5 (892 reviews)
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M1 10c0-2 1.5-3 3.5-3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/><circle cx="8.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M11 10c0-2-1.5-3-3.5-3s-3.5 1-3.5 3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  1,890 followers
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2.5" width="10" height="9" rx="1.5" stroke="#7a8699" stroke-width="1.1"/><path d="M1 5.5h10" stroke="#7a8699" stroke-width="1.1"/><path d="M4 1v3M8 1v3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  Trading since 2021
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="provider-center">
-            <div class="metric">
-              <span class="metric-label">Avg. Monthly Return</span>
-              <span class="metric-value positive">+18.3%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Win Rate</span>
-              <span class="metric-value positive">68%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Max Drawdown</span>
-              <span class="metric-value">-12.5%</span>
-            </div>
-          </div>
-
-          <div class="provider-right">
-            <span class="risk-badge medium">
-              <svg class="badge-icon" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1L10 10H1L5.5 1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M5.5 4.5v2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="5.5" cy="8.5" r="0.5" fill="currentColor"/></svg>
-              Medium Risk
-            </span>
-            <button class="btn-follow">Follow</button>
-          </div>
+        <div class="stat-item">
+          <span class="stat-label">Floating P/I(USD)</span>
+          <span class="stat-value">100.00</span>
         </div>
-
-        <div class="provider-card">
-          <div class="provider-left">
-            <img class="provider-avatar" src="images/avatar3rd.png" alt="Provider avatar" />
-            <div class="provider-info">
-              <div class="provider-name">Trend Rider</div>
-              <div class="provider-meta">
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L7.35 4.27L11 4.64L8.4 6.93L9.18 10.5L6 8.67L2.82 10.5L3.6 6.93L1 4.64L4.65 4.27L6 1Z" fill="#FFB800"/></svg>
-                  4.4/5 (654 reviews)
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M1 10c0-2 1.5-3 3.5-3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/><circle cx="8.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M11 10c0-2-1.5-3-3.5-3s-3.5 1-3.5 3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  1,234 followers
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2.5" width="10" height="9" rx="1.5" stroke="#7a8699" stroke-width="1.1"/><path d="M1 5.5h10" stroke="#7a8699" stroke-width="1.1"/><path d="M4 1v3M8 1v3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  Trading since 2019
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="provider-center">
-            <div class="metric">
-              <span class="metric-label">Avg. Monthly Return</span>
-              <span class="metric-value positive">+15.7%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Win Rate</span>
-              <span class="metric-value positive">65%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Max Drawdown</span>
-              <span class="metric-value">-9.8%</span>
-            </div>
-          </div>
-
-          <div class="provider-right">
-            <span class="risk-badge low">
-              <svg class="badge-icon" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1L1 3v3.5c0 2.5 2 4.5 4.5 5 2.5-.5 4.5-2.5 4.5-5V3L5.5 1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M3.5 6l1.5 1.5L7.5 5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Low Risk
-            </span>
-            <button class="btn-follow following">Following</button>
-          </div>
+        <div class="stat-item">
+          <span class="stat-label">Balance(USD)</span>
+          <span class="stat-value">100.00</span>
         </div>
-
-        <div class="provider-card">
-          <div class="provider-left">
-            <img class="provider-avatar" src="images/img7.png" alt="Provider avatar" />
-            <div class="provider-info">
-              <div class="provider-name">Rocket Trader</div>
-              <div class="provider-meta">
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L7.35 4.27L11 4.64L8.4 6.93L9.18 10.5L6 8.67L2.82 10.5L3.6 6.93L1 4.64L4.65 4.27L6 1Z" fill="#FFB800"/></svg>
-                  4.2/5 (521 reviews)
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M1 10c0-2 1.5-3 3.5-3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/><circle cx="8.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M11 10c0-2-1.5-3-3.5-3s-3.5 1-3.5 3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  892 followers
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2.5" width="10" height="9" rx="1.5" stroke="#7a8699" stroke-width="1.1"/><path d="M1 5.5h10" stroke="#7a8699" stroke-width="1.1"/><path d="M4 1v3M8 1v3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  Trading since 2022
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="provider-center">
-            <div class="metric">
-              <span class="metric-label">Avg. Monthly Return</span>
-              <span class="metric-value positive">+32.1%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Win Rate</span>
-              <span class="metric-value positive">61%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Max Drawdown</span>
-              <span class="metric-value">-18.5%</span>
-            </div>
-          </div>
-
-          <div class="provider-right">
-            <span class="risk-badge high">
-              <svg class="badge-icon" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1L10 10H1L5.5 1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M5.5 4.5v2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="5.5" cy="8.5" r="0.5" fill="currentColor"/></svg>
-              High Risk
-            </span>
-            <button class="btn-follow">Follow</button>
-          </div>
+        <div class="stat-item">
+          <span class="stat-label">Credit(USD)</span>
+          <span class="stat-value">100.00</span>
         </div>
-
-        <div class="provider-card">
-          <div class="provider-left">
-            <img class="provider-avatar" src="images/avatar1st.png" alt="Provider avatar" />
-            <div class="provider-info">
-              <div class="provider-name">Premium Signals</div>
-              <div class="provider-meta">
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L7.35 4.27L11 4.64L8.4 6.93L9.18 10.5L6 8.67L2.82 10.5L3.6 6.93L1 4.64L4.65 4.27L6 1Z" fill="#FFB800"/></svg>
-                  4.7/5 (1,089 reviews)
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M1 10c0-2 1.5-3 3.5-3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/><circle cx="8.5" cy="3.5" r="2" stroke="#7a8699" stroke-width="1.1"/><path d="M11 10c0-2-1.5-3-3.5-3s-3.5 1-3.5 3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  3,145 followers
-                </span>
-                <span class="meta-item">
-                  <svg class="meta-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2.5" width="10" height="9" rx="1.5" stroke="#7a8699" stroke-width="1.1"/><path d="M1 5.5h10" stroke="#7a8699" stroke-width="1.1"/><path d="M4 1v3M8 1v3" stroke="#7a8699" stroke-width="1.1" stroke-linecap="round"/></svg>
-                  Trading since 2018
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="provider-center">
-            <div class="metric">
-              <span class="metric-label">Avg. Monthly Return</span>
-              <span class="metric-value positive">+21.3%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Win Rate</span>
-              <span class="metric-value positive">70%</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Max Drawdown</span>
-              <span class="metric-value">-10.1%</span>
-            </div>
-          </div>
-
-          <div class="provider-right">
-            <span class="risk-badge low">
-              <svg class="badge-icon" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 1L1 3v3.5c0 2.5 2 4.5 4.5 5 2.5-.5 4.5-2.5 4.5-5V3L5.5 1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M3.5 6l1.5 1.5L7.5 5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Low Risk
-            </span>
-            <button class="btn-follow">Follow</button>
-          </div>
+        <div class="stat-item">
+          <span class="stat-label">Margin(USD)</span>
+          <span class="stat-value">100.00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Free Margin(USD)</span>
+          <span class="stat-value">100.00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Margin Level</span>
+          <span class="stat-value positive">≥120%</span>
         </div>
       </div>
     </div>
-  </main>
 
-  <script src="sidebar.js"></script>
-  <script src="topbar.js"></script>
+    <!-- Tabs -->
+    <div class="tabs-wrapper">
+      <a href="#" class="tab active">Signal Provider Center</a>
+      <a href="#" class="tab">Position</a>
+      <a href="#" class="tab">History</a>
+      <a href="#" class="tab">Pending Orders</a>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state">
+      <div class="empty-icon">
+        <img src="images/img.png" alt="Wallet Icon" />
+      </div>
+
+      <h2 class="empty-title">Become a Signal Provider</h2>
+
+      <div class="empty-description">
+        Single Deposit Of Min. <strong>USD500</strong> To Your View Trading Account! <a href="#">Go To Deposit</a>
+      </div>
+
+      <button class="submit-btn">Submit</button>
+
+      <div class="declaration-check">
+        <label class="custom-checkbox" for="declaration">
+          <input type="checkbox" id="declaration" />
+          <svg class="checkbox-icon checkbox-unchecked" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 10.3137 3.68629 13 7 13V14C3.13401 14 0 10.866 0 7C0 3.13401 3.13401 0 7 0C10.866 0 14 3.13401 14 7C14 10.866 10.866 14 7 14V13C10.3137 13 13 10.3137 13 7Z" fill="#C2C7D0"/>
+          </svg>
+          <img class="checkbox-icon checkbox-checked" src="images/Single choice Check.svg" alt="Checked" />
+        </label>
+        <label for="declaration" style="cursor: pointer;">Read and accept the <a href="#">Declaration</a></label>
+      </div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      <p>Simply log in the VT Markets App with your portal email address and password. <a href="#">Click here to find out more.</a></p>
+      <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives and seek independent financial advice if necessary. Please read our legal documents on or website and ensure that you fully understand the risks before you make any trading decisions.</p>
+    </div>
+
+  </div>
+</main>
+
+<script src="sidebar.js?v=5"></script>
+<script src="topbar.js"></script>
+
 </body>
 </html>
