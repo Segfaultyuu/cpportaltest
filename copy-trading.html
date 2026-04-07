@@ -1122,28 +1122,7 @@
     }
 
     /* ─── Responsive — Desktop breakpoints ─────────────────── */
-    @media (max-width: 1400px) {
-      .provider-grid { grid-template-columns: repeat(4, 1fr); }
-      .provider-row-metrics { gap: 24px; }
-      .rank-table-row { grid-template-columns: 48px 1fr 160px 110px 140px; }
-      .rank-table-head { grid-template-columns: 1fr 160px 110px 140px; }
-    }
-    @media (max-width: 1200px) {
-      .provider-grid { grid-template-columns: repeat(3, 1fr); }
-      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
-      .provider-row-metrics { gap: 16px; }
-      .rank-table-row { grid-template-columns: 48px 1fr 150px 90px 120px; }
-      .rank-table-head { grid-template-columns: 1fr 150px 90px 120px; }
-    }
-    @media (max-width: 900px) {
-      .provider-row { flex-wrap: wrap; }
-      .provider-row-metrics { display: none; }
-      .rank-table-row { grid-template-columns: 44px 1fr 120px 70px 90px; gap: 12px; }
-      .rank-table-head { grid-template-columns: 1fr 120px 70px 90px; gap: 12px; }
-      .rank-podium { gap: 10px; }
-      .rank-podium-card { padding: 0 12px 16px; }
-      .rank-podium-name { font-size: 13px; }
-    }
+
     /* ─── H5 Mobile (≤480px) - 完全采用cpportaltest网站样式 ────────────────────────────────── */
     @media (max-width: 480px) {
       /* 布局调整 */
@@ -1353,6 +1332,29 @@
 
       .portfolio-grid { grid-template-columns: 1fr; }
       .provider-row-metrics { display: none; }
+    }
+
+    @media (max-width: 1400px) {
+      .provider-grid { grid-template-columns: repeat(4, 1fr); }
+      .provider-row-metrics { gap: 24px; }
+      .rank-table-row { grid-template-columns: 48px 1fr 160px 110px 140px; }
+      .rank-table-head { grid-template-columns: 1fr 160px 110px 140px; }
+    }
+    @media (max-width: 1200px) {
+      .provider-grid { grid-template-columns: repeat(3, 1fr); }
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+      .provider-row-metrics { gap: 16px; }
+      .rank-table-row { grid-template-columns: 48px 1fr 150px 90px 120px; }
+      .rank-table-head { grid-template-columns: 1fr 150px 90px 120px; }
+    }
+    @media (max-width: 900px) {
+      .provider-row { flex-wrap: wrap; }
+      .provider-row-metrics { display: none; }
+      .rank-table-row { grid-template-columns: 44px 1fr 120px 70px 90px; gap: 12px; }
+      .rank-table-head { grid-template-columns: 1fr 120px 70px 90px; gap: 12px; }
+      .rank-podium { gap: 10px; }
+      .rank-podium-card { padding: 0 12px 16px; }
+      .rank-podium-name { font-size: 13px; }
     }
 
     /* ═══════════════════════════════════════════════════════════ */

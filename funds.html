@@ -260,15 +260,15 @@
     }
 
     .step-icon {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
 
-    .step-icon img { width: 20px; height: 20px; display: block; }
+    .step-icon img { width: 24px; height: 24px; display: block; object-fit: contain; }
 
     .step-connector {
       width: 1px;
@@ -932,7 +932,7 @@
           <div class="step-row">
             <div class="step-icon-col">
               <div class="step-icon">
-                <img src="https://www.figma.com/api/mcp/asset/822b3cc1-9116-40da-90b6-3210f4bcfd72" alt="Deposit" />
+                <img src="images/Deposit.png" alt="Deposit" />
               </div>
               <div class="step-connector"></div>
             </div>
@@ -946,7 +946,7 @@
           <div class="step-row">
             <div class="step-icon-col">
               <div class="step-icon">
-                <img src="https://www.figma.com/api/mcp/asset/96da9201-c98a-48a5-ba69-a0f03d470b2a" alt="Method" style="opacity:0.4;" />
+                <img src="images/Selectcard.png" alt="Select Method" style="opacity:0.4;" />
               </div>
             </div>
             <div class="step-content inactive">
@@ -1125,16 +1125,13 @@
             <div class="step-row">
               <div class="step-icon-col">
                 <div class="step-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <rect width="20" height="20" rx="4" fill="#f0f0f2"/>
-                    <path d="M10 5v10M7.5 7.5h3.75a2.25 2.25 0 0 1 0 4.5H7.5" stroke="#c2c7d0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+                  <img src="images/withdraw.png" alt="Withdraw" style="opacity:0.4;" />
                 </div>
                 <div class="step-connector"></div>
               </div>
               <div class="step-content">
                 <div class="step-title inactive">Request Withdrawal</div>
-                <div class="step-desc">Start by depositing the desired amount into your account to initiate the process.</div>
+                <div class="step-desc">Start by submitting a withdrawal request from your account to initiate the process.</div>
               </div>
             </div>
 
@@ -1142,17 +1139,12 @@
             <div class="step-row">
               <div class="step-icon-col">
                 <div class="step-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <rect width="20" height="20" rx="4" fill="#0a36c7"/>
-                    <rect x="3.5" y="6.5" width="13" height="8" rx="1.5" stroke="white" stroke-width="1.4"/>
-                    <path d="M3.5 10h13" stroke="white" stroke-width="1.4"/>
-                    <path d="M6.5 13.5h3" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-                  </svg>
+                  <img src="images/Selectcard.png" alt="Select Method" />
                 </div>
               </div>
               <div class="step-content inactive">
                 <div class="step-title">Select Withdrawal Method</div>
-                <div class="step-desc">Choose the most convenient payment method from the available options for your deposit.</div>
+                <div class="step-desc">Choose the most convenient payment method from the available options for your withdrawal.</div>
               </div>
             </div>
 

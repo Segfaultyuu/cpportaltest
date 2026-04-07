@@ -228,7 +228,20 @@
     if (href === 'copy-trading.html' && page === 'copy-trading.html') return true;
     if (href === 'copy-trading-portfolios.html' && page === 'copy-trading-portfolios.html') return true;
     if (href === 'copy-trading-providers.html' && page === 'copy-trading-providers.html') return true;
-    return false;
+    if (href === 'promotion.html' && page === 'promotion.html') return true;
+    if (href === 'downloads.html' && page === 'downloads.html') return true;
+    if (href === 'tools.html' && page === 'tools.html') return true;
+    if (href === 'protradertools.html' && page === 'protradertools.html') return true;
+    if (href === 'technicalanalysis.html' && page === 'technicalanalysis.html') return true;
+    if (href === 'protraderplatform.html' && page === 'protraderplatform.html') return true;
+    if (href === 'nvc.html' && page === 'nvc.html') return true;
+    if (href === 'analysisiq.html' && page === 'analysisiq.html') return true;
+    if (href === 'transactionhistory.html' && page === 'transactionhistory.html') return true;
+    if (href === 'fundhistory.html' && page === 'fundhistory.html') return true;
+    if (href === 'earn.html' && page === 'earn.html') return true;
+    if (href === 'profile.html' && page === 'profile.html') return true;
+    if (href === 'clubbleu.html' && page === 'clubbleu.html') return true;
+    if (href === 'support.html' && page === 'support.html') return true;
   }
 
   const walletPages = ['wallet.html', 'withdraw.html', 'deposit.html'];

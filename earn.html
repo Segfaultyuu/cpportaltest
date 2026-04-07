@@ -382,11 +382,53 @@
     }
     @media (max-width: 768px) {
       .main { margin-left: 0 !important; padding-bottom: 80px; }
-      .content { padding: 20px 16px 40px; }
-      .earn-stats-row { flex-wrap: wrap; gap: 20px; }
+      .content { padding: 16px 16px 40px; }
+
+      /* Hero */
+      .earn-hero { gap: 12px; margin-bottom: 16px; }
+      .earn-title { font-size: 22px; }
+      .earn-subtitle { font-size: 13px; }
+
+      /* Promo card */
+      .earn-promo-card { padding: 20px; gap: 12px; min-height: unset; }
+      .earn-promo-name { font-size: 15px; }
+      .earn-promo-illo { width: 64px; height: 64px; }
+
+      /* Stats card */
+      .earn-stats-card { padding: 20px 16px; margin-bottom: 16px; }
+      .earn-stats-row { flex-wrap: wrap; gap: 0; }
       .earn-stat-sep { display: none; }
-      .earn-stat-item { padding-right: 0; }
-      .earn-holdings-link { margin-left: 0; }
+      .earn-stat-item {
+        padding-right: 0;
+        width: 50%;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .earn-stat-item:nth-child(3),
+      .earn-stat-item:nth-child(5) {
+        border-bottom: none;
+      }
+      .earn-stat-value { font-size: 18px; }
+      .earn-holdings-link {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Section card / table */
+      .earn-section-card { margin-bottom: 16px; overflow: hidden; }
+      .earn-section-title { font-size: 16px; padding: 16px 16px 14px; }
+      .earn-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .earn-table th { padding: 10px 14px; font-size: 12px; }
+      .earn-table td { padding: 0 14px; height: 68px; font-size: 14px; }
+      .earn-coin-name { font-size: 14px; }
+      .platform-badge { font-size: 9px; padding: 0 5px; }
+
+      /* FAQ */
+      .earn-faq-title { font-size: 16px; padding: 16px 16px 14px; }
+      .faq-question { padding: 14px 16px; }
+      .faq-answer-inner { padding: 4px 16px 16px; font-size: 13px; }
     }
   </style>
 </head>
@@ -469,6 +511,7 @@
     <!-- ── Flexible Savings Table ─────────────────────────────── -->
     <div class="earn-section-card">
       <div class="earn-section-title">Flexible Savings</div>
+      <div class="earn-table-scroll">
       <table class="earn-table">
         <thead>
           <tr>
@@ -542,6 +585,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <!-- ── FAQ ──────────────────────────────────────────────── -->
