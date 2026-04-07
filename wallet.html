@@ -168,14 +168,16 @@
     .wallet-balance-chevron {
       width: 16px;
       height: 16px;
-      margin-bottom: 8px;
-      opacity: 0.6;
+      margin-bottom: 4px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+      flex-shrink: 0;
     }
-    .currency-switch-wrap { position: relative; display: flex; flex-direction: column; gap: 10px; }
+    .wallet-balance-chevron.open { transform: rotate(180deg); }
+    .currency-switch-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .chevron-picker-wrap { position: relative; display: inline-flex; align-items: center; }
     .currency-picker {
-      display: none; position: absolute; top: calc(100% + 8px); left: 0;
+      display: none; position: absolute; top: calc(100% + 4px); left: 0;
       background: #fff; border-radius: 10px; min-width: 190px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.12); z-index: 200; overflow: hidden;
     }
@@ -531,6 +533,7 @@
       .wallet-asset-cards { display: none; }
       .wallet-divider-h { display: none; }
     }
+
   </style>
 </head>
 <body>
@@ -588,24 +591,26 @@
           <div class="wallet-balance-block">
             <div class="wallet-balance-label">
               Total balance
-              <img src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;" />
+              <img id="eye-overview" src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;cursor:pointer;" />
             </div>
             <div class="currency-switch-wrap" id="currency-wrap-overview">
               <div class="wallet-balance-amount-row">
                 <img class="wallet-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
                 <span class="wallet-balance-amount">0.52720634</span>
                 <span class="wallet-balance-unit">BTC</span>
-                <svg class="wallet-balance-chevron" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1l7 7 7-7" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <div class="chevron-picker-wrap">
+                  <svg class="wallet-balance-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6.5l4 3.5 4-3.5" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="currency-picker">
+                    <div class="currency-picker-item active" data-coin="BTC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="currency-picker-name">BTC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    <div class="currency-picker-item" data-coin="ETH"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="currency-picker-name">ETH</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    <div class="currency-picker-item" data-coin="USDT"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="currency-picker-name">USDT</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    <div class="currency-picker-item" data-coin="USDC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="currency-picker-name">USDC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                  </div>
+                </div>
               </div>
               <div class="wallet-balance-usd">≈ 29,869.32 USD</div>
-              <div class="currency-picker">
-                <div class="currency-picker-item active" data-coin="BTC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="currency-picker-name">BTC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-                <div class="currency-picker-item" data-coin="ETH"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="currency-picker-name">ETH</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-                <div class="currency-picker-item" data-coin="USDT"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="currency-picker-name">USDT</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-                <div class="currency-picker-item" data-coin="USDC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="currency-picker-name">USDC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-              </div>
             </div>
           </div>
 
@@ -756,24 +761,26 @@
           <div class="wallet-balance-block">
             <div class="wallet-balance-label">
               Total balance
-              <img src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;" />
+              <img id="eye-funding" src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;cursor:pointer;" />
             </div>
             <div class="currency-switch-wrap" id="currency-wrap-funding">
               <div class="wallet-balance-amount-row">
                 <img class="wallet-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
                 <span class="wallet-balance-amount">3,500.1400</span>
                 <span class="wallet-balance-unit">USDT</span>
-                <svg class="wallet-balance-chevron" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1l7 7 7-7" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <div class="chevron-picker-wrap">
+                  <svg class="wallet-balance-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6.5l4 3.5 4-3.5" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="currency-picker">
+                    <div class="currency-picker-item" data-coin="BTC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="currency-picker-name">BTC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    <div class="currency-picker-item" data-coin="ETH"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="currency-picker-name">ETH</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    <div class="currency-picker-item active" data-coin="USDT"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="currency-picker-name">USDT</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    <div class="currency-picker-item" data-coin="USDC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="currency-picker-name">USDC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                  </div>
+                </div>
               </div>
               <div class="wallet-balance-usd">≈ 3,500.00 USD</div>
-              <div class="currency-picker">
-                <div class="currency-picker-item" data-coin="BTC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="currency-picker-name">BTC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-                <div class="currency-picker-item" data-coin="ETH"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="currency-picker-name">ETH</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-                <div class="currency-picker-item active" data-coin="USDT"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="currency-picker-name">USDT</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-                <div class="currency-picker-item" data-coin="USDC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="currency-picker-name">USDC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
-              </div>
             </div>
           </div>
 
@@ -1022,13 +1029,24 @@
             <div class="wallet-balance-block">
               <div class="wallet-balance-label">
                 Est Total Value
-                <img src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;" />
+                <img id="eye-earn" src="images/Eye.png" alt="Toggle visibility" style="width:20px;height:20px;opacity:0.6;cursor:pointer;" />
               </div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="currency-switch-wrap" id="currency-wrap-earn">
                 <div class="wallet-balance-amount-row">
                   <img class="wallet-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" />
                   <span class="wallet-balance-amount">0.00</span>
                   <span class="wallet-balance-unit">USDT</span>
+                  <div class="chevron-picker-wrap">
+                    <svg class="wallet-balance-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 6.5l4 3.5 4-3.5" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="currency-picker">
+                      <div class="currency-picker-item active" data-coin="USDT"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="currency-picker-name">USDT</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                      <div class="currency-picker-item" data-coin="USDC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="currency-picker-name">USDC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                      <div class="currency-picker-item" data-coin="BTC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="currency-picker-name">BTC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                      <div class="currency-picker-item" data-coin="ETH"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="currency-picker-name">ETH</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                    </div>
+                  </div>
                 </div>
                 <div class="wallet-balance-usd">≈ 0.00 USD</div>
               </div>
@@ -1097,6 +1115,7 @@
                 <div class="table-actions">
                   <a class="table-action-link" href="#">Subscribe</a>
                   <a class="table-action-link" href="#">Redeem</a>
+                  <a class="table-action-link" href="#">Details</a>
                 </div>
               </td>
             </tr>
@@ -1117,6 +1136,7 @@
                 <div class="table-actions">
                   <a class="table-action-link" href="#">Subscribe</a>
                   <a class="table-action-link" href="#">Redeem</a>
+                  <a class="table-action-link" href="#">Details</a>
                 </div>
               </td>
             </tr>
@@ -1137,6 +1157,7 @@
                 <div class="table-actions">
                   <a class="table-action-link" href="#">Subscribe</a>
                   <a class="table-action-link" href="#">Redeem</a>
+                  <a class="table-action-link" href="#">Details</a>
                 </div>
               </td>
             </tr>
@@ -1157,6 +1178,7 @@
                 <div class="table-actions">
                   <a class="table-action-link" href="#">Subscribe</a>
                   <a class="table-action-link" href="#">Redeem</a>
+                  <a class="table-action-link" href="#">Details</a>
                 </div>
               </td>
             </tr>
@@ -1198,6 +1220,114 @@
       tab.classList.add('active');
       const target = document.querySelector(`.asset-sub-table[data-asset-panel="${panel}"]`);
       if (target) target.classList.add('active');
+    });
+  });
+
+  /* ── Currency switcher ── */
+  const CURRENCY_DATA = {
+    'currency-wrap-overview': {
+      USDT: { amount: '29,869.32',   usd: '29,869.32 USD' },
+      USDC: { amount: '29,869.32',   usd: '29,869.32 USD' },
+      BTC:  { amount: '0.52720634',  usd: '29,869.32 USD' },
+      ETH:  { amount: '12.45231000', usd: '29,869.32 USD' },
+    },
+    'currency-wrap-funding': {
+      USDT: { amount: '3,500.1400',  usd: '3,500.00 USD'  },
+      USDC: { amount: '1,999.8100',  usd: '2,000.00 USD'  },
+      BTC:  { amount: '0.25971818',  usd: '15,075.58 USD' },
+      ETH:  { amount: '4.07465132',  usd: '10,000.25 USD' },
+    },
+    'currency-wrap-earn': {
+      USDT: { amount: '0.00',        usd: '0.00 USD' },
+      USDC: { amount: '0.00',        usd: '0.00 USD' },
+      BTC:  { amount: '0.00000000',  usd: '0.00 USD' },
+      ETH:  { amount: '0.00000000',  usd: '0.00 USD' },
+    },
+  };
+
+  const COIN_ICONS = {
+    USDT: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png',
+    USDC: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png',
+    BTC:  'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png',
+    ETH:  'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png',
+  };
+
+  function closeAllPickers() {
+    document.querySelectorAll('.currency-picker.open').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.wallet-balance-chevron.open').forEach(c => c.classList.remove('open'));
+  }
+
+  document.querySelectorAll('.currency-switch-wrap').forEach(wrap => {
+    const chevron = wrap.querySelector('.wallet-balance-chevron');
+    const picker  = wrap.querySelector('.currency-picker');
+    if (!chevron || !picker) return;
+
+    chevron.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = picker.classList.contains('open');
+      closeAllPickers();
+      if (!isOpen) {
+        picker.classList.add('open');
+        chevron.classList.add('open');
+      }
+    });
+
+    picker.querySelectorAll('.currency-picker-item').forEach(item => {
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        const coin = item.dataset.coin;
+        const data = (CURRENCY_DATA[wrap.id] || {})[coin];
+        if (!data) return;
+
+        picker.querySelectorAll('.currency-picker-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const coinIcon = wrap.querySelector('.wallet-coin-icon');
+        const amountEl = wrap.querySelector('.wallet-balance-amount');
+        const unitEl   = wrap.querySelector('.wallet-balance-unit');
+        const usdEl    = wrap.querySelector('.wallet-balance-usd');
+
+        if (coinIcon) { coinIcon.src = COIN_ICONS[coin]; coinIcon.alt = coin; }
+        if (amountEl) amountEl.textContent = data.amount;
+        if (unitEl)   unitEl.textContent = coin;
+        if (usdEl)    usdEl.textContent = '\u2248 ' + data.usd;
+
+        closeAllPickers();
+      });
+    });
+  });
+
+  document.addEventListener('click', closeAllPickers);
+
+  /* ── Eye toggle ── */
+  [
+    { eyeId: 'eye-overview', tab: 'overview' },
+    { eyeId: 'eye-funding',  tab: 'funding'  },
+    { eyeId: 'eye-earn',     tab: 'earn'     },
+  ].forEach(({ eyeId, tab }) => {
+    const eye  = document.getElementById(eyeId);
+    const card = document.querySelector(`.tab-panel[data-tab="${tab}"] .wallet-balance-card`);
+    if (!eye || !card) return;
+    let hidden = false;
+    eye.addEventListener('click', () => {
+      hidden = !hidden;
+      eye.src = hidden ? 'images/Eye Hide.png' : 'images/Eye.png';
+      card.querySelectorAll('.wallet-balance-amount').forEach(el => {
+        if (hidden) {
+          el.dataset.orig = el.textContent;
+          el.textContent = '****';
+        } else {
+          el.textContent = el.dataset.orig ?? el.textContent;
+        }
+      });
+      card.querySelectorAll('.wallet-balance-usd').forEach(el => {
+        if (hidden) {
+          el.dataset.orig = el.textContent;
+          el.textContent = '≈ **** ****';
+        } else {
+          el.textContent = el.dataset.orig ?? el.textContent;
+        }
+      });
     });
   });
 </script>
