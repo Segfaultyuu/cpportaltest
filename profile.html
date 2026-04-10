@@ -6,1207 +6,849 @@
   <title>Client Portal – Profile</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --blue: #0a36c7;
       --blue-light: #e8f1ff;
+      --blue-hover: #1e68f6;
       --green: #00b565;
+      --red: #ff2c40;
+      --orange: #ff9800;
       --text-primary: #282d34;
       --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
       --border: #e8e9ea;
-      --bg-2: #f9f9f9;
-      --bg-field: #f4f5f6;
+      --bg-1: #ffffff;
+      --bg-2: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
       --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+      --shadow-card-hover: 0 8px 24px 0 rgba(168, 195, 206, 0.35);
     }
 
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      background: var(--bg-2);
       color: var(--text-primary);
       overflow-x: hidden;
     }
 
-    /* ─── Layout ─────────────────────────────────────────── */
     .main {
       margin-left: 240px;
       padding-top: 60px;
       min-height: 100vh;
       transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     body.sidebar-collapsed .main { margin-left: 64px; }
 
-    /* ─── Content ─────────────────────────────────────────── */
     .content {
+      padding: 40px 40px 60px;
       max-width: 1440px;
       margin: 0 auto;
-      padding: 40px 40px 60px;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
     }
 
+    /* ─── Breadcrumb ───────────────────────────────────────── */
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--blue); }
+    .breadcrumb-sep { color: var(--text-tertiary); }
+
+    /* ─── Page Title ──────────────────────────────────────────── */
     .page-title {
       font-size: 28px;
       font-weight: 700;
       color: var(--text-primary);
-      line-height: 1.2;
+      margin-bottom: 32px;
     }
 
-    /* ─── Avatar Card ─────────────────────────────────────── */
-    .avatar-card {
+    /* ─── User Info Card ──────────────────────────────────────── */
+    .user-card {
       background: #fff;
-      border-radius: 10px;
-      box-shadow: var(--shadow-card);
+      border-radius: 12px;
       padding: 24px;
-      display: flex;
-      align-items: flex-end;
-      gap: 40px;
-    }
-
-    .avatar-inner {
+      box-shadow: var(--shadow-card);
+      margin-bottom: 32px;
       display: flex;
       align-items: center;
-      gap: 24px;
-      flex: 1;
+      gap: 20px;
     }
 
-    .avatar-img {
-      width: 68px;
-      height: 68px;
+    .user-avatar {
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      object-fit: cover;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
       flex-shrink: 0;
+      overflow: hidden;
     }
 
-    .avatar-meta {
+    .user-avatar img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .user-info {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
-    .avatar-name {
-      font-size: 24px;
+    .user-name {
+      font-size: 18px;
       font-weight: 600;
       color: var(--text-primary);
-      line-height: 1.3;
     }
 
-    .avatar-badges {
+    .user-meta {
       display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
     }
 
-    .badge-pill {
-      display: inline-flex;
+    .user-contacts {
+      display: flex;
       align-items: center;
-      gap: 4px;
-      background: var(--blue-light);
-      border-radius: 4px;
-      padding: 4px 8px;
+      gap: 16px;
       font-size: 12px;
-      font-weight: 500;
-      color: var(--text-primary);
-      white-space: nowrap;
+      color: var(--text-secondary);
     }
 
-    .badge-pill img {
-      width: 12px;
-      height: 12px;
+    .user-contacts svg {
+      width: 14px;
+      height: 14px;
       flex-shrink: 0;
+      vertical-align: middle;
+      margin-right: 4px;
     }
 
-    .avatar-contact {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-    }
-
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: var(--text-primary);
-    }
-
-    .contact-item img {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-
-    /* ─── Tabs ────────────────────────────────────────────── */
-    .tabs-bar {
-      display: flex;
-      gap: 24px;
+    /* ─── Tabs ─────────────────────────────────────────────────── */
+    .tabs-container {
+      margin-bottom: 24px;
       border-bottom: 1px solid var(--border);
     }
 
+    .tabs {
+      display: flex;
+      gap: 32px;
+    }
+
     .tab {
-      font-size: 16px;
+      padding: 12px 0;
+      font-size: 14px;
       font-weight: 500;
       color: var(--text-secondary);
-      padding-bottom: 8px;
-      margin-bottom: -1px;
       cursor: pointer;
       border-bottom: 2px solid transparent;
-      white-space: nowrap;
-      transition: color 0.15s, border-color 0.15s;
-      text-decoration: none;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
     }
 
     .tab.active {
       color: var(--blue);
       border-bottom-color: var(--blue);
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    .tab:hover { color: var(--blue); }
+    .tab:hover:not(.active) {
+      color: var(--text-primary);
+    }
 
-    /* ─── Sub-tabs ────────────────────────────────────────── */
-    .subtabs {
+    /* ─── Sub Tabs (Standard / Plus) ──────────────────────────── */
+    .sub-tabs {
       display: flex;
-      gap: 24px;
-      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
     }
 
-    .subtab {
-      height: 36px;
-      padding: 0 12px;
-      border-radius: 8px;
-      font-family: 'Roboto', sans-serif;
-      font-size: 16px;
+    .sub-tab {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 13px;
       font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
       cursor: pointer;
-      border: none;
-      transition: background 0.15s, color 0.15s;
+      transition: all 0.2s;
     }
 
-    .subtab.active {
+    .sub-tab.active {
       background: var(--blue);
       color: #fff;
+      border-color: var(--blue);
     }
 
-    .subtab:not(.active) {
-      background: var(--bg-2);
-      color: var(--text-secondary);
+    .sub-tab:hover:not(.active) {
+      background: #f9fafb;
     }
 
-    /* ─── Verification Cards ──────────────────────────────── */
+    /* ─── Verification Cards Grid ─────────────────────────────── */
     .verification-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
+      margin-bottom: 32px;
     }
 
-    .verify-card {
+    .verification-card {
       background: #fff;
       border-radius: 12px;
-      box-shadow: var(--shadow-card);
       padding: 24px;
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
-      gap: 24px;
-    }
-
-    .verify-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .verify-badge-circle {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .verify-badge-circle.green { background: var(--green); }
-    .verify-badge-circle.grey  { background: var(--bg-field); }
-
-    .verify-badge-circle img {
-      width: 30px;
-      height: 30px;
-      object-fit: contain;
-    }
-
-    .verify-badge-circle .level-num {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-secondary);
-    }
-
-    .verify-status {
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .verify-status.green { color: var(--green); }
-    .verify-status.grey  { color: var(--text-secondary); }
-
-    .verify-heading {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .verify-level {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-primary);
-      line-height: 1.3;
-    }
-
-    .verify-name {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--text-primary);
-      line-height: 1.3;
-    }
-
-    .verify-desc {
-      font-size: 16px;
-      font-weight: 400;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      min-height: 72px;
-    }
-
-    .verify-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .verify-section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .verify-section-title img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .verify-section-title span {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .verify-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .verify-row img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .btn-verify {
-      align-self: flex-end;
-      height: 40px;
-      padding: 0 16px;
-      border-radius: 8px;
-      border: none;
-      background: linear-gradient(-70deg, #0a36c7 4%, #1e68f6 105%);
-      color: #fff;
-      font-family: 'Roboto', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: opacity 0.15s;
-    }
-    .btn-verify:hover { opacity: 0.9; }
-
-    /* ─── Disclaimer ──────────────────────────────────────── */
-    .disclaimer {
-      font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-    .disclaimer a { color: var(--blue); text-decoration: underline; }
-    .disclaimer a:hover { opacity: 0.8; }
-
-    /* ─── Security Management Panel ─────────────────────────── */
-    .security-panel { display: none; flex-direction: column; gap: 24px; }
-    .security-panel.active { display: flex; }
-
-    .alert-banner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       gap: 16px;
-      background: #ffffe8;
-      border-radius: 8px;
-      padding: 9px 16px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .alert-banner-text { color: var(--text-primary); }
-    .alert-banner-text strong { font-weight: 600; }
-    .alert-banner-action { color: #cfa500; white-space: nowrap; cursor: pointer; }
-
-    .security-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-    @media (max-width: 1100px) { .security-cards { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 768px)  { .security-cards { grid-template-columns: 1fr; } }
-
-    .security-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: var(--shadow-card);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 380px;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .security-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    .security-icon-circle {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: #f4f5f6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .security-icon-circle svg { width: 32px; height: 32px; }
-    .security-icon-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
-
-    .status-verified  { font-size: 16px; font-weight: 500; color: #00b565; }
-    .status-unverified{ font-size: 16px; font-weight: 500; color: #ff2c40; }
-    .status-linked    { font-size: 16px; font-weight: 500; color: #00b565; }
-
-    .security-card-body { flex: 1; display: flex; flex-direction: column; gap: 8px; padding-bottom: 24px; border-bottom: 1px solid #f4f5f6; margin-bottom: 24px; }
-    .security-card-title { font-size: 24px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
-    .security-card-email { font-size: 14px; font-weight: 400; color: var(--text-primary); }
-    .security-card-meta  { font-size: 14px; font-weight: 400; color: var(--text-secondary); }
-
-    .security-toggle-row { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-    .security-toggle-label { font-size: 14px; font-weight: 500; color: var(--text-primary); }
-    .toggle-switch {
-      width: 46px; height: 24px;
-      background: #00b565;
-      border-radius: 999px;
-      position: relative;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .toggle-switch::after {
-      content: '';
-      position: absolute;
-      width: 18px; height: 18px;
-      background: #fff;
-      border-radius: 50%;
-      top: 3px; right: 4px;
-      transition: transform 0.2s;
+    .verification-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card-hover);
     }
 
-    .security-btn-row { display: flex; gap: 12px; align-items: center; }
-    .sec-btn {
-      height: 40px;
-      padding: 0 16px;
-      border-radius: 8px;
-      border: none;
-      font-family: 'Roboto', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .sec-btn-primary {
-      background: linear-gradient(-70deg, #0a36c7 4%, #1e68f6 105%);
-      color: #fff;
-      min-width: 100px;
-    }
-    .sec-btn-secondary {
-      background: #f4f5f6;
-      color: var(--text-primary);
-      min-width: 100px;
-    }
-
-    /* ─── Transfer IB Panel ─────────────────────────────────── */
-    .transfer-panel { display: none; flex-direction: column; gap: 24px; }
-    .transfer-panel.active { display: flex; }
-
-    .transfer-top-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-    @media (max-width: 900px) { .transfer-top-row { grid-template-columns: 1fr; } }
-
-    .transfer-form-card, .transfer-note-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: var(--shadow-card);
-      padding: 24px;
-    }
-
-    .transfer-form-card h3, .transfer-note-card h3, .transfer-history-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-    .form-group:last-of-type { margin-bottom: 20px; }
-
-    .form-label {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-    .form-label .required { color: #ff2c40; }
-
-    .form-select, .form-textarea {
-      width: 100%;
-      background: var(--bg-field);
-      border: 1px solid transparent;
-      border-radius: 8px;
-      font-family: 'Roboto', sans-serif;
-      font-size: 14px;
-      color: var(--text-primary);
-      transition: border-color 0.15s;
-      appearance: none;
-    }
-    .form-select {
-      height: 44px;
-      padding: 0 36px 0 12px;
-      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-    }
-    .form-textarea {
-      padding: 10px 12px;
-      resize: vertical;
-      min-height: 100px;
-      line-height: 1.5;
-    }
-    .form-select:focus, .form-textarea:focus {
-      outline: none;
-      border-color: var(--blue);
-    }
-
-    .form-checkboxes { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-    .form-check {
+    .verification-header {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      cursor: pointer;
+      justify-content: space-between;
     }
-    .form-check input[type="checkbox"] {
+
+    .verification-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .verification-icon svg {
+      width: 24px;
+      height: 24px;
+      color: #fff;
+    }
+
+    .verification-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    .verification-status svg {
       width: 16px;
       height: 16px;
-      margin-top: 2px;
-      flex-shrink: 0;
-      cursor: pointer;
-      accent-color: var(--blue);
     }
 
-    .btn-transfer-submit {
-      width: 240px;
-      height: 44px;
-      border: none;
-      border-radius: 8px;
-      background: linear-gradient(-70deg, #0a36c7 4%, #1e68f6 105%);
-      color: #fff;
-      font-family: 'Roboto', sans-serif;
+    .verification-title {
       font-size: 14px;
       font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s;
+      color: var(--text-primary);
+      margin-bottom: 4px;
     }
-    .btn-transfer-submit:hover { opacity: 0.9; }
 
-    .please-note-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      list-style: none;
+    .verification-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
-    .please-note-list li {
-      display: flex;
-      gap: 10px;
-      font-size: 14px;
+
+    .verification-desc {
+      font-size: 12px;
       color: var(--text-secondary);
       line-height: 1.6;
     }
-    .note-num {
+
+    .requirements {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--bg-field);
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .requirements-title {
       font-size: 12px;
       font-weight: 600;
       color: var(--text-primary);
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    /* Application History table */
-    .transfer-history-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: var(--shadow-card);
-      padding: 24px;
-    }
-
-    .app-history-table { width: 100%; border-collapse: collapse; }
-    .app-history-table thead th {
-      height: 52px;
-      padding: 0 12px;
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text-secondary);
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    .app-history-table tbody td {
-      padding: 14px 12px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-    .app-history-table tbody tr:last-child td { border-bottom: none; }
-
-    .status-tag {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      padding: 3px 10px;
-      border-radius: 99px;
+      gap: 6px;
+    }
+
+    .requirements-title svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .requirement-item {
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .requirement-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+    }
+
+    .permissions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #f4f5f6;
+    }
+
+    .permissions-title {
       font-size: 12px;
-      font-weight: 500;
-    }
-    .status-tag.incomplete  { background: #fff3e0; color: #e57c00; }
-    .status-tag.successful  { background: #e6f9f1; color: #00b565; }
-    .status-tag.failed      { background: #ffeef0; color: #ff2c40; }
-    .status-tag.rejected    { background: #ffeef0; color: #ff2c40; }
-
-    .history-action-btn {
-      height: 30px;
-      padding: 0 14px;
-      border-radius: 6px;
-      border: none;
-      background: var(--bg-field);
+      font-weight: 600;
       color: var(--text-primary);
-      font-family: 'Roboto', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .history-action-btn:hover { background: #e4e6e8; }
-    .history-action-none { color: var(--text-secondary); font-size: 14px; }
-
-    /* Pagination */
-    .table-pagination {
       display: flex;
       align-items: center;
-      gap: 12px;
-      justify-content: flex-end;
-      margin-top: 20px;
-      flex-wrap: wrap;
+      gap: 6px;
     }
-    .pagination-info { font-size: 13px; color: var(--text-secondary); }
-    .pagination-perpage {
+
+    .permission-item {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 13px;
-      color: var(--text-secondary);
+      gap: 8px;
+      font-size: 11px;
     }
-    .pagination-perpage select {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 2px 20px 2px 8px;
-      font-size: 13px;
-      color: var(--text-primary);
-      background: #fff;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 4px center;
-      cursor: pointer;
-    }
-    .pagination-pages { display: flex; align-items: center; gap: 4px; }
-    .page-btn {
-      min-width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      cursor: pointer;
+
+    .permission-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 6px;
+      flex-shrink: 0;
     }
-    .page-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-    .page-btn:hover:not(.active) { background: var(--bg-field); }
 
-    /* ─── Mobile ──────────────────────────────────────────── */
-    @media (max-width: 1100px) {
-      .verification-grid { grid-template-columns: repeat(2, 1fr); }
+    .permission-icon.checked {
+      background: #e8f5e9;
+      color: var(--green);
     }
+
+    .permission-icon.pending {
+      background: #fff3e0;
+      color: var(--orange);
+    }
+
+    .permission-icon svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .permission-text {
+      color: var(--text-secondary);
+    }
+
+    /* ─── Verify Button ───────────────────────────────────────── */
+    .verify-btn {
+      align-self: flex-end;
+      padding: 8px 24px;
+      border-radius: 6px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .verify-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* ─── Footer Note ─────────────────────────────────────────── */
+    .footer-note {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-top: 24px;
+    }
+
+    .footer-note a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .footer-note a:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── Responsive: Mobile (≤768px) ─────────────────────────── */
     @media (max-width: 768px) {
-      .main { margin-left: 0 !important; padding-bottom: 80px; }
-      .content { padding: 16px 16px 40px; gap: 20px; }
-      .page-title { font-size: 22px; }
-      .avatar-inner { flex-direction: column; align-items: flex-start; }
-      .avatar-contact { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .tabs-bar { overflow-x: auto; gap: 16px; }
-      .verification-grid { grid-template-columns: 1fr; }
+      /* Full-width layout, no sidebar offset, with bottom tabbar */
+      .main { margin-left: 0; padding-top: 56px; padding-bottom: 80px; }
+      .content { padding: 16px 12px 32px; }
+
+      /* Breadcrumb hidden on mobile */
+      .breadcrumb { display: none; }
+
+      /* Page title: 18px semibold */
+      .page-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+
+      /* User card: smaller padding, vertical on very small screens */
+      .user-card {
+        padding: 16px;
+        margin-bottom: 16px;
+        flex-direction: row;
+      }
+
+      .user-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+      }
+
+      .user-avatar img {
+        width: 56px;
+        height: 56px;
+      }
+
+      .user-name {
+        font-size: 16px;
+      }
+
+      .user-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        font-size: 12px;
+      }
+
+      .user-contacts {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 11px;
+      }
+
+      /* Tabs: no scroll, allow wrapping */
+      .tabs-container {
+        margin-bottom: 16px;
+      }
+
+      .tabs {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        font-size: 12px;
+        padding: 10px 0;
+        white-space: normal;
+        text-align: center;
+        min-width: 0;
+      }
+
+      /* Sub tabs: full width */
+      .sub-tabs {
+        margin-bottom: 16px;
+        width: 100%;
+      }
+
+      .sub-tab {
+        flex: 1;
+        text-align: center;
+      }
+
+      /* Verification grid: single column */
+      .verification-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .verification-card {
+        padding: 16px;
+        gap: 12px;
+      }
+
+      .verification-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .verification-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .verification-status {
+        font-size: 11px;
+      }
+
+      .verification-status svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .verification-title {
+        font-size: 13px;
+      }
+
+      .verification-subtitle {
+        font-size: 11px;
+      }
+
+      .verification-desc {
+        font-size: 11px;
+        line-height: 1.5;
+      }
+
+      .requirements-title,
+      .permissions-title {
+        font-size: 11px;
+      }
+
+      .requirement-item,
+      .permission-item {
+        font-size: 10px;
+      }
+
+      .verify-btn {
+        width: 100%;
+        align-self: stretch;
+      }
+
+      /* Footer note: smaller */
+      .footer-note {
+        font-size: 10px;
+        padding: 12px;
+        margin-top: 16px;
+      }
+    }
+
+    /* ─── Page entrance animation ─────────────────────────────── */
+    @keyframes contentSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .breadcrumb {
+      animation: contentSlideUp 0.45s 0.06s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .page-title {
+      animation: contentSlideUp 0.45s 0.10s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .user-card {
+      animation: contentSlideUp 0.45s 0.14s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .tabs-container {
+      animation: contentSlideUp 0.45s 0.18s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .sub-tabs {
+      animation: contentSlideUp 0.45s 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .verification-grid {
+      animation: contentSlideUp 0.45s 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
   </style>
 </head>
 <body>
-  <div id="sidebar-root"></div>
-  <div id="topbar-root"></div>
 
-  <main class="main">
-    <div class="content">
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="sidebar-root"></div>
 
-      <h1 class="page-title">Profile</h1>
+<!-- ═══════════════════════════════════════════════════════
+     TOPBAR (global component)
+═══════════════════════════════════════════════════════ -->
+<div id="topbar-root"></div>
 
-      <!-- Avatar Card -->
-      <div class="avatar-card">
-        <div class="avatar-inner">
-          <img class="avatar-img"
-               src="images/figma_5d4a4dbd-2556-46ac-ad96-dfcf387e6a01.png"
-               alt="User avatar" />
-          <div class="avatar-meta">
-            <div class="avatar-name">Strategy Name Name</div>
-            <div class="avatar-badges">
-              <span class="badge-pill">
-                User ID:1234656
-                <img src="images/figma_d2eba00b-13c3-4021-8141-6d4e6fe5d7ae.svg" alt="Copy" />
-              </span>
-              <span class="badge-pill" id="badge-ib-company">IB Company</span>
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="content">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Profile</span>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Profile</h1>
+
+    <!-- User Info Card -->
+    <div class="user-card">
+      <div class="user-avatar"><img src="images/img7.png" alt="User Avatar" /></div>
+      <div class="user-info">
+        <div class="user-name">Strategy Name Name</div>
+        <div class="user-meta">
+          <span>User ID 123456</span>
+          <span>10 Followers</span>
+        </div>
+        <div class="user-contacts">
+          <span>
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+            </svg>
+            s***@gmail.com
+          </span>
+          <span>
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+            </svg>
+            Singapore
+          </span>
+          <span>
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+            </svg>
+            +65****001
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(this, 'verification')">Verification</button>
+        <button class="tab" onclick="switchTab(this, 'security')">Security management</button>
+        <button class="tab" onclick="switchTab(this, 'transfer')">Transfer In / Account Manager</button>
+        <button class="tab" onclick="switchTab(this, 'close')">Close profile account</button>
+      </div>
+    </div>
+
+    <!-- Sub Tabs -->
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSubTab(this, 'standard')">Standard</button>
+      <button class="sub-tab" onclick="switchSubTab(this, 'plus')">Plus</button>
+    </div>
+
+    <!-- Verification Cards Grid -->
+    <div class="verification-grid">
+
+      <!-- Level 1 Card -->
+      <div class="verification-card">
+        <div class="verification-header">
+          <div class="verification-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="verification-status">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+            </svg>
+            Verified
+          </div>
+        </div>
+        <div>
+          <div class="verification-title">Level 1</div>
+          <div class="verification-subtitle">Account Opening Verification</div>
+        </div>
+        <div class="verification-desc">
+          Get actionable technical analysis on virtually every financial instrument so that make confident decision to achieve your trading goals.
+        </div>
+        <div class="requirements">
+          <div class="requirements-title">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+              <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/>
+            </svg>
+            Requirements
+          </div>
+          <div class="requirement-item">Personal Details</div>
+          <div class="requirement-item">Account Configuration</div>
+        </div>
+        <div class="permissions">
+          <div class="permissions-title">Permissions</div>
+          <div class="permission-item">
+            <div class="permission-icon checked">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+              </svg>
             </div>
-            <div class="avatar-contact">
-              <div class="contact-item">
-                <img src="images/figma_39f72502-5967-4c65-9967-2633ddfcecf6.svg" alt="Email" />
-                <span>a***z@mail.com</span>
-              </div>
-              <div class="contact-item">
-                <img src="images/figma_e9f49cec-5fe8-4712-8b6d-caa75f78d0ae.svg" alt="Location" />
-                <span>Singapore</span>
-              </div>
-              <div class="contact-item">
-                <img src="images/figma_cd6179eb-f322-4973-a422-d1446c2e483a.svg" alt="Phone" />
-                <span>+60 ***001</span>
-              </div>
+            <span class="permission-text">Pending account</span>
+          </div>
+          <div class="permission-item">
+            <div class="permission-icon pending">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <circle cx="10" cy="10" r="3"/>
+              </svg>
             </div>
+            <span class="permission-text">Support</span>
           </div>
         </div>
       </div>
 
-      <!-- Tab Bar -->
-      <div class="tabs-bar">
-        <a class="tab active" href="#" data-panel="verification">Verification</a>
-        <a class="tab" href="#" data-panel="security">Security management</a>
-        <a class="tab" href="#" data-panel="transfer" id="tab-transfer">Transfer IB / Account Manager</a>
-        <a class="tab" href="#" data-panel="">Close profile account</a>
+      <!-- Level 2 Card -->
+      <div class="verification-card">
+        <div class="verification-header">
+          <div class="verification-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="verification-status">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+            </svg>
+            Verified
+          </div>
+        </div>
+        <div>
+          <div class="verification-title">Level 2</div>
+          <div class="verification-subtitle">ID Verification</div>
+        </div>
+        <div class="verification-desc">
+          Upload ID proof to unlock transaction verification permission.
+        </div>
+        <div class="requirements">
+          <div class="requirements-title">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+              <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/>
+            </svg>
+            Requirements
+          </div>
+          <div class="requirement-item">ID Verification</div>
+          <div class="requirement-item">ID Photo</div>
+        </div>
+        <div class="permissions">
+          <div class="permissions-title">Permissions</div>
+          <div class="permission-item">
+            <div class="permission-icon checked">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+              </svg>
+            </div>
+            <span class="permission-text">Photo</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Sub-tabs -->
-      <div class="subtabs">
-        <button class="subtab active">Standard</button>
-        <button class="subtab">Plus</button>
+      <!-- Level 3 Card -->
+      <div class="verification-card">
+        <div class="verification-header">
+          <div class="verification-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="verification-status">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+            </svg>
+            Verified
+          </div>
+        </div>
+        <div>
+          <div class="verification-title">Level 3</div>
+          <div class="verification-subtitle">Address Verification</div>
+        </div>
+        <div class="verification-desc">
+          Upload the proof of Address certificates to unlock the withdrawal permission.
+        </div>
+        <div class="requirements">
+          <div class="requirements-title">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+              <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/>
+            </svg>
+            Requirements
+          </div>
+          <div class="requirement-item">Address Information</div>
+          <div class="requirement-item">Proof of Address</div>
+        </div>
+        <div class="permissions">
+          <div class="permissions-title">Permissions</div>
+          <div class="permission-item">
+            <div class="permission-icon checked">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+              </svg>
+            </div>
+            <span class="permission-text">Withdrawal</span>
+          </div>
+        </div>
+        <button class="verify-btn">Verify Now</button>
       </div>
 
-      <!-- Verification Level Cards -->
-      <div class="verification-grid">
+    </div>
 
-        <!-- Level 1 -->
-        <div class="verify-card">
-          <div class="verify-card-top">
-            <div class="verify-badge-circle green">
-              <img src="images/figma_5fcf3358-0ce8-4772-9f01-142a2d53b042.svg" alt="Verified" />
-            </div>
-            <span class="verify-status green">Verified</span>
-          </div>
-          <div class="verify-heading">
-            <div class="verify-level">Level 1</div>
-            <div class="verify-name">Account Opening Verification</div>
-          </div>
-          <div class="verify-desc">Get actionable technical analysis on virtually every financial instrument to help make confident decisions and optimize trading strategies</div>
-          <div class="verify-section">
-            <div class="verify-section-title">
-              <img src="images/figma_b06d4dcc-4186-47e6-9502-05eaee2a35ce.svg" alt="Requirements" />
-              <span>Requirements</span>
-            </div>
-            <div class="verify-row">Personal Details</div>
-            <div class="verify-row">Account Configuration</div>
-          </div>
-          <div class="verify-section">
-            <div class="verify-section-title">
-              <img src="images/figma_49f24b90-cfff-41f0-896d-b224f132b9e8.svg" alt="Permissions" />
-              <span>Permissions</span>
-            </div>
-            <div class="verify-row">
-              <img src="images/figma_99afdddc-49c3-498b-9c52-10b0d889f6f8.svg" alt="" />
-              Trading account
-            </div>
-            <div class="verify-row">
-              <img src="images/figma_830116f8-3591-4c3d-8c41-4f5b201e9896.svg" alt="" />
-              Deposit
-            </div>
-          </div>
-        </div>
+    <!-- Footer Note -->
+    <div class="footer-note">
+      Simply log in the VT Markets App with your portal email address and password.
+      <a href="#">Click here to find out more.</a>
+      <br><br>
+      Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your invested capital. Trading leveraged products may not be suitable for all investors. Before trading, please take into consideration your level of experience, investment objectives, and seek independent financial advice if necessary. Please read our legal documents on our website and ensure that you fully understand the risks before you make any trading decisions.
+    </div>
 
-        <!-- Level 2 -->
-        <div class="verify-card">
-          <div class="verify-card-top">
-            <div class="verify-badge-circle green">
-              <img src="images/figma_5fcf3358-0ce8-4772-9f01-142a2d53b042.svg" alt="Verified" />
-            </div>
-            <span class="verify-status green">Verified</span>
-          </div>
-          <div class="verify-heading">
-            <div class="verify-level">Level 2</div>
-            <div class="verify-name">ID Verification</div>
-          </div>
-          <div class="verify-desc">Upload ID proof to unlock transaction qualification</div>
-          <div class="verify-section">
-            <div class="verify-section-title">
-              <img src="images/figma_b06d4dcc-4186-47e6-9502-05eaee2a35ce.svg" alt="Requirements" />
-              <span>Requirements</span>
-            </div>
-            <div class="verify-row">ID Information</div>
-            <div class="verify-row">ID Photo</div>
-          </div>
-          <div class="verify-section">
-            <div class="verify-section-title">
-              <img src="images/figma_49f24b90-cfff-41f0-896d-b224f132b9e8.svg" alt="Permissions" />
-              <span>Permissions</span>
-            </div>
-            <div class="verify-row">
-              <img src="images/trade.png" alt="" />
-              Trade
-            </div>
-          </div>
-        </div>
+  </div>
+</main>
 
-        <!-- Level 3 -->
-        <div class="verify-card">
-          <div class="verify-card-top">
-            <div class="verify-badge-circle grey">
-              <span class="level-num">3</span>
-            </div>
-            <span class="verify-status grey">Verified</span>
-          </div>
-          <div class="verify-heading">
-            <div class="verify-level">Level 3</div>
-            <div class="verify-name">Address Verification</div>
-          </div>
-          <div class="verify-desc">Upload the proof of Address certificate to unlock the withdrawal qualification</div>
-          <div class="verify-section">
-            <div class="verify-section-title">
-              <img src="images/figma_b06d4dcc-4186-47e6-9502-05eaee2a35ce.svg" alt="Requirements" />
-              <span>Requirements</span>
-            </div>
-            <div class="verify-row">Address Information</div>
-            <div class="verify-row">Proof of Address</div>
-          </div>
-          <div class="verify-section">
-            <div class="verify-section-title">
-              <img src="images/figma_49f24b90-cfff-41f0-896d-b224f132b9e8.svg" alt="Permissions" />
-              <span>Permissions</span>
-            </div>
-            <div class="verify-row">
-              <img src="images/figma_bd08ccde-58d9-4925-a9ad-7a6776e6b26b.svg" alt="" />
-              Withdrawal
-            </div>
-          </div>
-          <button class="btn-verify">Verify Now</button>
-        </div>
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+<script src="sidebar.js?v=1.0.3"></script>
+<script src="topbar.js?v=1.0.2"></script>
 
-      </div><!-- /verification-grid -->
+<script>
+  // Tab switching
+  function switchTab(btn, tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
 
-      <!-- ── Security Management Panel ──────────────────────── -->
-      <div class="security-panel" id="panel-security">
+  // Sub tab switching
+  function switchSubTab(btn, subTabName) {
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
 
-        <!-- Alert banner -->
-        <div class="alert-banner">
-          <span class="alert-banner-text">Enable at least <strong>Two</strong> authentication method</span>
-          <span class="alert-banner-action">Enable Now</span>
-        </div>
-
-        <!-- 4 cards -->
-        <div class="security-cards">
-
-          <!-- Card 1: Email Address -->
-          <div class="security-card">
-            <div>
-              <div class="security-card-top">
-                <div class="security-icon-circle">
-                  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="24" height="17" rx="2" stroke="#282d34" stroke-width="2.2"/>
-                    <path d="M4 12l12 8 12-8" stroke="#282d34" stroke-width="2.2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span class="status-verified">Verified</span>
-              </div>
-              <div class="security-card-body">
-                <div class="security-card-title">Email Address</div>
-                <div class="security-card-email">test***123@gmail.com</div>
-                <div class="security-card-meta">Last update: 2024/01/02 23:21:59 GMT+X</div>
-              </div>
-              <div class="security-toggle-row">
-                <div class="security-toggle-label">Login location change email notification</div>
-                <div class="toggle-switch"></div>
-              </div>
-            </div>
-            <div class="security-btn-row" style="margin-top:24px;">
-              <button class="sec-btn sec-btn-primary">Verify</button>
-            </div>
-          </div>
-
-          <!-- Card 2: Password -->
-          <div class="security-card">
-            <div>
-              <div class="security-card-top">
-                <div class="security-icon-circle">
-                  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="6" y="14" width="20" height="14" rx="2" stroke="#282d34" stroke-width="2.2"/>
-                    <path d="M10 14v-4a6 6 0 0 1 12 0v4" stroke="#282d34" stroke-width="2.2" stroke-linecap="round"/>
-                    <circle cx="16" cy="21" r="2" fill="#282d34"/>
-                  </svg>
-                </div>
-              </div>
-              <div class="security-card-body">
-                <div class="security-card-title">Password</div>
-                <div class="security-card-meta">Last update: 2024/01/02 23:21:59 GMT+X</div>
-              </div>
-            </div>
-            <div class="security-btn-row">
-              <button class="sec-btn sec-btn-primary">Modify</button>
-            </div>
-          </div>
-
-          <!-- Card 3: Security Authenticator App -->
-          <div class="security-card">
-            <div>
-              <div class="security-card-top">
-                <div class="security-icon-circle">
-                  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 3L5 7.5v8c0 6.5 4.7 12.6 11 14 6.3-1.4 11-7.5 11-14v-8L16 3z" stroke="#282d34" stroke-width="2.2" stroke-linejoin="round"/>
-                    <path d="M11 16l3.5 3.5L21 12" stroke="#282d34" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <span class="status-unverified">Unverified</span>
-              </div>
-              <div class="security-card-body">
-                <div class="security-card-title">Security Authenticator App</div>
-                <div class="security-card-meta">Last update: 2024/01/02 23:21:59 GMT+X</div>
-              </div>
-            </div>
-            <div class="security-btn-row">
-              <button class="sec-btn sec-btn-secondary">Enable</button>
-              <button class="sec-btn sec-btn-primary">Modify</button>
-            </div>
-          </div>
-
-          <!-- Card 4: Telegram -->
-          <div class="security-card">
-            <div>
-              <div class="security-card-top">
-                <img class="security-icon-img" src="images/Telegram.png" alt="Telegram" />
-                <span class="status-linked">Linked</span>
-              </div>
-              <div class="security-card-body">
-                <div class="security-card-title">Telegram</div>
-                <div class="security-card-meta">Last update: 2024/01/02 23:21:59 GMT+X</div>
-              </div>
-            </div>
-            <div class="security-btn-row">
-              <button class="sec-btn sec-btn-primary">Verify</button>
-            </div>
-          </div>
-
-        </div><!-- /security-cards -->
-      </div><!-- /panel-security -->
-
-      <!-- ── Transfer IB / Account Manager Panel ─────────────── -->
-      <div class="transfer-panel" id="panel-transfer">
-
-        <!-- Top row: Form + Please Note -->
-        <div class="transfer-top-row">
-
-          <!-- Form Card -->
-          <div class="transfer-form-card">
-            <h3>Transfer IB / Account Manager</h3>
-
-            <div class="form-group">
-              <label class="form-label">Partnership Type <span class="required">*</span></label>
-              <select class="form-select">
-                <option value="" disabled selected>Please select</option>
-                <option>IB</option>
-                <option>Account Manager</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">New IB Number (Rebate Account) <span class="required">*</span></label>
-              <select class="form-select">
-                <option value="" disabled selected>Please select</option>
-                <option>IB-100001</option>
-                <option>IB-100002</option>
-                <option>IB-100003</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Reason For Transfer <span class="required">*</span></label>
-              <textarea class="form-textarea" placeholder="Please enter your reason for transfer"></textarea>
-            </div>
-
-            <div class="form-checkboxes">
-              <label class="form-check">
-                <input type="checkbox" />
-                <span>I confirm that I want to transfer my account to a new IB / Account Manager and understand that this action cannot be undone.</span>
-              </label>
-              <label class="form-check">
-                <input type="checkbox" />
-                <span>I agree to the <a href="#" style="color:var(--blue);">Terms and Conditions</a> of the transfer.</span>
-              </label>
-            </div>
-
-            <button class="btn-transfer-submit">Submit</button>
-          </div>
-
-          <!-- Please Note Card -->
-          <div class="transfer-note-card">
-            <h3>Please Note</h3>
-            <ul class="please-note-list">
-              <li>
-                <span class="note-num">1</span>
-                <span>Each client can only submit one IB/Account Manager transfer application within a 30-day period. If you have already submitted an application, please wait until the previous application is processed before submitting a new one.</span>
-              </li>
-              <li>
-                <span class="note-num">2</span>
-                <span>Once the transfer is approved, your account will be permanently moved to the new IB/Account Manager. Please confirm that you have communicated with your new IB/Account Manager before submitting this request.</span>
-              </li>
-              <li>
-                <span class="note-num">3</span>
-                <span>The transfer process may take up to 3 business days to complete after approval. You will receive an email notification once the transfer has been processed.</span>
-              </li>
-            </ul>
-          </div>
-
-        </div><!-- /transfer-top-row -->
-
-        <!-- Application History -->
-        <div class="transfer-history-card">
-          <h3 class="transfer-history-title">Application History</h3>
-
-          <table class="app-history-table">
-            <thead>
-              <tr>
-                <th>Application Time</th>
-                <th>Type</th>
-                <th>Transfer to</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>2024/03/15 10:23:45</td>
-                <td>IB Transfer</td>
-                <td>IB-100045</td>
-                <td><span class="status-tag incomplete">Incomplete</span></td>
-                <td><button class="history-action-btn">Cancel</button></td>
-              </tr>
-              <tr>
-                <td>2024/02/28 14:10:02</td>
-                <td>Account Manager</td>
-                <td>AM-200012</td>
-                <td><span class="status-tag successful">Successful</span></td>
-                <td><button class="history-action-btn">Cancel</button></td>
-              </tr>
-              <tr>
-                <td>2024/02/10 09:55:17</td>
-                <td>IB Transfer</td>
-                <td>IB-100033</td>
-                <td><span class="status-tag incomplete">Incomplete</span></td>
-                <td><span class="history-action-none">--</span></td>
-              </tr>
-              <tr>
-                <td>2024/01/22 16:40:38</td>
-                <td>IB Transfer</td>
-                <td>IB-100021</td>
-                <td><span class="status-tag failed">Failed</span></td>
-                <td><span class="history-action-none">--</span></td>
-              </tr>
-              <tr>
-                <td>2024/01/05 11:12:50</td>
-                <td>Account Manager</td>
-                <td>AM-200007</td>
-                <td><span class="status-tag rejected">Rejected</span></td>
-                <td><button class="history-action-btn">Cancel</button></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="table-pagination">
-            <span class="pagination-info">Total of 100 data | 5 pages</span>
-            <div class="pagination-perpage">
-              <select>
-                <option>10</option>
-                <option>20</option>
-                <option>50</option>
-              </select>
-              <span>/pages</span>
-            </div>
-            <div class="pagination-pages">
-              <button class="page-btn">‹</button>
-              <button class="page-btn active">1</button>
-              <button class="page-btn">2</button>
-              <button class="page-btn">3</button>
-              <button class="page-btn">4</button>
-              <button class="page-btn">5</button>
-              <button class="page-btn">›</button>
-            </div>
-          </div>
-        </div><!-- /transfer-history-card -->
-
-      </div><!-- /panel-transfer -->
-
-      <!-- Disclaimer -->
-      <div class="disclaimer">
-        <p>Simply log in the VT Markets App with your portal email address and password.
-          <a href="#">Click here to find out more.</a>
-        </p>
-        <br />
-        <p>Risk warning: Trading Forex and CFDs involves significant risk and can result in the loss of your
-          invested capital. Trading leveraged products may not be suitable for all investors. Before trading,
-          please take into consideration your level of experience, investment objectives and seek independent
-          financial advice if necessary. Please read our legal documents on our website and ensure that you
-          fully understand the risks before you make any trading decisions.</p>
-      </div>
-
-    </div><!-- /content -->
-  </main>
-
-  <script src="sidebar.js"></script>
-  <script src="topbar.js"></script>
-  <script>
-    // Tab interaction
-    const verificationPanel = document.querySelector('.verification-grid');
-    const subtabs = document.querySelector('.subtabs');
-    const securityPanel = document.getElementById('panel-security');
-    const transferPanel = document.getElementById('panel-transfer');
-
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-
-        const panel = tab.dataset.panel;
-
-        // Hide all panels first
-        verificationPanel.style.display = 'none';
-        subtabs.style.display = 'none';
-        securityPanel.classList.remove('active');
-        transferPanel.classList.remove('active');
-
-        if (panel === 'verification') {
-          verificationPanel.style.display = '';
-          subtabs.style.display = '';
-        } else if (panel === 'security') {
-          securityPanel.classList.add('active');
-        } else if (panel === 'transfer') {
-          transferPanel.classList.add('active');
-        }
-      });
-    });
-
-    // Sub-tab interaction
-    document.querySelectorAll('.subtab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    // IB / Client mode toggle (fired by topbar)
-    const badgeIbCompany = document.getElementById('badge-ib-company');
-    const tabTransfer    = document.getElementById('tab-transfer');
-
-    function applyMode(mode) {
-      if (mode === 'ib') {
-        badgeIbCompany.style.display = '';
-        tabTransfer.style.display = '';
-      } else {
-        // Client mode: hide IB Company badge and Transfer IB tab
-        badgeIbCompany.style.display = 'none';
-        tabTransfer.style.display = 'none';
-        // If transfer panel is active, switch back to verification
-        if (tabTransfer.classList.contains('active')) {
-          document.querySelector('[data-panel="verification"]').click();
-        }
-      }
-    }
-
-    document.addEventListener('topbar-mode-change', e => {
-      applyMode(e.detail.mode);
-    });
-
-    // Default: Client is active on load, so hide IB-only elements
-    applyMode('client');
-  </script>
 </body>
 </html>
