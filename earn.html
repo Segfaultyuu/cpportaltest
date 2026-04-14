@@ -140,7 +140,36 @@
     .earn-stat-label {
       font-size: 14px;
       color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    /* ─── Earn currency switcher ──────────────────────────── */
+    .earn-chevron-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+    .earn-chevron {
+      width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .earn-chevron.open { transform: rotate(180deg); }
+    .earn-currency-picker {
+      display: none; position: absolute; top: calc(100% + 4px); left: 0;
+      background: #fff; border-radius: 10px; min-width: 190px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12); z-index: 200; overflow: hidden;
+    }
+    .earn-currency-picker.open { display: block; }
+    .earn-cp-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; cursor: pointer; transition: background 0.12s;
+      border-bottom: 1px solid #f4f5f6; font-size: 14px; font-weight: 500;
+    }
+    .earn-cp-item:last-child { border-bottom: none; }
+    .earn-cp-item:hover { background: #f4f6f9; }
+    .earn-cp-item.active { background: #e8f1ff; }
+    .earn-cp-icon { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+    .earn-cp-name { flex: 1; color: #282d34; }
+    .earn-cp-check { color: #0a36c7; flex-shrink: 0; }
+    .earn-cp-item:not(.active) .earn-cp-check { visibility: hidden; }
 
     .earn-stat-value {
       font-size: 22px;
@@ -316,6 +345,384 @@
     }
     .btn-subscribe:hover { opacity: 0.85; }
 
+    /* ─── Subscription Modal ──────────────────────────────── */
+    .sub-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .sub-overlay.open { display: flex; }
+
+    .sub-modal {
+      background: #fff;
+      border-radius: 16px;
+      width: 440px;
+      max-width: calc(100vw - 32px);
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px 24px 24px;
+      position: relative;
+    }
+    .sub-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      border-radius: 50%;
+    }
+    .sub-close:hover { background: #f0f0f0; }
+    .sub-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1e1e1e;
+      margin-bottom: 24px;
+    }
+    .sub-section-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e1e1e;
+      margin-bottom: 14px;
+    }
+    .sub-field-label {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+      margin-bottom: 8px;
+    }
+    .sub-input-row {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 0 14px;
+      height: 50px;
+      margin-bottom: 14px;
+    }
+    .sub-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.45);
+      outline: none;
+    }
+    .sub-input::placeholder { color: rgba(30,30,30,0.35); }
+    .sub-input-coin {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e1e1e;
+      flex-shrink: 0;
+    }
+    .sub-input-sep {
+      width: 1px;
+      height: 16px;
+      background: rgba(30,30,30,0.2);
+      margin: 0 10px;
+      flex-shrink: 0;
+    }
+    .sub-max-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e1e1e;
+      text-decoration: underline;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Roboto', sans-serif;
+      flex-shrink: 0;
+    }
+    .sub-info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .sub-info-key {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+    }
+    .sub-info-val {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1e1e1e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sub-info-val .sub-avail-label {
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+    }
+    .sub-add-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1e1e1e;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .sub-apr-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+      margin-bottom: 10px;
+    }
+    .sub-apr-info {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(30,30,30,0.35);
+      font-size: 9px;
+      color: rgba(30,30,30,0.55);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+    }
+    .sub-apr-box {
+      border: 1px solid rgba(30,30,30,0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .sub-apr-tier {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 0;
+    }
+    .sub-apr-tier + .sub-apr-tier { border-top: 1px solid rgba(30,30,30,0.07); }
+    .sub-apr-tier-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sub-check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1e1e1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sub-check-icon svg { width: 10px; height: 10px; }
+    .sub-tier-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1e1e1e;
+    }
+    .sub-platform-badge {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 100px;
+      background: rgba(255,142,92,0.12);
+      color: #ff8e5c;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .sub-tier-apr {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e1e1e;
+      flex-shrink: 0;
+    }
+    .sub-holding-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .sub-holding-key {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+    }
+    .sub-holding-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e1e1e;
+    }
+    .sub-yield-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .sub-yield-key {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+    }
+    .sub-yield-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #00b565;
+    }
+    .sub-divider {
+      height: 1px;
+      background: rgba(30,30,30,0.08);
+      margin: 18px 0;
+    }
+    /* Timeline */
+    .sub-timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+    .sub-timeline::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 12px;
+      bottom: 12px;
+      width: 1px;
+      background: rgba(30,30,30,0.15);
+    }
+    .sub-tl-item {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 8px 0;
+      gap: 12px;
+    }
+    .sub-tl-dot {
+      position: absolute;
+      left: -17px;
+      top: 12px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(30,30,30,0.2);
+      flex-shrink: 0;
+    }
+    .sub-tl-dot.active {
+      background: transparent;
+      border: none;
+      width: 10px;
+      height: 10px;
+      left: -17px;
+      top: 11px;
+    }
+    .sub-tl-dot.active::before {
+      content: '◆';
+      font-size: 10px;
+      color: #1e1e1e;
+      line-height: 1;
+    }
+    .sub-tl-key {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.65);
+    }
+    .sub-tl-key.dashed { text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 3px; }
+    .sub-tl-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e1e1e;
+      white-space: nowrap;
+    }
+    /* Agreement */
+    .sub-agree-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .sub-agree-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid rgba(30,30,30,0.3);
+      flex-shrink: 0;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background: #fff;
+      margin-top: 1px;
+      position: relative;
+    }
+    .sub-agree-check:checked {
+      background: #1e1e1e;
+      border-color: #1e1e1e;
+    }
+    .sub-agree-check:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 2px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .sub-agree-text {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.65);
+      line-height: 1.5;
+    }
+    .sub-agree-text a {
+      color: #1e1e1e;
+      text-decoration: underline;
+    }
+    /* Confirm button */
+    .sub-confirm-btn {
+      width: 100%;
+      height: 52px;
+      border-radius: 100px;
+      background: rgba(30,30,30,0.15);
+      color: rgba(30,30,30,0.45);
+      border: none;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: not-allowed;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sub-confirm-btn.ready {
+      background: #1e1e1e;
+      color: #fff;
+      cursor: pointer;
+    }
+    .sub-confirm-btn.ready:hover { background: #333; }
+
     /* ─── FAQ ─────────────────────────────────────────────── */
     .earn-faq-card {
       background: #fff;
@@ -382,11 +789,53 @@
     }
     @media (max-width: 768px) {
       .main { margin-left: 0 !important; padding-bottom: 80px; }
-      .content { padding: 20px 16px 40px; }
-      .earn-stats-row { flex-wrap: wrap; gap: 20px; }
+      .content { padding: 16px 16px 40px; }
+
+      /* Hero */
+      .earn-hero { gap: 12px; margin-bottom: 16px; }
+      .earn-title { font-size: 22px; }
+      .earn-subtitle { font-size: 13px; }
+
+      /* Promo card */
+      .earn-promo-card { padding: 20px; gap: 12px; min-height: unset; }
+      .earn-promo-name { font-size: 15px; }
+      .earn-promo-illo { width: 64px; height: 64px; }
+
+      /* Stats card */
+      .earn-stats-card { padding: 20px 16px; margin-bottom: 16px; }
+      .earn-stats-row { flex-wrap: wrap; gap: 0; }
       .earn-stat-sep { display: none; }
-      .earn-stat-item { padding-right: 0; }
-      .earn-holdings-link { margin-left: 0; }
+      .earn-stat-item {
+        padding-right: 0;
+        width: 50%;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .earn-stat-item:nth-child(3),
+      .earn-stat-item:nth-child(5) {
+        border-bottom: none;
+      }
+      .earn-stat-value { font-size: 18px; }
+      .earn-holdings-link {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Section card / table */
+      .earn-section-card { margin-bottom: 16px; overflow: hidden; }
+      .earn-section-title { font-size: 16px; padding: 16px 16px 14px; }
+      .earn-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .earn-table th { padding: 10px 14px; font-size: 12px; }
+      .earn-table td { padding: 0 14px; height: 68px; font-size: 14px; }
+      .earn-coin-name { font-size: 14px; }
+      .platform-badge { font-size: 9px; padding: 0 5px; }
+
+      /* FAQ */
+      .earn-faq-title { font-size: 16px; padding: 16px 16px 14px; }
+      .faq-question { padding: 14px 16px; }
+      .faq-answer-inner { padding: 4px 16px 16px; font-size: 13px; }
     }
   </style>
 </head>
@@ -423,14 +872,28 @@
 
         <!-- Total Value -->
         <div class="earn-stat-item">
-          <div class="earn-stat-label">Total Value</div>
-          <div class="earn-stat-value">
-            <img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png"
-                 alt="USDT" style="width:22px;height:22px;border-radius:50%;flex-shrink:0;" />
-            0.00
-            <span class="earn-stat-unit">USDT</span>
+          <div class="earn-stat-label">
+            Total Value
+            <img id="earn-eye" src="images/Eye.png" alt="Toggle visibility" style="width:18px;height:18px;opacity:0.6;cursor:pointer;" />
           </div>
-          <div class="earn-stat-sub">≈ 0.00 USD</div>
+          <div class="earn-stat-value" style="display:flex;align-items:center;gap:8px;">
+            <img id="earn-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png"
+                 alt="USDT" style="width:22px;height:22px;border-radius:50%;flex-shrink:0;" />
+            <span id="earn-amount">0.00</span>
+            <div class="earn-chevron-wrap">
+              <span class="earn-stat-unit" id="earn-unit">USDT</span>
+              <svg class="earn-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6.5l4 3.5 4-3.5" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="earn-currency-picker">
+                <div class="earn-cp-item active" data-coin="USDT" data-amount="0.00" data-usd="≈ 0.00 USD"><img class="earn-cp-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="earn-cp-name">USDT</span><svg class="earn-cp-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="earn-cp-item" data-coin="USDC" data-amount="0.00" data-usd="≈ 0.00 USD"><img class="earn-cp-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="earn-cp-name">USDC</span><svg class="earn-cp-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="earn-cp-item" data-coin="BTC" data-amount="0.00000000" data-usd="≈ 0.00 USD"><img class="earn-cp-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="earn-cp-name">BTC</span><svg class="earn-cp-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="earn-cp-item" data-coin="ETH" data-amount="0.00000000" data-usd="≈ 0.00 USD"><img class="earn-cp-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="earn-cp-name">ETH</span><svg class="earn-cp-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <div class="earn-stat-sub" id="earn-sub">≈ 0.00 USD</div>
         </div>
 
         <div class="earn-stat-sep"></div>
@@ -469,6 +932,7 @@
     <!-- ── Flexible Savings Table ─────────────────────────────── -->
     <div class="earn-section-card">
       <div class="earn-section-title">Flexible Savings</div>
+      <div class="earn-table-scroll">
       <table class="earn-table">
         <thead>
           <tr>
@@ -502,7 +966,7 @@
             </td>
             <td><span class="earn-duration">Flexible</span></td>
             <td><span class="earn-apr">0.60% – 5.60%</span></td>
-            <td><button class="btn-subscribe">Subscribe</button></td>
+            <td><button class="btn-subscribe" data-coin="USDT">Subscribe</button></td>
           </tr>
           <!-- USDC -->
           <tr>
@@ -514,7 +978,7 @@
             </td>
             <td><span class="earn-duration">Flexible</span></td>
             <td><span class="earn-apr">0.80%</span></td>
-            <td><button class="btn-subscribe">Subscribe</button></td>
+            <td><button class="btn-subscribe" data-coin="USDC">Subscribe</button></td>
           </tr>
           <!-- ETH -->
           <tr>
@@ -526,7 +990,7 @@
             </td>
             <td><span class="earn-duration">Flexible</span></td>
             <td><span class="earn-apr">0.80%</span></td>
-            <td><button class="btn-subscribe">Subscribe</button></td>
+            <td><button class="btn-subscribe" data-coin="ETH">Subscribe</button></td>
           </tr>
           <!-- BTC -->
           <tr>
@@ -538,10 +1002,11 @@
             </td>
             <td><span class="earn-duration">Flexible</span></td>
             <td><span class="earn-apr">0.30%</span></td>
-            <td><button class="btn-subscribe">Subscribe</button></td>
+            <td><button class="btn-subscribe" data-coin="BTC">Subscribe</button></td>
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <!-- ── FAQ ──────────────────────────────────────────────── -->
@@ -686,6 +1151,85 @@
   </div><!-- /content -->
 </main>
 
+<!-- ── Subscription Modal ──────────────────────────────────── -->
+<div class="sub-overlay" id="sub-overlay">
+  <div class="sub-modal" id="sub-modal">
+    <button class="sub-close" id="sub-close">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <div class="sub-title" id="sub-title">USDT Subscription</div>
+
+    <!-- Investment -->
+    <div class="sub-section-label">Investment</div>
+    <div class="sub-field-label">Amount</div>
+    <div class="sub-input-row">
+      <input class="sub-input" id="sub-amount-input" type="number" placeholder="1-100000000" min="1" />
+      <span class="sub-input-coin" id="sub-coin-label">USDT</span>
+      <span class="sub-input-sep"></span>
+      <button class="sub-max-btn">MAX</button>
+    </div>
+    <div class="sub-info-row">
+      <span class="sub-info-key">Funding Account</span>
+      <span class="sub-info-val">
+        <span class="sub-avail-label">Available</span>
+        0.00
+        <button class="sub-add-btn">+</button>
+      </span>
+    </div>
+    <div class="sub-apr-label">
+      Est. APR <span class="sub-apr-info">i</span>
+    </div>
+    <div class="sub-apr-box" id="sub-apr-box">
+      <!-- populated by JS -->
+    </div>
+    <div class="sub-holding-row">
+      <span class="sub-holding-key">Your Current Holding Amount</span>
+      <span class="sub-holding-val" id="sub-holding-val">0.00 USDT</span>
+    </div>
+    <div class="sub-yield-row">
+      <span class="sub-yield-key">Estimated Daily Yield</span>
+      <span class="sub-yield-val" id="sub-yield-val">0.00 USDT</span>
+    </div>
+
+    <div class="sub-divider"></div>
+
+    <!-- Timeline -->
+    <div class="sub-section-label">Timeline</div>
+    <div class="sub-timeline">
+      <div class="sub-tl-item">
+        <div class="sub-tl-dot active"></div>
+        <span class="sub-tl-key">Order Time (UTC)</span>
+        <span class="sub-tl-val" id="sub-tl-order"></span>
+      </div>
+      <div class="sub-tl-item">
+        <div class="sub-tl-dot"></div>
+        <span class="sub-tl-key">Yield Start Time (UTC)</span>
+        <span class="sub-tl-val" id="sub-tl-start"></span>
+      </div>
+      <div class="sub-tl-item">
+        <div class="sub-tl-dot"></div>
+        <span class="sub-tl-key dashed">Yield Accrual (UTC)</span>
+        <span class="sub-tl-val" id="sub-tl-accrual"></span>
+      </div>
+      <div class="sub-tl-item">
+        <div class="sub-tl-dot"></div>
+        <span class="sub-tl-key dashed">Yield Distribution Time (UTC)</span>
+        <span class="sub-tl-val" id="sub-tl-dist"></span>
+      </div>
+    </div>
+
+    <!-- Agreement -->
+    <div class="sub-agree-row">
+      <input class="sub-agree-check" type="checkbox" id="sub-agree" />
+      <label class="sub-agree-text" for="sub-agree">
+        I have read and agree to the <a href="#">privacy statement</a> and <a href="#">customer agreement</a>.
+      </label>
+    </div>
+
+    <button class="sub-confirm-btn" id="sub-confirm">Confirm</button>
+  </div>
+</div>
+
 <script src="sidebar.js?v=3"></script>
 <script src="topbar.js"></script>
 <script>
@@ -721,6 +1265,176 @@
         return dir === 'asc' ? aVal - bVal : bVal - aVal;
       });
       rows.forEach(function(row) { tbody.appendChild(row); });
+    });
+  })();
+
+  /* ── Eye toggle ── */
+  (function() {
+    var eye    = document.getElementById('earn-eye');
+    var amount = document.getElementById('earn-amount');
+    var sub    = document.getElementById('earn-sub');
+    var hidden = false;
+    if (!eye) return;
+    eye.addEventListener('click', function() {
+      hidden = !hidden;
+      eye.src = hidden ? 'images/Eye Hide.png' : 'images/Eye.png';
+      if (amount) {
+        if (hidden) { amount.dataset.orig = amount.textContent; amount.textContent = '****'; }
+        else { amount.textContent = amount.dataset.orig || amount.textContent; }
+      }
+      if (sub) {
+        if (hidden) { sub.dataset.orig = sub.textContent; sub.textContent = '≈ **** ****'; }
+        else { sub.textContent = sub.dataset.orig || sub.textContent; }
+      }
+    });
+  })();
+
+  /* ── Currency switcher ── */
+  (function() {
+    var chevron = document.querySelector('.earn-chevron');
+    var picker  = document.querySelector('.earn-currency-picker');
+    var coinIcon = document.getElementById('earn-coin-icon');
+    var amountEl = document.getElementById('earn-amount');
+    var unitEl   = document.getElementById('earn-unit');
+    var subEl    = document.getElementById('earn-sub');
+
+    function closePicker() {
+      picker && picker.classList.remove('open');
+      chevron && chevron.classList.remove('open');
+    }
+
+    chevron && chevron.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = picker.classList.contains('open');
+      closePicker();
+      if (!isOpen) { picker.classList.add('open'); chevron.classList.add('open'); }
+    });
+
+    document.querySelectorAll('.earn-cp-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var coin   = item.dataset.coin;
+        var amount = item.dataset.amount;
+        var usd    = item.dataset.usd;
+        var src    = item.querySelector('.earn-cp-icon').src;
+
+        document.querySelectorAll('.earn-cp-item').forEach(function(i) { i.classList.remove('active'); });
+        item.classList.add('active');
+
+        if (coinIcon) { coinIcon.src = src; coinIcon.alt = coin; }
+        if (unitEl) unitEl.textContent = coin;
+        if (amountEl) { amountEl.dataset.orig = amount; if (amountEl.textContent !== '****') amountEl.textContent = amount; }
+        if (subEl) { subEl.dataset.orig = usd; if (subEl.textContent !== '≈ **** ****') subEl.textContent = usd; }
+
+        closePicker();
+      });
+    });
+
+    document.addEventListener('click', closePicker);
+  })();
+
+  /* ── Subscription Modal ── */
+  (function() {
+    var COIN_CONFIG = {
+      USDT: {
+        tiers: [
+          { label: '≤ 200 USDT', apr: '5.65%', badge: 'Platform Rewards' },
+          { label: '> 200 USDT', apr: '0.65%' }
+        ]
+      },
+      USDC: { tiers: [{ label: 'All amounts', apr: '0.80%' }] },
+      ETH:  { tiers: [{ label: 'All amounts', apr: '0.80%' }] },
+      BTC:  { tiers: [{ label: 'All amounts', apr: '0.30%' }] }
+    };
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function formatDateTime(d) {
+      return d.getUTCFullYear() + '-' + pad(d.getUTCMonth()+1) + '-' + pad(d.getUTCDate())
+        + ' ' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes());
+    }
+
+    function getTimeline() {
+      var now = new Date();
+      var order = new Date(now);
+      var nextHour = new Date(now);
+      nextHour.setUTCMinutes(0, 0, 0);
+      nextHour.setUTCHours(nextHour.getUTCHours() + 1);
+      var accrual = new Date(nextHour);
+      accrual.setUTCHours(accrual.getUTCHours() + 1);
+      var dist = new Date(now);
+      dist.setUTCDate(dist.getUTCDate() + 1);
+      dist.setUTCHours(0, 30, 0, 0);
+      return {
+        order:   formatDateTime(order),
+        start:   formatDateTime(nextHour),
+        accrual: formatDateTime(accrual),
+        dist:    formatDateTime(dist)
+      };
+    }
+
+    function buildAprBox(coin) {
+      var cfg = COIN_CONFIG[coin] || COIN_CONFIG['USDT'];
+      var html = '';
+      cfg.tiers.forEach(function(tier) {
+        html += '<div class="sub-apr-tier">'
+          + '<div class="sub-apr-tier-left">'
+          + '<div class="sub-check-icon"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+          + '<span class="sub-tier-label">' + tier.label + '</span>'
+          + '</div>'
+          + '<div style="display:flex;align-items:center;gap:8px;">'
+          + (tier.badge ? '<span class="sub-platform-badge">' + tier.badge + '</span>' : '')
+          + '<span class="sub-tier-apr">' + tier.apr + '</span>'
+          + '</div>'
+          + '</div>';
+      });
+      return html;
+    }
+
+    function openModal(coin) {
+      var tl = getTimeline();
+      document.getElementById('sub-title').textContent = coin + ' Subscription';
+      document.getElementById('sub-coin-label').textContent = coin;
+      document.getElementById('sub-holding-val').textContent = '0.00 ' + coin;
+      document.getElementById('sub-yield-val').textContent = '0.00 ' + coin;
+      document.getElementById('sub-apr-box').innerHTML = buildAprBox(coin);
+      document.getElementById('sub-tl-order').textContent   = tl.order;
+      document.getElementById('sub-tl-start').textContent   = tl.start;
+      document.getElementById('sub-tl-accrual').textContent = tl.accrual;
+      document.getElementById('sub-tl-dist').textContent    = tl.dist;
+      document.getElementById('sub-amount-input').value = '';
+      document.getElementById('sub-agree').checked = false;
+      document.getElementById('sub-confirm').classList.remove('ready');
+      document.getElementById('sub-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('sub-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function checkReady() {
+      var amt = parseFloat(document.getElementById('sub-amount-input').value);
+      var agreed = document.getElementById('sub-agree').checked;
+      document.getElementById('sub-confirm').classList.toggle('ready', amt > 0 && agreed);
+    }
+
+    document.querySelectorAll('.btn-subscribe[data-coin]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openModal(btn.dataset.coin);
+      });
+    });
+
+    document.getElementById('sub-close').addEventListener('click', closeModal);
+    document.getElementById('sub-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    document.getElementById('sub-amount-input').addEventListener('input', checkReady);
+    document.getElementById('sub-agree').addEventListener('change', checkReady);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
     });
   })();
 </script>
