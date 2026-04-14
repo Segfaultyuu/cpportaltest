@@ -417,7 +417,7 @@
       font-family: 'Roboto', sans-serif;
       font-size: 14px;
       font-weight: 400;
-      color: rgba(30,30,30,0.45);
+      color: #1e1e1e;
       outline: none;
     }
     .sub-input::placeholder { color: rgba(30,30,30,0.35); }
@@ -437,7 +437,7 @@
     .sub-max-btn {
       font-size: 13px;
       font-weight: 600;
-      color: #1e1e1e;
+      color: var(--blue);
       text-decoration: underline;
       cursor: pointer;
       background: none;
@@ -472,7 +472,7 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #1e1e1e;
+      background: var(--blue);
       color: #fff;
       border: none;
       font-size: 16px;
@@ -527,7 +527,7 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #1e1e1e;
+      background: var(--blue);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -544,9 +544,9 @@
       align-items: center;
       height: 22px;
       padding: 0 10px;
-      border-radius: 100px;
-      background: rgba(255,142,92,0.12);
-      color: #ff8e5c;
+      border-radius: 4px;
+      background: rgba(10,54,199,0.12);
+      color: var(--blue);
       font-size: 12px;
       font-weight: 500;
       white-space: nowrap;
@@ -667,7 +667,7 @@
       width: 18px;
       height: 18px;
       border-radius: 4px;
-      border: 1.5px solid rgba(30,30,30,0.3);
+      border: 1.5px solid var(--blue);
       flex-shrink: 0;
       cursor: pointer;
       appearance: none;
@@ -677,8 +677,8 @@
       position: relative;
     }
     .sub-agree-check:checked {
-      background: #1e1e1e;
-      border-color: #1e1e1e;
+      background: var(--blue);
+      border-color: var(--blue);
     }
     .sub-agree-check:checked::after {
       content: '';
@@ -699,29 +699,158 @@
       line-height: 1.5;
     }
     .sub-agree-text a {
-      color: #1e1e1e;
+      color: var(--blue);
       text-decoration: underline;
     }
     /* Confirm button */
     .sub-confirm-btn {
       width: 100%;
       height: 52px;
-      border-radius: 100px;
-      background: rgba(30,30,30,0.15);
-      color: rgba(30,30,30,0.45);
+      border-radius: 8px;
+      background: linear-gradient(225deg, #0a36c7 3.8%, #1e68f6 100%);
+      color: #fff;
       border: none;
       font-family: 'Roboto', sans-serif;
       font-size: 16px;
       font-weight: 600;
       cursor: not-allowed;
-      transition: background 0.2s, color 0.2s;
+      opacity: 0.4;
+      transition: opacity 0.2s;
     }
     .sub-confirm-btn.ready {
-      background: #1e1e1e;
-      color: #fff;
+      opacity: 1;
       cursor: pointer;
     }
-    .sub-confirm-btn.ready:hover { background: #333; }
+    .sub-confirm-btn.ready:hover { opacity: 0.85; }
+
+    /* Loading State */
+    .sub-form-view { display: block; }
+    .sub-loading-view { display: none; }
+    .sub-success-view { display: none; }
+    .sub-modal.loading .sub-form-view { display: none; }
+    .sub-modal.loading .sub-loading-view { display: block; }
+    .sub-modal.success .sub-form-view { display: none; }
+    .sub-modal.success .sub-success-view { display: block; }
+
+    .sub-loading-top {
+      text-align: center;
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(30,30,30,0.08);
+      margin-bottom: 24px;
+    }
+    .sub-loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e8e9ea;
+      border-top-color: #c2c7d0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .sub-loading-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .sub-loading-status {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--blue);
+    }
+    .sub-loading-section {
+      margin-bottom: 24px;
+    }
+    .sub-loading-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .sub-loading-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .sub-loading-info-key {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(30,30,30,0.55);
+    }
+    .sub-loading-info-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .sub-loading-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .sub-loading-btn {
+      flex: 1;
+      height: 52px;
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .sub-loading-btn-secondary {
+      background: #f0f1f2;
+      color: var(--text-primary);
+    }
+    .sub-loading-btn-primary {
+      background: linear-gradient(225deg, #0a36c7 3.8%, #1e68f6 100%);
+      color: #fff;
+    }
+    .sub-loading-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* Success State */
+    .sub-success-top {
+      text-align: center;
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(30,30,30,0.08);
+      margin-bottom: 24px;
+    }
+    .sub-success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .sub-success-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .sub-success-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .sub-success-status {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--green);
+    }
 
     /* ─── FAQ ─────────────────────────────────────────────── */
     .earn-faq-card {
@@ -1159,6 +1288,8 @@
     </button>
     <div class="sub-title" id="sub-title">USDT Subscription</div>
 
+    <!-- Form View -->
+    <div class="sub-form-view">
     <!-- Investment -->
     <div class="sub-section-label">Investment</div>
     <div class="sub-field-label">Amount</div>
@@ -1227,6 +1358,124 @@
     </div>
 
     <button class="sub-confirm-btn" id="sub-confirm">Confirm</button>
+    </div><!-- /sub-form-view -->
+
+    <!-- Loading View -->
+    <div class="sub-loading-view">
+      <div class="sub-loading-top">
+        <div class="sub-loading-spinner"></div>
+        <div class="sub-loading-amount" id="sub-loading-amount">100.99 USDT</div>
+        <div class="sub-loading-status">Subscription in Progress</div>
+      </div>
+
+      <div class="sub-loading-section">
+        <div class="sub-loading-section-title">Investment</div>
+        <div class="sub-loading-info-row">
+          <span class="sub-loading-info-key">Est.APR</span>
+          <span class="sub-loading-info-val" id="sub-loading-apr">8.68%</span>
+        </div>
+        <div class="sub-loading-info-row">
+          <span class="sub-loading-info-key">Product</span>
+          <span class="sub-loading-info-val">Flexible</span>
+        </div>
+        <div class="sub-loading-info-row">
+          <span class="sub-loading-info-key">From</span>
+          <span class="sub-loading-info-val">Funding Account</span>
+        </div>
+      </div>
+
+      <div class="sub-loading-section">
+        <div class="sub-loading-section-title">Timeline</div>
+        <div class="sub-timeline">
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot active"></div>
+            <span class="sub-tl-key">Order Time (UTC)</span>
+            <span class="sub-tl-val" id="sub-loading-tl-order"></span>
+          </div>
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot"></div>
+            <span class="sub-tl-key">Yield Start Time (UTC)</span>
+            <span class="sub-tl-val" id="sub-loading-tl-start"></span>
+          </div>
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot"></div>
+            <span class="sub-tl-key dashed">Yield Accrual (UTC)</span>
+            <span class="sub-tl-val" id="sub-loading-tl-accrual"></span>
+          </div>
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot"></div>
+            <span class="sub-tl-key dashed">Yield Distribution Time (UTC)</span>
+            <span class="sub-tl-val" id="sub-loading-tl-dist"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-loading-buttons">
+        <button class="sub-loading-btn sub-loading-btn-secondary" id="sub-back-to-earn">Back To Earn</button>
+        <button class="sub-loading-btn sub-loading-btn-primary" id="sub-my-holdings">My Holdings</button>
+      </div>
+    </div><!-- /sub-loading-view -->
+
+    <!-- Success View -->
+    <div class="sub-success-view">
+      <div class="sub-success-top">
+        <div class="sub-success-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="sub-success-amount" id="sub-success-amount">100.99 USDT</div>
+        <div class="sub-success-status">Subscription Successful</div>
+      </div>
+
+      <div class="sub-loading-section">
+        <div class="sub-loading-section-title">Investment</div>
+        <div class="sub-loading-info-row">
+          <span class="sub-loading-info-key">Est.APR</span>
+          <span class="sub-loading-info-val" id="sub-success-apr">8.68%</span>
+        </div>
+        <div class="sub-loading-info-row">
+          <span class="sub-loading-info-key">Product</span>
+          <span class="sub-loading-info-val">Flexible</span>
+        </div>
+        <div class="sub-loading-info-row">
+          <span class="sub-loading-info-key">From</span>
+          <span class="sub-loading-info-val">Funding Account</span>
+        </div>
+      </div>
+
+      <div class="sub-loading-section">
+        <div class="sub-loading-section-title">Timeline</div>
+        <div class="sub-timeline">
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot active"></div>
+            <span class="sub-tl-key">Order Time (UTC)</span>
+            <span class="sub-tl-val" id="sub-success-tl-order"></span>
+          </div>
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot"></div>
+            <span class="sub-tl-key">Yield Start Time (UTC)</span>
+            <span class="sub-tl-val" id="sub-success-tl-start"></span>
+          </div>
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot"></div>
+            <span class="sub-tl-key dashed">Yield Accrual (UTC)</span>
+            <span class="sub-tl-val" id="sub-success-tl-accrual"></span>
+          </div>
+          <div class="sub-tl-item">
+            <div class="sub-tl-dot"></div>
+            <span class="sub-tl-key dashed">Yield Distribution Time (UTC)</span>
+            <span class="sub-tl-val" id="sub-success-tl-dist"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-loading-buttons">
+        <button class="sub-loading-btn sub-loading-btn-secondary" id="sub-success-back-to-earn">Back To Earn</button>
+        <button class="sub-loading-btn sub-loading-btn-primary" id="sub-success-my-holdings">My Holdings</button>
+      </div>
+    </div><!-- /sub-success-view -->
+
   </div>
 </div>
 
@@ -1411,6 +1660,8 @@
 
     function closeModal() {
       document.getElementById('sub-overlay').classList.remove('open');
+      document.getElementById('sub-modal').classList.remove('loading');
+      document.getElementById('sub-modal').classList.remove('success');
       document.body.style.overflow = '';
     }
 
@@ -1435,6 +1686,76 @@
     document.getElementById('sub-agree').addEventListener('change', checkReady);
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeModal();
+    });
+
+    // Confirm button - show loading state
+    document.getElementById('sub-confirm').addEventListener('click', function() {
+      if (!this.classList.contains('ready')) return;
+
+      var amount = document.getElementById('sub-amount-input').value;
+      var coinLabel = document.getElementById('sub-coin-label').textContent;
+
+      // Update loading view with submitted data
+      document.getElementById('sub-loading-amount').textContent = amount + ' ' + coinLabel;
+      document.getElementById('sub-loading-tl-order').textContent = document.getElementById('sub-tl-order').textContent;
+      document.getElementById('sub-loading-tl-start').textContent = document.getElementById('sub-tl-start').textContent;
+      document.getElementById('sub-loading-tl-accrual').textContent = document.getElementById('sub-tl-accrual').textContent;
+      document.getElementById('sub-loading-tl-dist').textContent = document.getElementById('sub-tl-dist').textContent;
+
+      // Get APR from the first tier (active one)
+      var aprBox = document.getElementById('sub-apr-box');
+      var firstApr = aprBox.querySelector('.sub-tier-apr');
+      if (firstApr) {
+        document.getElementById('sub-loading-apr').textContent = firstApr.textContent;
+      }
+
+      // Update success view with the same data
+      document.getElementById('sub-success-amount').textContent = amount + ' ' + coinLabel;
+      document.getElementById('sub-success-tl-order').textContent = document.getElementById('sub-tl-order').textContent;
+      document.getElementById('sub-success-tl-start').textContent = document.getElementById('sub-tl-start').textContent;
+      document.getElementById('sub-success-tl-accrual').textContent = document.getElementById('sub-tl-accrual').textContent;
+      document.getElementById('sub-success-tl-dist').textContent = document.getElementById('sub-tl-dist').textContent;
+      if (firstApr) {
+        document.getElementById('sub-success-apr').textContent = firstApr.textContent;
+      }
+
+      // Switch to loading state
+      document.getElementById('sub-modal').classList.add('loading');
+
+      // After 4 seconds, switch to success state
+      setTimeout(function() {
+        var modal = document.getElementById('sub-modal');
+        modal.classList.remove('loading');
+        modal.classList.add('success');
+      }, 4000);
+    });
+
+    // Back To Earn button
+    document.getElementById('sub-back-to-earn').addEventListener('click', function() {
+      document.getElementById('sub-modal').classList.remove('loading');
+      closeModal();
+    });
+
+    // My Holdings button
+    document.getElementById('sub-my-holdings').addEventListener('click', function() {
+      document.getElementById('sub-modal').classList.remove('loading');
+      closeModal();
+      // Navigate to holdings section or open holdings modal
+      // You can add your navigation logic here
+    });
+
+    // Success view - Back To Earn button
+    document.getElementById('sub-success-back-to-earn').addEventListener('click', function() {
+      document.getElementById('sub-modal').classList.remove('success');
+      closeModal();
+    });
+
+    // Success view - My Holdings button
+    document.getElementById('sub-success-my-holdings').addEventListener('click', function() {
+      document.getElementById('sub-modal').classList.remove('success');
+      closeModal();
+      // Navigate to holdings section or open holdings modal
+      // You can add your navigation logic here
     });
   })();
 </script>

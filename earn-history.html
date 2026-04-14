@@ -338,7 +338,7 @@
 
       <!-- ── Page Header ──────────────────────────────────── -->
       <div class="page-header">
-        <a class="back-link" href="wallet.html">
+        <a class="back-link" href="#" id="back-link">
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -970,6 +970,19 @@
         document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
       });
     });
+
+    // Back button - return to the tab we came from
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var from = urlParams.get('from');
+      var backLink = document.getElementById('back-link');
+
+      if (from === 'earn') {
+        backLink.href = 'wallet.html#earn';
+      } else {
+        backLink.href = 'wallet.html';
+      }
+    })();
   </script>
 </body>
 </html>
