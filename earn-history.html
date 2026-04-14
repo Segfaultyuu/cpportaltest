@@ -238,23 +238,14 @@
       align-items: center;
       height: 20px;
       padding: 0 8px;
-      border-radius: 100px;
+      border-radius: 2px;
       font-size: 12px;
       font-weight: 500;
       white-space: nowrap;
     }
-    .status-success {
-      background: rgba(21,179,116,0.12);
-      color: #15b374;
-    }
-    .status-processing {
-      background: rgba(255,142,92,0.12);
-      color: #ff8e5c;
-    }
-    .status-failed {
-      background: rgba(244,64,64,0.12);
-      color: #f44040;
-    }
+    .status-success   { color: #00b565; }
+    .status-processing { color: #0a36c7; }
+    .status-failed    { color: #ff2c40; }
 
     /* ─── Pagination ──────────────────────────────────────── */
     .pagination {
@@ -338,7 +329,7 @@
 
       <!-- ── Page Header ──────────────────────────────────── -->
       <div class="page-header">
-        <a class="back-link" href="#" id="back-link">
+        <a class="back-link" href="wallet.html">
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -970,19 +961,6 @@
         document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
       });
     });
-
-    // Back button - return to the tab we came from
-    (function() {
-      var urlParams = new URLSearchParams(window.location.search);
-      var from = urlParams.get('from');
-      var backLink = document.getElementById('back-link');
-
-      if (from === 'earn') {
-        backLink.href = 'wallet.html#earn';
-      } else {
-        backLink.href = 'wallet.html';
-      }
-    })();
   </script>
 </body>
 </html>
