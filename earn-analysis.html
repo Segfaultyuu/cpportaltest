@@ -106,7 +106,7 @@
     .period-tab {
       height: 24px;
       padding: 0 10px;
-      border-radius: 100px;
+      border-radius: 6px;
       border: none;
       font-size: 12px;
       font-weight: 500;
@@ -117,8 +117,8 @@
       transition: all 0.15s;
     }
     .period-tab.active {
-      background: #1e1e1e;
-      color: rgba(255,255,255,0.92);
+      background: var(--blue-light);
+      color: var(--blue);
       font-weight: 600;
     }
     .period-tab:hover:not(.active) { background: #e8e9ea; }
@@ -309,7 +309,7 @@
     .cal-by-tab {
       height: 24px;
       padding: 0 10px;
-      border-radius: 100px;
+      border-radius: 6px;
       border: none;
       font-size: 12px;
       font-weight: 500;
@@ -319,7 +319,7 @@
       font-family: 'Roboto', sans-serif;
       transition: all 0.15s;
     }
-    .cal-by-tab.active { background: #1e1e1e; color: rgba(255,255,255,0.92); font-weight: 600; }
+    .cal-by-tab.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
     .cal-by-tab:hover:not(.active) { background: #e8e9ea; }
 
     .cal-nav {
@@ -598,35 +598,36 @@
 
       <div class="stat-sep"></div>
 
-      <!-- Yesterday's Yield -->
-      <div class="stat-block">
-        <div class="stat-label">Yesterday's Yield</div>
-        <div class="stat-yield">
-          +20.98
-          <span class="stat-yield-unit">USD</span>
+      <!-- Yield blocks: evenly distributed, no dividers -->
+      <div style="display:flex; flex:1; justify-content:space-around; align-items:center; text-align:center;">
+
+        <!-- Yesterday's Yield -->
+        <div class="stat-block" style="padding-right:0;">
+          <div class="stat-label">Yesterday's Yield</div>
+          <div class="stat-yield">
+            +20.98
+            <span class="stat-yield-unit">USD</span>
+          </div>
         </div>
-      </div>
 
-      <div class="stat-sep"></div>
-
-      <!-- 30D Yield -->
-      <div class="stat-block">
-        <div class="stat-label">30D Yield</div>
-        <div class="stat-yield">
-          +33.92
-          <span class="stat-yield-unit">USD</span>
+        <!-- 30D Yield -->
+        <div class="stat-block" style="padding-right:0;">
+          <div class="stat-label">30D Yield</div>
+          <div class="stat-yield">
+            +33.92
+            <span class="stat-yield-unit">USD</span>
+          </div>
         </div>
-      </div>
 
-      <div class="stat-sep"></div>
-
-      <!-- Total Yield -->
-      <div class="stat-block" style="padding-right:0;">
-        <div class="stat-label">Total Yield</div>
-        <div class="stat-yield">
-          +120.07
-          <span class="stat-yield-unit">USD</span>
+        <!-- Total Yield -->
+        <div class="stat-block" style="padding-right:0;">
+          <div class="stat-label">Total Yield</div>
+          <div class="stat-yield">
+            +120.07
+            <span class="stat-yield-unit">USD</span>
+          </div>
         </div>
+
       </div>
     </div>
 
