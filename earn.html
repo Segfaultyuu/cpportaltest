@@ -360,7 +360,7 @@
     .sub-modal {
       background: #fff;
       border-radius: 16px;
-      width: 440px;
+      width: 480px;
       max-width: calc(100vw - 32px);
       max-height: 90vh;
       overflow-y: auto;
@@ -404,7 +404,8 @@
     .sub-input-row {
       display: flex;
       align-items: center;
-      background: #f5f5f5;
+      background: #ffffff;
+      border: 1px solid #e8e9ea;
       border-radius: 10px;
       padding: 0 14px;
       height: 50px;
@@ -607,8 +608,8 @@
       content: '';
       position: absolute;
       left: 5px;
-      top: 12px;
-      bottom: 12px;
+      top: 18px;
+      bottom: 18px;
       width: 1px;
       background: rgba(30,30,30,0.15);
     }
@@ -622,8 +623,9 @@
     }
     .sub-tl-dot {
       position: absolute;
-      left: -17px;
-      top: 12px;
+      left: -19px;
+      top: 50%;
+      transform: translateY(-50%);
       width: 9px;
       height: 9px;
       border-radius: 50%;
@@ -631,18 +633,15 @@
       flex-shrink: 0;
     }
     .sub-tl-dot.active {
-      background: transparent;
-      border: none;
+      background: #0a36c7;
       width: 10px;
       height: 10px;
-      left: -17px;
-      top: 11px;
+      left: -19.5px;
+      top: 50%;
+      transform: translateY(-50%);
     }
     .sub-tl-dot.active::before {
-      content: '◆';
-      font-size: 10px;
-      color: #1e1e1e;
-      line-height: 1;
+      content: '';
     }
     .sub-tl-key {
       font-size: 14px;
@@ -1048,7 +1047,7 @@
         </div>
 
         <!-- My Holdings -->
-        <a class="earn-holdings-link" href="#">
+        <a class="earn-holdings-link" href="wallet.html#earn">
           My Holdings
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 4l4 4-4 4"/>

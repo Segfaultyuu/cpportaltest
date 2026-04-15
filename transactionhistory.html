@@ -195,7 +195,7 @@
       height: 52px;
       padding: 0 24px;
       background: #fff;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 0.5px solid rgba(30,30,30,0.15);
     }
 
     .th {
@@ -219,7 +219,7 @@
       gap: 24px;
       height: 60px;
       padding: 0 24px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 0.5px solid rgba(30,30,30,0.08);
     }
     .table-row:last-child { border-bottom: none; }
     .table-row:hover { background: #fafafa; }
@@ -264,7 +264,7 @@
       height: 20px;
       padding: 0 8px;
       border-radius: 2px;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 500;
     }
     .status-label.failed      { color: var(--red); }
@@ -275,15 +275,15 @@
     .details-link {
       font-size: 14px;
       font-weight: 500;
-      color: var(--text-primary);
-      text-decoration: underline;
+      color: var(--blue);
+      text-decoration: none;
       cursor: pointer;
       background: none;
       border: none;
       font-family: 'Roboto', sans-serif;
       padding: 0;
     }
-    .details-link:hover { color: var(--blue); }
+    .details-link:hover { opacity: 0.75; }
 
     /* ─── Pagination ──────────────────────────────────────── */
     .pagination {

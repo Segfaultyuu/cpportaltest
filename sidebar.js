@@ -269,6 +269,7 @@
     if (href === 'analysisiq.html' && page === 'analysisiq.html') return true;
     if (href === 'transactionhistory.html' && page === 'transactionhistory.html') return true;
     if (href === 'fundhistory.html' && page === 'fundhistory.html') return true;
+    if (href === 'convert.html' && page === 'convert.html') return true;
     if (href === 'earn.html' && page === 'earn.html') return true;
     if (href === 'profile.html' && page === 'profile.html') return true;
     if (href === 'clubbleu.html' && page === 'clubbleu.html') return true;
@@ -276,7 +277,7 @@
     return false;
   }
 
-  const walletPages = ['wallet.html', 'withdraw.html', 'deposit.html', 'transactionhistory.html', 'fundhistory.html'];
+  const walletPages = ['wallet.html', 'withdraw.html', 'deposit.html', 'transactionhistory.html', 'fundhistory.html', 'convert.html'];
   const copyTradingPages = ['copy-trading.html', 'copy-trading-portfolios.html', 'copy-trading-providers.html'];
   const toolsPages = ['tools.html', 'protradertools.html', 'technicalanalysis.html', 'protraderplatform.html', 'nvc.html', 'analysisiq.html'];
 
@@ -360,7 +361,8 @@
               { label: 'Deposit funds',               href: 'deposit.html'   },
               { label: 'Withdraw funds',              href: 'withdraw.html'  },
               { label: 'Transfer',                    href: 'funds.html?tab=transfer' },
-              { label: 'History',                      href: 'fundhistory.html' }
+              { label: 'Convert',                     href: 'convert.html'           },
+              { label: 'History',                     href: 'fundhistory.html'       }
             ], walletPages)}
         <a class="nav-item${page === 'earn.html' ? ' active' : ''}" href="earn.html" data-tooltip="Earn">
           <span class="nav-icon">
