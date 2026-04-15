@@ -106,6 +106,7 @@
     .dropdown-select {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
       height: 40px;
       padding: 0 12px;
@@ -121,6 +122,33 @@
       min-width: 160px;
     }
     .dropdown-select svg { flex-shrink: 0; color: var(--text-secondary); }
+
+    .dropdown-wrap { position: relative; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 100%;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      z-index: 100;
+      overflow: hidden;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-option {
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Roboto', sans-serif;
+    }
+    .dropdown-option:hover { background: #f4f5f6; }
+    .dropdown-option.active { color: var(--blue); font-weight: 500; }
 
     .date-range {
       display: flex;
@@ -239,7 +267,7 @@
       height: 20px;
       padding: 0 8px;
       border-radius: 2px;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 500;
       white-space: nowrap;
     }
@@ -348,11 +376,20 @@
 
       <!-- ── Filters (shared) ────────────────────────────── -->
       <div class="filter-dropdowns">
-        <div class="dropdown-select">
-          All Coins
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <div class="dropdown-wrap" id="coin-filter-wrap">
+          <div class="dropdown-select" id="coin-filter-btn">
+            <span id="coin-filter-label">All Coins</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="dropdown-menu" id="coin-filter-menu">
+            <div class="dropdown-option active" data-value="all">All Coins</div>
+            <div class="dropdown-option" data-value="USDT">USDT</div>
+            <div class="dropdown-option" data-value="BTC">BTC</div>
+            <div class="dropdown-option" data-value="ETH">ETH</div>
+            <div class="dropdown-option" data-value="USDC">USDC</div>
+          </div>
         </div>
         <div class="date-range">
           <div class="date-input">
@@ -961,6 +998,44 @@
         document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
       });
     });
+
+    // Coin filter
+    (function() {
+      var btn    = document.getElementById('coin-filter-btn');
+      var menu   = document.getElementById('coin-filter-menu');
+      var label  = document.getElementById('coin-filter-label');
+      var selectedCoin = 'all';
+
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.classList.toggle('open');
+      });
+
+      document.addEventListener('click', function() {
+        menu.classList.remove('open');
+      });
+
+      menu.querySelectorAll('.dropdown-option').forEach(function(opt) {
+        opt.addEventListener('click', function(e) {
+          e.stopPropagation();
+          selectedCoin = opt.dataset.value;
+          label.textContent = opt.textContent.trim();
+          menu.querySelectorAll('.dropdown-option').forEach(function(o) { o.classList.remove('active'); });
+          opt.classList.add('active');
+          menu.classList.remove('open');
+          filterRows();
+        });
+      });
+
+      function filterRows() {
+        document.querySelectorAll('.table-row').forEach(function(row) {
+          if (selectedCoin === 'all') { row.style.display = ''; return; }
+          var coinCell = row.querySelector('.td-coin');
+          var coinText = coinCell ? coinCell.textContent.trim() : '';
+          row.style.display = (coinText === selectedCoin) ? '' : 'none';
+        });
+      }
+    })();
   </script>
 </body>
 </html>
