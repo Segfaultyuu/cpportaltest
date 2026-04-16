@@ -131,9 +131,41 @@
       justify-content: center; margin-top: 9px;
     }
 
-    .kyc-pip { height: 2px; width: 16px; border-radius: 2px; }
+    .kyc-pip { height: 2px; width: 16px; border-radius: 2px; cursor: pointer; }
     .kyc-pip.on { background: var(--blue); }
     .kyc-pip.off { background: rgba(10,54,199,0.12); }
+
+    /* ─── Banner Carousel ─────────────────────────────────── */
+    .banner-carousel-wrap { overflow: hidden; border-radius: 16px; }
+    .banner-slides { display: flex; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); will-change: transform; }
+    .banner-slide { width: 100%; flex-shrink: 0; }
+
+    /* VT Wallet Banner */
+    .vtw-banner {
+      background: #e8f1ff; border-radius: 16px;
+      height: 160px; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+    }
+    .vtw-avatar {
+      width: 171px; height: 171px; flex-shrink: 0; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vtw-avatar img { width: 137px; height: 137px; object-fit: contain; display: block; }
+    .vtw-body {
+      flex: 1; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 40px 0 0;
+    }
+    .vtw-text-block { display: flex; flex-direction: column; gap: 10px; padding-right: 8px; }
+    .vtw-title { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+    .vtw-subtitle { font-size: 14px; color: var(--text-secondary); }
+    .vtw-btn {
+      height: 40px; padding: 0 20px; border-radius: 8px;
+      border: 1.5px solid var(--blue); background: transparent;
+      color: var(--blue); font-size: 16px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      transition: background 0.15s; flex-shrink: 0;
+    }
+    .vtw-btn:hover { background: rgba(10,54,199,0.06); }
 
     /* ─── Stats Row ───────────────────────────────────────── */
     .stats-row {
@@ -146,6 +178,7 @@
       background: #fff; border-radius: 16px;
       box-shadow: var(--shadow-card); overflow: hidden;
     }
+    .stat-card--assets { overflow: visible; }
 
     /* Assets card */
     .assets-inner { padding: 40px 24px; }
@@ -169,7 +202,7 @@
       display: flex; align-items: flex-end; gap: 8px; margin-bottom: 40px;
     }
 
-    .assets-flag { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+    .assets-flag { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; margin-bottom: 3px; object-fit: cover; }
 
     .assets-figure {
       font-size: 40px; font-weight: 700; color: var(--text-primary); line-height: 1;
@@ -178,8 +211,38 @@
     .assets-figure .cents { font-size: 32px; }
 
     .assets-currency {
-      font-size: 16px; font-weight: 700; color: var(--text-primary); margin-left: 6px;
+      font-size: 16px; font-weight: 700; color: var(--text-primary);
     }
+
+    /* Home currency picker */
+    .home-curr-wrap {
+      position: relative; display: inline-flex; align-items: center;
+      gap: 3px; cursor: pointer;
+    }
+    .home-curr-chevron {
+      width: 16px; height: 16px; flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .home-curr-chevron.open { transform: rotate(180deg); }
+    .home-curr-picker {
+      display: none; position: absolute; top: calc(100% + 8px); left: 0;
+      background: #fff; border-radius: 10px; min-width: 200px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12); z-index: 300; overflow: hidden;
+      max-height: 320px; overflow-y: auto;
+    }
+    .home-curr-picker.open { display: block; }
+    .home-curr-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; cursor: pointer; transition: background 0.12s;
+      border-bottom: 1px solid #f4f5f6;
+    }
+    .home-curr-item:last-child { border-bottom: none; }
+    .home-curr-item:hover { background: #f4f6f9; }
+    .home-curr-item.active { background: #e8f1ff; }
+    .home-curr-icon { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
+    .home-curr-name { font-size: 14px; font-weight: 500; color: #282d34; flex: 1; }
+    .home-curr-check { color: #0a36c7; flex-shrink: 0; }
+    .home-curr-item:not(.active) .home-curr-check { visibility: hidden; }
 
     .assets-buttons {
       display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
@@ -304,42 +367,84 @@
       cursor: pointer; border-bottom: none;
       transition: color 0.15s; white-space: nowrap;
     }
-
     .market-tab:not(.active) { font-size: 20px; font-weight: 500; color: #7A8699; }
-    .market-tab.active { font-size: 20px; font-weight: 700; color: #282D34; border-bottom: none; }
+    .market-tab.active { font-size: 20px; font-weight: 700; color: #282D34; }
     .market-tab:hover { color: #282D34; }
 
     .market-table { width: 100%; border-collapse: collapse; }
-
     .market-table thead th {
-      padding: 12px 24px; font-size: 12px; font-weight: 500;
-      color: var(--text-secondary); text-align: left; border-bottom: 1px solid var(--border);
+      padding: 12px 24px; font-size: 14px; font-weight: 400;
+      color: var(--text-secondary); text-align: left;
+      border-bottom: 0.5px solid rgba(30,30,30,0.15);
     }
-
+    .market-table thead th.c { text-align: center; }
     .market-table thead th.r { text-align: right; }
-
-    .market-table tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+    .market-table tbody tr {
+      border-bottom: 0.5px solid rgba(30,30,30,0.08);
+      cursor: pointer; transition: background 0.12s;
+    }
     .market-table tbody tr:last-child { border-bottom: none; }
-    .market-table tbody tr:hover { background: #F9F9F9; }
-    .market-table tbody td { padding: 0 24px; height: 64px; font-size: 14px; }
+    .market-table tbody tr:hover { background: #f9fafb; }
+    .market-table tbody td { padding: 0 24px; height: 64px; }
+    .market-table tbody td.c { text-align: center; }
     .market-table tbody td.r { text-align: right; }
 
+    /* Symbol cell */
     .sym-cell { display: flex; align-items: center; gap: 12px; }
     .sym-flag { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex-shrink: 0; }
-    .sym-name { font-size: 14px; font-weight: 600; }
-    .sym-desc { font-size: 11px; color: var(--text-secondary); max-width: 150px; white-space: normal; line-height: 1.4; }
+    .sym-name { font-size: 16px; font-weight: 600; color: #282d34; }
+    .sym-desc { font-size: 12px; color: var(--text-secondary); max-width: 160px; line-height: 1.3; }
 
-    .p-sell { color: #e84040; font-weight: 500; }
-    .p-buy { color: var(--green); font-weight: 500; }
+    /* Bid */
+    .bid-up   { color: var(--green); font-size: 16px; font-weight: 500; }
+    .bid-down { color: var(--red);   font-size: 16px; font-weight: 500; }
+    .bid-flat { color: #282d34;      font-size: 16px; font-weight: 500; }
 
-    .chg-badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      height: 28px; min-width: 66px; border-radius: 4px;
-      font-size: 12px; font-weight: 600; padding: 0 10px;
+    /* Change */
+    .chg-up   { color: var(--green); font-size: 16px; font-weight: 500; }
+    .chg-down { color: var(--red);   font-size: 16px; font-weight: 500; }
+    .chg-flat { color: #282d34;      font-size: 16px; font-weight: 500; }
+
+    /* Sparkline */
+    .sparkline-wrap { display: flex; align-items: center; justify-content: center; }
+    .sparkline-wrap svg { width: 60px; height: 24px; display: block; overflow: visible; }
+
+    /* Percentage */
+    .pct-wrap { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+    .pct-wrap svg { flex-shrink: 0; }
+    .pct-up   { color: var(--green); font-size: 14px; font-weight: 500; }
+    .pct-down { color: var(--red);   font-size: 14px; font-weight: 500; }
+    .pct-flat { color: #282d34;      font-size: 14px; font-weight: 500; }
+
+    /* Row flash on tick */
+    @keyframes flash-green { 0%,100%{background:transparent} 40%{background:rgba(0,181,101,0.10)} }
+    @keyframes flash-red   { 0%,100%{background:transparent} 40%{background:rgba(255,44,64,0.08)} }
+    .flash-green { animation: flash-green 0.5s ease; }
+    .flash-red   { animation: flash-red   0.5s ease; }
+
+    /* Market body – holds table OR empty state, fixed height so card never resizes */
+    .market-body {
+      min-height: 372px; /* thead ≈52px + 5 rows × 64px */
+      display: flex;
+      flex-direction: column;
     }
+    .market-table { flex: 1; }
 
-    .chg-neg { background: var(--red); color: #fff; }
-    .chg-pos { background: var(--green); color: #fff; }
+    /* Empty state */
+    .market-empty {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;          /* fill remaining height of .market-body */
+      gap: 12px;
+    }
+    .market-empty.visible { display: flex; }
+    .market-empty-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
 
     /* ─── Section header ──────────────────────────────────── */
     .sec-hdr {
@@ -506,10 +611,11 @@
       .kyc-progress-bar, .kyc-labels { width: 100%; }
       .market-tab:not(.active), .market-tab.active { font-size: 16px; }
       .market-table thead th,
-      .market-table tbody td { padding-left: 8px; padding-right: 8px; }
+      .market-table tbody td { padding-left: 12px; padding-right: 12px; }
       .market-table thead th.r { width: auto !important; white-space: nowrap; }
       .market-table tbody td.r { white-space: nowrap; }
-      .market-table th:nth-child(2), .market-table td:nth-child(2),
+      /* Hide Change (col 3) and Markets sparkline (col 4) on mobile */
+      .market-table th:nth-child(3), .market-table td:nth-child(3),
       .market-table th:nth-child(4), .market-table td:nth-child(4) { display: none; }
       .news-grid { grid-template-columns: 1fr; }
       .traders-grid { grid-template-columns: 1fr; gap: 20px; }
@@ -535,45 +641,69 @@
 <main class="main">
   <div class="home-content">
 
-    <!-- ── KYC Verification Banner ── -->
+    <!-- ── Hero Banner Carousel ── -->
     <div>
-      <div class="kyc-banner">
-        <div class="kyc-bg-blob b1"></div>
-        <div class="kyc-bg-blob b2"></div>
+      <div class="banner-carousel-wrap" id="banner-carousel">
+        <div class="banner-slides" id="banner-slides">
 
-        <div class="kyc-avatar">
-          <img src="images/Open_account.png" alt="Verification avatar" />
-        </div>
+          <!-- Slide 1: KYC Verification Banner -->
+          <div class="banner-slide">
+            <div class="kyc-banner">
+              <div class="kyc-bg-blob b1"></div>
+              <div class="kyc-bg-blob b2"></div>
 
-        <div class="kyc-body">
-          <div class="kyc-text-block">
-            <div class="kyc-title">Nearly there! Complete your ID verification in just 2 minutes</div>
-            <div>
-              <div class="kyc-progress-bar">
-                <div class="kyc-dot on"></div>
-                <div class="kyc-seg half"></div>
-                <div class="kyc-dot off"></div>
-                <div class="kyc-seg empty"></div>
-                <div class="kyc-dot off"></div>
+              <div class="kyc-avatar">
+                <img src="images/Open_account.png" alt="Verification avatar" />
               </div>
-              <div class="kyc-labels">
-                <span>Sign Up</span>
-                <span>Verification</span>
-                <span class="dim">Deposit</span>
+
+              <div class="kyc-body">
+                <div class="kyc-text-block">
+                  <div class="kyc-title">Nearly there! Complete your ID verification in just 2 minutes</div>
+                  <div>
+                    <div class="kyc-progress-bar">
+                      <div class="kyc-dot on"></div>
+                      <div class="kyc-seg half"></div>
+                      <div class="kyc-dot off"></div>
+                      <div class="kyc-seg empty"></div>
+                      <div class="kyc-dot off"></div>
+                    </div>
+                    <div class="kyc-labels">
+                      <span>Sign Up</span>
+                      <span>Verification</span>
+                      <span class="dim">Deposit</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="kyc-verify-btn">Verify Identity</button>
+                <button class="kyc-arrow-btn" aria-label="Verify Identity">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+                </button>
               </div>
             </div>
           </div>
-          <button class="kyc-verify-btn">Verify Identity</button>
-          <button class="kyc-arrow-btn" aria-label="Verify Identity">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
-          </button>
+
+          <!-- Slide 2: VT Wallet Banner -->
+          <div class="banner-slide">
+            <div class="vtw-banner">
+              <div class="kyc-bg-blob b1"></div>
+              <div class="kyc-bg-blob b2"></div>
+              <div class="vtw-avatar">
+                <img src="images/VTwallet.png" alt="VT Wallet" />
+              </div>
+              <div class="vtw-body">
+                <div class="vtw-text-block">
+                  <div class="vtw-title">Activate your VT-Wallet Now!</div>
+                  <div class="vtw-subtitle">To start your crypto journey.</div>
+                </div>
+                <button class="vtw-btn" onclick="window.location.href='wallet.html'">Activate</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-      <div class="kyc-dots">
+      <div class="kyc-dots" id="banner-dots">
         <div class="kyc-pip on"></div>
-        <div class="kyc-pip off"></div>
-        <div class="kyc-pip off"></div>
-        <div class="kyc-pip off"></div>
         <div class="kyc-pip off"></div>
       </div>
     </div>
@@ -582,30 +712,51 @@
     <div class="stats-row">
 
       <!-- Total Assets -->
-      <div class="stat-card">
+      <div class="stat-card stat-card--assets">
         <div class="assets-inner">
           <div class="assets-top">
             <div class="assets-label">
               Total assets estimate
               <img id="assets-eye" src="images/Eye.png" width="20" height="20" alt="Toggle visibility" style="opacity:0.65;cursor:pointer;" />
             </div>
-            <div class="assets-history">
+            <div class="assets-history" onclick="window.location.href='funds.html?tab=history'" style="cursor:pointer;">
               History
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
             </div>
           </div>
 
           <div class="assets-amount-row">
-            <img class="assets-flag" src="images/imgUsd.png" alt="USD" />
+            <img class="assets-flag" id="assets-curr-flag" src="images/imgUsd.png" alt="USD" />
             <span class="assets-figure" id="assets-figure">0<span class="cents">.00</span></span>
-            <span class="assets-currency">USD</span>
-            <img src="images/Arrows.png" alt="arrow" style="width:16px;height:16px;object-fit:contain;margin-bottom:2px;" />
+            <div class="home-curr-wrap" id="home-curr-wrap">
+              <span class="assets-currency" id="assets-currency-label">USD</span>
+              <svg class="home-curr-chevron" id="home-curr-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6.5l4 3.5 4-3.5" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="home-curr-picker" id="home-curr-picker">
+                <div class="home-curr-item active" data-curr="USD"><img class="home-curr-icon" src="images/imgUsd.png" alt="USD"/><span class="home-curr-name">USD</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="GBP"><img class="home-curr-icon" src="https://flagcdn.com/w40/gb.png" alt="GBP"/><span class="home-curr-name">GBP</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="CAD"><img class="home-curr-icon" src="https://flagcdn.com/w40/ca.png" alt="CAD"/><span class="home-curr-name">CAD</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="AUD"><img class="home-curr-icon" src="https://flagcdn.com/w40/au.png" alt="AUD"/><span class="home-curr-name">AUD</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="EUR"><img class="home-curr-icon" src="https://flagcdn.com/w40/eu.png" alt="EUR"/><span class="home-curr-name">EUR</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="SGD"><img class="home-curr-icon" src="https://flagcdn.com/w40/sg.png" alt="SGD"/><span class="home-curr-name">SGD</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="NZD"><img class="home-curr-icon" src="https://flagcdn.com/w40/nz.png" alt="NZD"/><span class="home-curr-name">NZD</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="HKD"><img class="home-curr-icon" src="https://flagcdn.com/w40/hk.png" alt="HKD"/><span class="home-curr-name">HKD</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="JPY"><img class="home-curr-icon" src="https://flagcdn.com/w40/jp.png" alt="JPY"/><span class="home-curr-name">JPY</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="PLN"><img class="home-curr-icon" src="https://flagcdn.com/w40/pl.png" alt="PLN"/><span class="home-curr-name">PLN</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="AED"><img class="home-curr-icon" src="https://flagcdn.com/w40/ae.png" alt="AED"/><span class="home-curr-name">AED</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="USDT"><img class="home-curr-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT"/><span class="home-curr-name">USDT</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="BTC"><img class="home-curr-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC"/><span class="home-curr-name">BTC</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="ETH"><img class="home-curr-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH"/><span class="home-curr-name">ETH</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="home-curr-item" data-curr="USDC"><img class="home-curr-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC"/><span class="home-curr-name">USDC</span><svg class="home-curr-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+              </div>
+            </div>
           </div>
 
           <div class="assets-buttons">
-            <button class="btn-deposit-h">Deposit</button>
-            <button class="btn-action-h">Withdraw</button>
-            <button class="btn-action-h">Transfer</button>
+            <button class="btn-deposit-h" onclick="window.location.href='funds.html?tab=deposit'">Deposit</button>
+            <button class="btn-action-h" onclick="window.location.href='funds.html?tab=withdraw'">Withdraw</button>
+            <button class="btn-action-h" onclick="window.location.href='funds.html?tab=transfer'">Transfer</button>
           </div>
         </div>
       </div>
@@ -647,7 +798,7 @@
               </div>
             </div>
             <div class="cb-bar"><div class="cb-bar-fill" style="width:100%;height:100%;"></div></div>
-            <div class="cb-benefits">
+            <div class="cb-benefits" onclick="window.location.href='clubbleu.html'">
               View my benefits
               <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 9l4-4-4-4" stroke="#282d34" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/></svg>
             </div>
@@ -668,61 +819,33 @@
         <div class="market-tab" data-tab="energy">Energy</div>
         <div class="market-tab" data-tab="etfs">Etfs</div>
       </div>
-      <table class="market-table">
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th class="r" style="width:150px;">Sell</th>
-            <th class="r" style="width:150px;">Buy</th>
-            <th class="r" style="width:150px;">Spread</th>
-            <th class="r" style="width:100px;">%Change</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div class="sym-cell"><img class="sym-flag" src="images/USDCAD.png" alt="USDCAD" /><div><div class="sym-name">USDCAD</div><div class="sym-desc">US Dollar / Canadian Dollar</div></div></div></td>
-            <td class="r"><span class="p-sell">1.54554</span></td>
-            <td class="r"><span class="p-buy">1.55847</span></td>
-            <td class="r">0.01293</td>
-            <td class="r"><span class="chg-badge chg-neg">-2.56%</span></td>
-          </tr>
-          <tr>
-            <td><div class="sym-cell"><img class="sym-flag" src="images/USDJPY.png" alt="USDJPY" /><div><div class="sym-name">USDJPY</div><div class="sym-desc">US Dollar / Japanese Yen</div></div></div></td>
-            <td class="r"><span class="p-sell">1.54554</span></td>
-            <td class="r"><span class="p-buy">1.55847</span></td>
-            <td class="r">0.01293</td>
-            <td class="r"><span class="chg-badge chg-pos">+2.56%</span></td>
-          </tr>
-          <tr>
-            <td><div class="sym-cell"><img class="sym-flag" src="images/USDSGD.png" alt="USDSGD" /><div><div class="sym-name">USDSGD</div><div class="sym-desc">US Dollar / Singapore Dollar</div></div></div></td>
-            <td class="r"><span class="p-sell">1.55847</span></td>
-            <td class="r"><span class="p-buy">1.54554</span></td>
-            <td class="r">0.01293</td>
-            <td class="r"><span class="chg-badge chg-pos">+2.56%</span></td>
-          </tr>
-          <tr>
-            <td><div class="sym-cell"><img class="sym-flag" src="images/USDCAD.png" alt="USDCAD" /><div><div class="sym-name">USDCAD</div><div class="sym-desc">US Dollar / Canadian Dollar</div></div></div></td>
-            <td class="r"><span class="p-sell">1.54554</span></td>
-            <td class="r"><span class="p-buy">1.55847</span></td>
-            <td class="r">0.01293</td>
-            <td class="r"><span class="chg-badge chg-neg">-2.56%</span></td>
-          </tr>
-          <tr>
-            <td><div class="sym-cell"><img class="sym-flag" src="images/USDCAD.png" alt="USDCAD" /><div><div class="sym-name">USDCAD</div><div class="sym-desc">US Dollar / Canadian Dollar</div></div></div></td>
-            <td class="r"><span class="p-sell">1.54554</span></td>
-            <td class="r"><span class="p-buy">1.55847</span></td>
-            <td class="r">0.01293</td>
-            <td class="r"><span class="chg-badge chg-pos">+2.56%</span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="market-body">
+        <table class="market-table">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th class="c" style="width:240px;">Bid</th>
+              <th class="c" style="width:320px;">Change</th>
+              <th class="c" style="width:240px;">Markets</th>
+              <th class="r" style="width:180px;">Percentage</th>
+            </tr>
+          </thead>
+          <tbody id="market-tbody"></tbody>
+        </table>
+
+        <!-- Empty state (shown for tabs with no data) -->
+        <div class="market-empty" id="market-empty">
+          <img src="images/emptystates.png" alt="No Data" width="60" height="60" style="object-fit:contain;" />
+          <span class="market-empty-text">No Data</span>
+        </div>
+      </div>
     </div>
 
     <!-- ── News ── -->
     <div>
       <div class="sec-hdr">
         <span class="sec-title">News</span>
-        <div class="sec-arrow">
+        <div class="sec-arrow" onclick="window.location.href='tools.html'" style="cursor:pointer;">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
@@ -767,7 +890,7 @@
           Highest Annual Return
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#c2c7d0" stroke-width="1.2"/><path d="M8 7v3.5M8 5.5h.01" stroke="#c2c7d0" stroke-width="1.2" stroke-linecap="round"/></svg>
         </span>
-        <div class="sec-arrow">
+        <div class="sec-arrow" onclick="window.location.href='copy-trading-providers.html'" style="cursor:pointer;">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
@@ -876,14 +999,146 @@
 </main>
 
 <script>
-  document.querySelectorAll('.market-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+  /* ── Market tab switching ── */
+  document.querySelectorAll('.market-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.market-tab').forEach(function(t) { t.classList.remove('active'); });
       tab.classList.add('active');
+
+      var activeTab = tab.getAttribute('data-tab');
+      var table = document.querySelector('.market-table');
+      var empty = document.getElementById('market-empty');
+      var hasData = activeTab === 'forex';   /* only Forex has live data */
+
+      if (table) table.style.display = hasData ? '' : 'none';
+      if (empty) empty.classList.toggle('visible', !hasData);
     });
   });
 
+  /* ── Real-time market watchlist ── */
+  (function() {
+    var MARKETS = [
+      { sym:'USDCAD', desc:'US Dollar / Canadian Dollar',  img:'images/USDCAD.png', open:1.14690, bid:1.14760, decimals:5, step:0.00012 },
+      { sym:'USDJPY', desc:'US Dollar / Japanese Yen',     img:'images/USDJPY.png', open:142.520,  bid:142.660,  decimals:3, step:0.008  },
+      { sym:'USDSGD', desc:'US Dollar / Singapore Dollar', img:'images/USDSGD.png', open:1.34780, bid:1.35500, decimals:5, step:0.00012 },
+      { sym:'USDBRL', desc:'US Dollar / Brazilian Real',   img:'images/USDBRL.png', open:5.08200, bid:5.09400, decimals:5, step:0.00050 },
+      { sym:'CADCHF', desc:'Canadian Dollar / Swiss Franc',img:'images/CADCHF.png', open:0.70910, bid:0.70800, decimals:5, step:0.00008 }
+    ];
 
+    /* seed a realistic price history between open and current bid */
+    function seedHistory(open, current, n) {
+      var h = [];
+      for (var i = 0; i < n; i++) {
+        var t = i / (n - 1);
+        var trend = open + (current - open) * t;
+        var noise = (Math.random() - 0.5) * (Math.abs(current - open) + 0.0002) * 0.5;
+        h.push(trend + noise);
+      }
+      h[n - 1] = current;
+      return h;
+    }
+
+    MARKETS.forEach(function(m) {
+      m.history = seedHistory(m.open, m.bid, 22);
+      m.lastDir = 0;
+    });
+
+    /* generate a 60×24 SVG sparkline from a price history array */
+    function makeSpark(history, up) {
+      var W = 60, H = 24, pad = 2;
+      var min = Math.min.apply(null, history);
+      var max = Math.max.apply(null, history);
+      var range = (max - min) || 0.0001;
+      var pts = history.map(function(v, i) {
+        var x = ((i / (history.length - 1)) * W).toFixed(1);
+        var y = (H - pad - ((v - min) / range) * (H - pad * 2)).toFixed(1);
+        return x + ',' + y;
+      });
+      var line = 'M' + pts.join(' L');
+      var fill = line + ' L' + W + ',' + H + ' L0,' + H + ' Z';
+      var sc = up ? '#00b565' : '#ff2c40';
+      var fc = up ? 'rgba(0,181,101,0.12)' : 'rgba(255,44,64,0.09)';
+      return '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="' + fill + '" fill="' + fc + '"/>' +
+        '<path d="' + line + '" fill="none" stroke="' + sc + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>';
+    }
+
+    /* arrow SVG icons */
+    var ARROW_UP   = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 14V6M7 9l3-3 3 3" stroke="#00b565" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var ARROW_DOWN = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 6v8M7 11l3 3 3-3" stroke="#ff2c40" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    /* build one table row's innerHTML */
+    function rowHTML(m) {
+      var chg = m.bid - m.open;
+      var pct = (chg / m.open) * 100;
+      var dir = chg > 0.000004 ? 1 : chg < -0.000004 ? -1 : 0;
+      var sign = dir > 0 ? '+' : '';
+      var bc = dir > 0 ? 'bid-up'  : dir < 0 ? 'bid-down'  : 'bid-flat';
+      var cc = dir > 0 ? 'chg-up'  : dir < 0 ? 'chg-down'  : 'chg-flat';
+      var pc = dir > 0 ? 'pct-up'  : dir < 0 ? 'pct-down'  : 'pct-flat';
+      var arrow = dir > 0 ? ARROW_UP : dir < 0 ? ARROW_DOWN : '';
+      return '<tr data-sym="' + m.sym + '">' +
+        '<td><div class="sym-cell">' +
+          '<img class="sym-flag" src="' + m.img + '" alt="' + m.sym + '" onerror="this.style.visibility=\'hidden\'">' +
+          '<div><div class="sym-name">' + m.sym + '</div><div class="sym-desc">' + m.desc + '</div></div>' +
+        '</div></td>' +
+        '<td class="c"><span class="bid-val ' + bc + '">' + m.bid.toFixed(m.decimals) + '</span></td>' +
+        '<td class="c"><span class="chg-val ' + cc + '">' + sign + chg.toFixed(m.decimals) + '</span></td>' +
+        '<td class="c"><div class="sparkline-wrap">' + makeSpark(m.history, dir >= 0) + '</div></td>' +
+        '<td class="r"><div class="pct-wrap">' + arrow + '<span class="' + pc + '">' + sign + pct.toFixed(2) + '%</span></div></td>' +
+      '</tr>';
+    }
+
+    /* initial render */
+    function render() {
+      var tbody = document.getElementById('market-tbody');
+      if (tbody) tbody.innerHTML = MARKETS.map(rowHTML).join('');
+    }
+
+    /* tick – update prices & DOM every 1.5 s */
+    function tick() {
+      MARKETS.forEach(function(m) {
+        var prev = m.bid;
+        m.bid = Math.max(0.0001, m.bid + (Math.random() - 0.48) * m.step);
+        m.lastDir = m.bid > prev ? 1 : m.bid < prev ? -1 : 0;
+        m.history.push(m.bid);
+        if (m.history.length > 30) m.history.shift();
+
+        var row = document.querySelector('tr[data-sym="' + m.sym + '"]');
+        if (!row) return;
+
+        var chg = m.bid - m.open;
+        var pct = (chg / m.open) * 100;
+        var dir = chg > 0.000004 ? 1 : chg < -0.000004 ? -1 : 0;
+        var sign = dir > 0 ? '+' : '';
+        var bc = dir > 0 ? 'bid-up'  : dir < 0 ? 'bid-down'  : 'bid-flat';
+        var cc = dir > 0 ? 'chg-up'  : dir < 0 ? 'chg-down'  : 'chg-flat';
+        var pc = dir > 0 ? 'pct-up'  : dir < 0 ? 'pct-down'  : 'pct-flat';
+        var arrow = dir > 0 ? ARROW_UP : dir < 0 ? ARROW_DOWN : '';
+
+        var bidEl  = row.querySelector('.bid-val');
+        var chgEl  = row.querySelector('.chg-val');
+        var spkEl  = row.querySelector('.sparkline-wrap');
+        var pctEl  = row.querySelector('.pct-wrap');
+
+        if (bidEl) { bidEl.textContent = m.bid.toFixed(m.decimals); bidEl.className = 'bid-val ' + bc; }
+        if (chgEl) { chgEl.textContent = sign + chg.toFixed(m.decimals); chgEl.className = 'chg-val ' + cc; }
+        if (spkEl) { spkEl.innerHTML = makeSpark(m.history, dir >= 0); }
+        if (pctEl) { pctEl.innerHTML = arrow + '<span class="' + pc + '">' + sign + pct.toFixed(2) + '%</span>'; }
+
+        /* row flash */
+        row.classList.remove('flash-green', 'flash-red');
+        void row.offsetWidth;
+        if (m.lastDir > 0) row.classList.add('flash-green');
+        else if (m.lastDir < 0) row.classList.add('flash-red');
+        setTimeout(function(r) { r.classList.remove('flash-green','flash-red'); }.bind(null, row), 500);
+      });
+    }
+
+    render();
+    setInterval(tick, 1500);
+  })();
 </script>
 <script src="sidebar.js?v=3"></script>
 <script src="topbar.js"></script>
@@ -897,6 +1152,86 @@
     eye.src = hidden ? 'images/Eye Hide.png' : 'images/Eye.png';
     figure.innerHTML = hidden ? '*<span class="cents">.**</span>' : '0<span class="cents">.00</span>';
   });
+})();
+</script>
+<script>
+/* ── Home Currency Picker ── */
+(function () {
+  var CURR_ICONS = {
+    'USD':  'images/imgUsd.png',
+    'GBP':  'https://flagcdn.com/w40/gb.png',
+    'CAD':  'https://flagcdn.com/w40/ca.png',
+    'AUD':  'https://flagcdn.com/w40/au.png',
+    'EUR':  'https://flagcdn.com/w40/eu.png',
+    'SGD':  'https://flagcdn.com/w40/sg.png',
+    'NZD':  'https://flagcdn.com/w40/nz.png',
+    'HKD':  'https://flagcdn.com/w40/hk.png',
+    'JPY':  'https://flagcdn.com/w40/jp.png',
+    'PLN':  'https://flagcdn.com/w40/pl.png',
+    'AED':  'https://flagcdn.com/w40/ae.png',
+    'USDT': 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png',
+    'BTC':  'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png',
+    'ETH':  'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png',
+    'USDC': 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png'
+  };
+
+  var wrap    = document.getElementById('home-curr-wrap');
+  var picker  = document.getElementById('home-curr-picker');
+  var chevron = document.getElementById('home-curr-chevron');
+  var flagEl  = document.getElementById('assets-curr-flag');
+  var labelEl = document.getElementById('assets-currency-label');
+
+  function open()  { picker.classList.add('open');    chevron.classList.add('open'); }
+  function close() { picker.classList.remove('open'); chevron.classList.remove('open'); }
+
+  wrap.addEventListener('click', function (e) { e.stopPropagation(); picker.classList.contains('open') ? close() : open(); });
+  document.addEventListener('click', close);
+  picker.addEventListener('click', function (e) { e.stopPropagation(); });
+
+  picker.querySelectorAll('.home-curr-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      var code = item.getAttribute('data-curr');
+      picker.querySelectorAll('.home-curr-item').forEach(function (i) { i.classList.remove('active'); });
+      item.classList.add('active');
+      labelEl.textContent = code;
+      flagEl.src = CURR_ICONS[code];
+      flagEl.alt = code;
+      close();
+    });
+  });
+})();
+
+/* ── Hero Banner Auto-Carousel ── */
+(function () {
+  var slidesEl = document.getElementById('banner-slides');
+  var dotsEl   = document.getElementById('banner-dots');
+  var pips     = dotsEl ? dotsEl.querySelectorAll('.kyc-pip') : [];
+  var total    = pips.length;
+  var current  = 0;
+  var timer;
+
+  function goTo(idx) {
+    current = idx;
+    slidesEl.style.transform = 'translateX(-' + (100 * current) + '%)';
+    pips.forEach(function (p, i) {
+      p.classList.toggle('on',  i === current);
+      p.classList.toggle('off', i !== current);
+    });
+  }
+
+  function advance() { goTo((current + 1) % total); }
+
+  function startTimer() { timer = setInterval(advance, 4000); }
+
+  pips.forEach(function (p, i) {
+    p.addEventListener('click', function () {
+      clearInterval(timer);
+      goTo(i);
+      startTimer();
+    });
+  });
+
+  startTimer();
 })();
 </script>
 </body>
