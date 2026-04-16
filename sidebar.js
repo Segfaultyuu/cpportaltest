@@ -382,7 +382,7 @@
         </a>
         ${navGroup('copytrading', 'Copy trading.png',   'Copy trading-selected.png',   'Copy Trading', 'Copy Trading', 'NEW',
             [
-              { label: 'Overview',          href: 'copy-trading.html'            },
+              { label: 'Discover',          href: 'copy-trading.html'            },
               { label: 'My portfolios',     href: 'copy-trading-portfolios.html' },
               { label: 'Signal providers',  href: 'copy-trading-providers.html'  }
             ], copyTradingPages)}
