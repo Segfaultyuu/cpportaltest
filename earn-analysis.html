@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Earn Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --green: #00b565;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168,195,206,0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Back link ─────────────────────────────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      margin-bottom: -4px;
+    }
+    .back-link:hover { color: var(--text-primary); }
+    .back-link svg { width: 8px; height: 13px; flex-shrink: 0; }
+
+    /* ── Page title ────────────────────────────────────────── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ── Card base ─────────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border: 1px solid rgba(30,30,30,0.10);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    /* ── Card header row ───────────────────────────────────── */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .info-icon { color: var(--text-tertiary); cursor: default; flex-shrink: 0; }
+
+    /* ── Period tabs (pill style) ──────────────────────────── */
+    .period-tabs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .period-tab {
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #f3f4f5;
+      color: rgba(30,30,30,0.45);
+      font-family: 'Roboto', sans-serif;
+      transition: all 0.15s;
+    }
+    .period-tab.active {
+      background: var(--blue-light);
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .period-tab:hover:not(.active) { background: #e8e9ea; }
+
+    /* ── Date range ─────────────────────────────────────────── */
+    .date-range {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .date-range svg { color: var(--text-secondary); }
+
+    /* ── Stats card ─────────────────────────────────────────── */
+    .stats-card {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 24px 28px;
+    }
+
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 40px;
+    }
+
+    .stat-sep {
+      width: 1px;
+      height: 60px;
+      background: var(--border);
+      flex-shrink: 0;
+      margin-right: 40px;
+      align-self: center;
+    }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .stat-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .stat-amount {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .stat-unit {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .stat-usd {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .stat-yield {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.2;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .stat-yield-unit {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 1px;
+    }
+
+    /* ── Chart card ─────────────────────────────────────────── */
+    .chart-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      display: flex;
+      gap: 0;
+    }
+
+    .chart-y-labels {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-right: 8px;
+      width: 20px;
+      flex-shrink: 0;
+      height: 160px;
+    }
+
+    .chart-y-label {
+      font-size: 11px;
+      color: rgba(30,30,30,0.45);
+      text-align: right;
+    }
+
+    .chart-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chart-area svg {
+      width: 100%;
+      height: 160px;
+      display: block;
+    }
+
+    .chart-x-labels {
+      display: flex;
+      justify-content: space-between;
+      padding-left: 28px;
+      margin-top: 6px;
+    }
+
+    .chart-x-label {
+      font-size: 11px;
+      color: rgba(30,30,30,0.45);
+    }
+
+    /* ── Bottom grid ─────────────────────────────────────────── */
+    .analysis-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* ── Yield Calendar ──────────────────────────────────────── */
+    .cal-month-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      flex: 1;
+    }
+    .cal-month-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 4px;
+      min-height: 52px;
+      gap: 2px;
+    }
+    .cal-month-cell.has-yield { background: rgba(0,181,101,0.06); }
+    .cal-month-cell.no-yield  { background: rgba(30,30,30,0.04); }
+    .cal-month-cell .cal-month-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.57;
+    }
+    .cal-month-cell .cal-month-val {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--green);
+      line-height: 1.3;
+    }
+    .cal-month-cell .cal-month-val.zero { color: rgba(30,30,30,0.45); }
+
+    .cal-by-tabs {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .cal-by-tab {
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #f3f4f5;
+      color: rgba(30,30,30,0.45);
+      font-family: 'Roboto', sans-serif;
+      transition: all 0.15s;
+    }
+    .cal-by-tab.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+    .cal-by-tab:hover:not(.active) { background: #e8e9ea; }
+
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 4px 8px;
+    }
+
+    .cal-nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .cal-nav-btn:hover { background: var(--bg-field); }
+
+    .cal-month-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .cal-day-name {
+      font-size: 12px;
+      color: rgba(30,30,30,0.45);
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    .cal-week-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .cal-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 2px;
+      border-radius: 4px;
+      min-height: 44px;
+    }
+
+    .cal-cell.has-yield { background: rgba(0,181,101,0.06); }
+    .cal-cell.no-yield { background: rgba(30,30,30,0.04); }
+    .cal-cell.empty { background: transparent; }
+
+    .cal-cell-day {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .cal-cell-val {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--green);
+      line-height: 1.3;
+    }
+
+    .cal-cell-val.zero {
+      color: rgba(30,30,30,0.45);
+    }
+
+    .cal-summary {
+      background: rgba(30,30,30,0.04);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .cal-summary-label {
+      font-size: 12px;
+      color: rgba(30,30,30,0.45);
+    }
+
+    .cal-summary-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    /* ── Yield Allocation ────────────────────────────────────── */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0 20px;
+    }
+
+    .donut-svg {
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .alloc-table {
+      width: 100%;
+    }
+
+    .alloc-header {
+      display: grid;
+      grid-template-columns: 80px 72px 1fr 1fr;
+      gap: 12px;
+      padding: 8px 12px;
+    }
+
+    .alloc-col-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      text-transform: capitalize;
+    }
+
+    .alloc-row {
+      display: grid;
+      grid-template-columns: 80px 72px 1fr 1fr;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      align-items: center;
+    }
+
+    .alloc-row:nth-child(odd) { background: rgba(30,30,30,0.04); }
+
+    .alloc-coin-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alloc-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .alloc-coin-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .alloc-pct {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .alloc-yield {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .alloc-equiv {
+      font-size: 13px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Currency Switcher (shared with wallet) ──────────────── */
+    .currency-switch-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .chevron-picker-wrap { position: relative; display: inline-flex; align-items: center; }
+    .wallet-balance-chevron {
+      width: 16px; height: 16px; margin-bottom: 2px; cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0;
+    }
+    .wallet-balance-chevron.open { transform: rotate(180deg); }
+    .wallet-coin-icon { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; object-fit: cover; align-self: center; }
+    .currency-picker {
+      display: none; position: absolute; top: calc(100% + 4px); left: 0;
+      background: #fff; border-radius: 10px; min-width: 190px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12); z-index: 200; overflow: hidden;
+    }
+    .currency-picker.open { display: block; }
+    .currency-picker-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; cursor: pointer; transition: background 0.12s;
+      border-bottom: 1px solid #f4f5f6;
+    }
+    .currency-picker-item:last-child { border-bottom: none; }
+    .currency-picker-item:hover { background: #f4f6f9; }
+    .currency-picker-item.active { background: #e8f1ff; }
+    .currency-picker-icon { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+    .currency-picker-name { font-size: 14px; font-weight: 500; color: #282d34; flex: 1; }
+    .currency-picker-check { color: #0a36c7; flex-shrink: 0; }
+    .currency-picker-item:not(.active) .currency-picker-check { visibility: hidden; }
+
+    @media (max-width: 1024px) {
+      .analysis-bottom-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; }
+      .stats-card { flex-direction: column; gap: 20px; align-items: flex-start; }
+      .stat-sep { display: none; }
+      .stat-block { padding-right: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="sidebar-root"></div>
+<div id="topbar-root"></div>
+
+<main class="main">
+  <div class="content">
+
+    <!-- Back -->
+    <a class="back-link" href="wallet.html">
+      <svg viewBox="0 0 8 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 1L1 6.5 7 12"/>
+      </svg>
+      Back
+    </a>
+
+    <!-- Title -->
+    <div class="page-title">Analysis</div>
+
+    <!-- Stats Card -->
+    <div class="card stats-card">
+      <!-- Est Total Value -->
+      <div class="stat-block">
+        <div class="stat-label">
+          Est. Total Value
+          <img id="eye-analysis" src="images/Eye.png" alt="Toggle visibility" style="width:18px;height:18px;opacity:0.6;cursor:pointer;" />
+        </div>
+        <div class="currency-switch-wrap" id="currency-wrap-analysis">
+          <div class="stat-value-row">
+            <img class="wallet-coin-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" />
+            <span class="stat-amount wallet-balance-amount">0.8936489</span>
+            <span class="stat-unit wallet-balance-unit">BTC</span>
+            <div class="chevron-picker-wrap">
+              <svg class="wallet-balance-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6.5l4 3.5 4-3.5" stroke="#7a8699" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="currency-picker">
+                <div class="currency-picker-item active" data-coin="BTC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC" /><span class="currency-picker-name">BTC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="currency-picker-item" data-coin="ETH"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png" alt="ETH" /><span class="currency-picker-name">ETH</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="currency-picker-item" data-coin="USDT"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT" /><span class="currency-picker-name">USDT</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+                <div class="currency-picker-item" data-coin="USDC"><img class="currency-picker-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png" alt="USDC" /><span class="currency-picker-name">USDC</span><svg class="currency-picker-check" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <div class="stat-usd wallet-balance-usd" style="margin-top:2px;">≈ 53,618.93 USD</div>
+        </div>
+      </div>
+
+      <div class="stat-sep"></div>
+
+      <!-- Yield blocks: evenly distributed, no dividers -->
+      <div style="display:flex; flex:1; justify-content:space-around; align-items:center; text-align:center;">
+
+        <!-- Yesterday's Yield -->
+        <div class="stat-block" style="padding-right:0;">
+          <div class="stat-label">Yesterday's Yield</div>
+          <div class="stat-yield">
+            +20.98
+            <span class="stat-yield-unit">USD</span>
+          </div>
+        </div>
+
+        <!-- 30D Yield -->
+        <div class="stat-block" style="padding-right:0;">
+          <div class="stat-label">30D Yield</div>
+          <div class="stat-yield">
+            +33.92
+            <span class="stat-yield-unit">USD</span>
+          </div>
+        </div>
+
+        <!-- Total Yield -->
+        <div class="stat-block" style="padding-right:0;">
+          <div class="stat-label">Total Yield</div>
+          <div class="stat-yield">
+            +120.07
+            <span class="stat-yield-unit">USD</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Total Assets Chart Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-row">
+          <span class="card-title">Total Assets</span>
+          <svg class="info-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <circle cx="8" cy="8" r="6.5"/>
+            <line x1="8" y1="7.5" x2="8" y2="11"/>
+            <circle cx="8" cy="5.5" r="0.7" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <div class="period-tabs" id="assets-tabs">
+            <button class="period-tab active">7D</button>
+            <button class="period-tab">1M</button>
+            <button class="period-tab">3M</button>
+            <button class="period-tab">6M</button>
+          </div>
+          <div class="date-range">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="12" height="11" rx="2"/>
+              <line x1="5" y1="1.5" x2="5" y2="4.5"/>
+              <line x1="11" y1="1.5" x2="11" y2="4.5"/>
+              <line x1="2" y1="7" x2="14" y2="7"/>
+            </svg>
+            2025/09/01 – 2025/09/07
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-wrap">
+        <div class="chart-y-labels">
+          <span class="chart-y-label">10</span>
+          <span class="chart-y-label">5</span>
+          <span class="chart-y-label">0</span>
+        </div>
+        <div class="chart-area">
+          <svg viewBox="0 0 960 160" preserveAspectRatio="none">
+            <!-- Grid lines -->
+            <line x1="0" y1="0"   x2="960" y2="0"   stroke="#e8e9ea" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="0" y1="80"  x2="960" y2="80"  stroke="#e8e9ea" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="0" y1="160" x2="960" y2="160" stroke="#e8e9ea" stroke-width="1"/>
+
+            <!-- Area fill -->
+            <path
+              d="M 0,120 C 80,120 80,72 160,72 C 240,72 240,16 320,16 C 400,16 400,48 480,48 C 560,48 560,64 640,64 C 720,64 720,40 800,40 C 880,40 880,16 960,16 L 960,160 L 0,160 Z"
+              fill="rgba(0,181,101,0.08)"
+              stroke="none"
+            />
+            <!-- Stroke line -->
+            <path
+              d="M 0,120 C 80,120 80,72 160,72 C 240,72 240,16 320,16 C 400,16 400,48 480,48 C 560,48 560,64 640,64 C 720,64 720,40 800,40 C 880,40 880,16 960,16"
+              fill="none"
+              stroke="#00b565"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <div class="chart-x-labels">
+            <span class="chart-x-label">2025-09-01</span>
+            <span class="chart-x-label">2025-09-07</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Grid: Yield Calendar + Yield Allocation -->
+    <div class="analysis-bottom-grid">
+
+      <!-- Yield Calendar -->
+      <div class="card" style="display:flex;flex-direction:column;gap:0;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;">
+          <span class="card-title">Yield Calendar</span>
+          <svg class="info-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <circle cx="8" cy="8" r="6.5"/>
+            <line x1="8" y1="7.5" x2="8" y2="11"/>
+            <circle cx="8" cy="5.5" r="0.7" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+
+        <!-- By Date / By Month tabs -->
+        <div class="cal-by-tabs">
+          <button class="cal-by-tab active" data-cal-view="date">By Date</button>
+          <button class="cal-by-tab" data-cal-view="month">By Month</button>
+        </div>
+
+        <!-- ── By Date view ── -->
+        <div id="cal-view-date">
+          <!-- Month navigation -->
+          <div class="cal-nav">
+            <button class="cal-nav-btn">
+              <svg width="7" height="11" viewBox="0 0 7 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1L1 5.5 6 10"/></svg>
+            </button>
+            <span class="cal-month-label">2025-08</span>
+            <button class="cal-nav-btn">
+              <svg width="7" height="11" viewBox="0 0 7 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 1l5 4.5L1 10"/></svg>
+            </button>
+          </div>
+
+          <!-- Day headers -->
+          <div class="cal-header-row">
+            <div class="cal-day-name">S</div>
+            <div class="cal-day-name">M</div>
+            <div class="cal-day-name">T</div>
+            <div class="cal-day-name">W</div>
+            <div class="cal-day-name">T</div>
+            <div class="cal-day-name">F</div>
+            <div class="cal-day-name">S</div>
+          </div>
+
+          <!-- Week 1: _ _ _ _ _ 1 2 -->
+          <div class="cal-week-row">
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">1</span><span class="cal-cell-val">+1.86</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">2</span><span class="cal-cell-val">+0.84</span></div>
+          </div>
+          <!-- Week 2: 3-9 -->
+          <div class="cal-week-row">
+            <div class="cal-cell has-yield"><span class="cal-cell-day">3</span><span class="cal-cell-val">+0.61</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">4</span><span class="cal-cell-val">+0.82</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">5</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">6</span><span class="cal-cell-val">+0.81</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">7</span><span class="cal-cell-val">+0.76</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">8</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">9</span><span class="cal-cell-val">+0.84</span></div>
+          </div>
+          <!-- Week 3: 10-16 -->
+          <div class="cal-week-row">
+            <div class="cal-cell has-yield"><span class="cal-cell-day">10</span><span class="cal-cell-val">+0.82</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">11</span><span class="cal-cell-val">+0.61</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">12</span><span class="cal-cell-val">+1.86</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">13</span><span class="cal-cell-val">+0.86</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">14</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">15</span><span class="cal-cell-val">+0.82</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">16</span><span class="cal-cell-val">+1.86</span></div>
+          </div>
+          <!-- Week 4: 17-23 -->
+          <div class="cal-week-row">
+            <div class="cal-cell has-yield"><span class="cal-cell-day">17</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">18</span><span class="cal-cell-val">+0.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">19</span><span class="cal-cell-val">+0.82</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">20</span><span class="cal-cell-val">+0.84</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">21</span><span class="cal-cell-val">+0.82</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">22</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">23</span><span class="cal-cell-val">+0.84</span></div>
+          </div>
+          <!-- Week 5: 24-30 -->
+          <div class="cal-week-row">
+            <div class="cal-cell has-yield"><span class="cal-cell-day">24</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">25</span><span class="cal-cell-val">+0.84</span></div>
+            <div class="cal-cell has-yield"><span class="cal-cell-day">26</span><span class="cal-cell-val">+1.05</span></div>
+            <div class="cal-cell no-yield"><span class="cal-cell-day">27</span><span class="cal-cell-val zero">0.00</span></div>
+            <div class="cal-cell no-yield"><span class="cal-cell-day">28</span><span class="cal-cell-val zero">0.00</span></div>
+            <div class="cal-cell empty"><span class="cal-cell-day" style="color:var(--text-tertiary);">29</span></div>
+            <div class="cal-cell empty"><span class="cal-cell-day" style="color:var(--text-tertiary);">30</span></div>
+          </div>
+          <!-- Week 6: 31 -->
+          <div class="cal-week-row">
+            <div class="cal-cell empty"><span class="cal-cell-day" style="color:var(--text-tertiary);">31</span></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+          </div>
+        </div>
+
+        <!-- ── By Month view (hidden by default) ── -->
+        <div id="cal-view-month" style="display:none;">
+          <!-- Year navigation -->
+          <div class="cal-nav">
+            <button class="cal-nav-btn">
+              <svg width="7" height="11" viewBox="0 0 7 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1L1 5.5 6 10"/></svg>
+            </button>
+            <span class="cal-month-label">2025</span>
+            <button class="cal-nav-btn">
+              <svg width="7" height="11" viewBox="0 0 7 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 1l5 4.5L1 10"/></svg>
+            </button>
+          </div>
+
+          <!-- Month grid (4 columns) -->
+          <div class="cal-month-grid">
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Jan</span><span class="cal-month-val">+60.82</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Feb</span><span class="cal-month-val">+50.84</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Mar</span><span class="cal-month-val">+76.69</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Apr</span><span class="cal-month-val">+50.84</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">May</span><span class="cal-month-val">-0.27</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Jun</span><span class="cal-month-val">+50.86</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Jul</span><span class="cal-month-val">+60.86</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Aug</span><span class="cal-month-val">+50.86</span></div>
+            <div class="cal-month-cell has-yield"><span class="cal-month-name">Sep</span><span class="cal-month-val">+50.84</span></div>
+            <div class="cal-month-cell no-yield"><span class="cal-month-name">Oct</span><span class="cal-month-val zero">0.00</span></div>
+          </div>
+        </div>
+
+        <!-- Summary (shared) -->
+        <div class="cal-summary">
+          <span class="cal-summary-label">Cumulative earnings for 2025-08</span>
+          <span class="cal-summary-value">+121.34 USD</span>
+        </div>
+      </div>
+
+      <!-- Yield Allocation -->
+      <div class="card" style="display:flex;flex-direction:column;gap:0;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;">
+          <span class="card-title">Yield Allocation</span>
+          <svg class="info-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <circle cx="8" cy="8" r="6.5"/>
+            <line x1="8" y1="7.5" x2="8" y2="11"/>
+            <circle cx="8" cy="5.5" r="0.7" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div class="period-tabs" id="alloc-tabs">
+            <button class="period-tab active">7D</button>
+            <button class="period-tab">1M</button>
+            <button class="period-tab">3M</button>
+            <button class="period-tab">6M</button>
+          </div>
+          <div class="date-range">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="12" height="11" rx="2"/>
+              <line x1="5" y1="1.5" x2="5" y2="4.5"/>
+              <line x1="11" y1="1.5" x2="11" y2="4.5"/>
+              <line x1="2" y1="7" x2="14" y2="7"/>
+            </svg>
+            2025/09/01 – 2025/09/07
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 160 160">
+            <!-- Donut: r=54, circumference=339.29, stroke-width=24 -->
+            <!-- All circles rotate -90deg from center to start at 12 o'clock -->
+            <!-- USDT 60%: 203.57 -->
+            <circle cx="80" cy="80" r="54" fill="none" stroke="#0a36c7" stroke-width="24"
+              stroke-dasharray="203.57 339.29" stroke-dashoffset="0"
+              transform="rotate(-90 80 80)"/>
+            <!-- BTC 25%: 84.82 offset=-203.57 -->
+            <circle cx="80" cy="80" r="54" fill="none" stroke="#e85b30" stroke-width="24"
+              stroke-dasharray="84.82 339.29" stroke-dashoffset="-203.57"
+              transform="rotate(-90 80 80)"/>
+            <!-- USDC 10%: 33.93 offset=-288.39 -->
+            <circle cx="80" cy="80" r="54" fill="none" stroke="#7ab4f5" stroke-width="24"
+              stroke-dasharray="33.93 339.29" stroke-dashoffset="-288.39"
+              transform="rotate(-90 80 80)"/>
+            <!-- ETH 5%: 16.96 offset=-322.32 -->
+            <circle cx="80" cy="80" r="54" fill="none" stroke="#c2c7d0" stroke-width="24"
+              stroke-dasharray="16.96 339.29" stroke-dashoffset="-322.32"
+              transform="rotate(-90 80 80)"/>
+            <!-- Center label -->
+            <text x="80" y="75" text-anchor="middle" font-family="Roboto,sans-serif" font-size="17" font-weight="700" fill="#282d34">60%</text>
+            <text x="80" y="94" text-anchor="middle" font-family="Roboto,sans-serif" font-size="13" font-weight="400" fill="#7a8699">USDT</text>
+          </svg>
+        </div>
+
+        <!-- Allocation Table -->
+        <div class="alloc-table">
+          <!-- Header -->
+          <div class="alloc-header">
+            <span class="alloc-col-label">Coin</span>
+            <span class="alloc-col-label">Percent</span>
+            <span class="alloc-col-label">Yield</span>
+            <span class="alloc-col-label">Equivalent</span>
+          </div>
+          <!-- USDT row -->
+          <div class="alloc-row">
+            <div class="alloc-coin-cell">
+              <span class="alloc-dot" style="background:#0a36c7;"></span>
+              <span class="alloc-coin-name">USDT</span>
+            </div>
+            <span class="alloc-pct">60%</span>
+            <span class="alloc-yield">+127.2825 USDT</span>
+            <span class="alloc-equiv">≈ 25,117.28 USD</span>
+          </div>
+          <!-- BTC row -->
+          <div class="alloc-row">
+            <div class="alloc-coin-cell">
+              <span class="alloc-dot" style="background:#e85b30;"></span>
+              <span class="alloc-coin-name">BTC</span>
+            </div>
+            <span class="alloc-pct">25%</span>
+            <span class="alloc-yield">+0.35939612 BTC</span>
+            <span class="alloc-equiv">≈ 20,156.38 USD</span>
+          </div>
+          <!-- USDC row -->
+          <div class="alloc-row">
+            <div class="alloc-coin-cell">
+              <span class="alloc-dot" style="background:#7ab4f5;"></span>
+              <span class="alloc-coin-name">USDC</span>
+            </div>
+            <span class="alloc-pct">10%</span>
+            <span class="alloc-yield">+127.2825 USDT</span>
+            <span class="alloc-equiv">≈ 10,999.19 USD</span>
+          </div>
+          <!-- ETH row -->
+          <div class="alloc-row">
+            <div class="alloc-coin-cell">
+              <span class="alloc-dot" style="background:#c2c7d0;"></span>
+              <span class="alloc-coin-name">ETH</span>
+            </div>
+            <span class="alloc-pct">5%</span>
+            <span class="alloc-yield">+0.35939612 ETH</span>
+            <span class="alloc-equiv">≈ 10,000.25 USD</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /analysis-bottom-grid -->
+
+  </div>
+</main>
+
+<script src="sidebar.js?v=3"></script>
+<script src="topbar.js"></script>
+<script>
+  /* Period tabs */
+  ['assets-tabs', 'alloc-tabs'].forEach(function(id) {
+    var wrap = document.getElementById(id);
+    if (!wrap) return;
+    wrap.querySelectorAll('.period-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        wrap.querySelectorAll('.period-tab').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+  });
+
+  /* Calendar by-date/by-month tabs */
+  document.querySelectorAll('.cal-by-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.cal-by-tab').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var isMonth = btn.dataset.calView === 'month';
+      document.getElementById('cal-view-date').style.display  = isMonth ? 'none' : 'block';
+      document.getElementById('cal-view-month').style.display = isMonth ? 'block' : 'none';
+    });
+  });
+
+  /* ── Currency switcher ── */
+  const CURRENCY_DATA = {
+    BTC:  { amount: '0.8936489',   usd: '53,618.93 USD' },
+    ETH:  { amount: '14.47231000', usd: '53,618.93 USD' },
+    USDT: { amount: '53,618.93',   usd: '53,618.93 USD' },
+    USDC: { amount: '53,618.93',   usd: '53,618.93 USD' },
+  };
+
+  const COIN_ICONS = {
+    BTC:  'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png',
+    ETH:  'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png',
+    USDT: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png',
+    USDC: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdc.png',
+  };
+
+  function closeAllPickers() {
+    document.querySelectorAll('.currency-picker.open').forEach(function(p) { p.classList.remove('open'); });
+    document.querySelectorAll('.wallet-balance-chevron.open').forEach(function(c) { c.classList.remove('open'); });
+  }
+
+  var wrap = document.getElementById('currency-wrap-analysis');
+  if (wrap) {
+    var chevron = wrap.querySelector('.wallet-balance-chevron');
+    var picker  = wrap.querySelector('.currency-picker');
+
+    chevron.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = picker.classList.contains('open');
+      closeAllPickers();
+      if (!isOpen) {
+        picker.classList.add('open');
+        chevron.classList.add('open');
+      }
+    });
+
+    picker.querySelectorAll('.currency-picker-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var coin = item.dataset.coin;
+        var data = CURRENCY_DATA[coin];
+        if (!data) return;
+
+        picker.querySelectorAll('.currency-picker-item').forEach(function(i) { i.classList.remove('active'); });
+        item.classList.add('active');
+
+        var coinIcon = wrap.querySelector('.wallet-coin-icon');
+        var amountEl = wrap.querySelector('.wallet-balance-amount');
+        var unitEl   = wrap.querySelector('.wallet-balance-unit');
+        var usdEl    = wrap.querySelector('.wallet-balance-usd');
+
+        if (coinIcon) { coinIcon.src = COIN_ICONS[coin]; coinIcon.alt = coin; }
+        if (amountEl) amountEl.textContent = data.amount;
+        if (unitEl)   unitEl.textContent = coin;
+        if (usdEl)    usdEl.textContent = '\u2248 ' + data.usd;
+
+        closeAllPickers();
+      });
+    });
+  }
+
+  document.addEventListener('click', closeAllPickers);
+
+  /* ── Eye toggle ── */
+  var eye  = document.getElementById('eye-analysis');
+  var statsCard = document.querySelector('.stats-card');
+  if (eye && statsCard) {
+    var hidden = false;
+    eye.addEventListener('click', function() {
+      hidden = !hidden;
+      eye.src = hidden ? 'images/Eye Hide.png' : 'images/Eye.png';
+      statsCard.querySelectorAll('.wallet-balance-amount').forEach(function(el) {
+        if (hidden) { el.dataset.orig = el.textContent; el.textContent = '****'; }
+        else { el.textContent = el.dataset.orig || el.textContent; }
+      });
+      statsCard.querySelectorAll('.wallet-balance-usd').forEach(function(el) {
+        if (hidden) { el.dataset.orig = el.textContent; el.textContent = '\u2248 **** ****'; }
+        else { el.textContent = el.dataset.orig || el.textContent; }
+      });
+    });
+  }
+</script>
+</body>
+</html>
