@@ -1,0 +1,2472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>VT Markets – Web Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;overflow-x:hidden;overflow-y:auto;font-family:'Roboto',sans-serif;background:#f9f9f9;}
+.page-scaler{width:100%;overflow:hidden;}
+.page{position:relative;width:1920px;height:1104px;background:#f9f9f9;transform-origin:top left;overflow:hidden;}
+
+/* ── TOPNAV ─────────────────────────────────────── */
+.tn{position:fixed;left:0;top:0;width:1920px;height:80px;background:rgba(255,255,255,0.08);-webkit-backdrop-filter:saturate(250%) blur(48px);backdrop-filter:saturate(250%) blur(48px);border-bottom:1px solid rgba(255,255,255,0.12);box-shadow:0 1px 0 rgba(0,0,0,0.02),inset 0 1px 0 rgba(255,255,255,0.35);display:flex;align-items:center;z-index:1000;transform-origin:top left;overflow:hidden;}
+.tn-logo{width:64px;height:80px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tn-logo img{width:32px;}
+.tn-ticker{flex:1;height:80px;overflow:hidden;display:flex;align-items:center;min-width:0;}
+.ticker-track{display:flex;animation:tickmove 32s linear infinite;white-space:nowrap;}
+@keyframes tickmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{display:inline-flex;flex-direction:column;gap:2px;padding:8px 12px;border-right:1px solid #e8e9ea;min-width:90px;cursor:pointer;flex-shrink:0;}
+.ti:hover{background:#f4f5f6;}
+.ti-s{font-size:12px;font-weight:500;color:#282d34;}
+.ti-c{font-size:12px;font-weight:500;}
+.ti-c.up{color:#00b565;}.ti-c.dn{color:#ff2c40;}
+.tn-right{display:flex;align-items:center;gap:16px;padding:0 24px 0 0;flex-shrink:0;}
+.tn-acct{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+.tn-acct:hover{background:#f4f5f6;}
+.tn-acct-txt{font-size:14px;font-weight:500;color:#282d34;white-space:nowrap;}
+.tn-acct-flag{width:24px;height:24px;border-radius:50%;background-image:url('images/country-flag.png');background-size:cover;background-position:center;flex-shrink:0;}
+.tn-deposit{width:80px;height:40px;background:#0a36c7;color:#fff;font-size:14px;font-weight:400;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;}
+.tn-ic{width:20px;height:20px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;opacity:.75;}
+.tn-ic:hover{opacity:1;}
+.tn-ic-img{width:20px;height:20px;display:flex;align-items:center;justify-content:center;background-size:contain;background-repeat:no-repeat;background-position:center;}
+.tn-ic-settings{background-image:url('images/ic-settings.png');}
+.tn-ic-support{background-image:url('images/ic-support.png');}
+.tn-ic-language{background-image:url('images/ic-language.png');display:block;}
+.tn-ic-theme{background-image:none;}
+.tn-ic-theme .tn-ic-sun{display:none;}
+body.dark-mode .tn-ic-theme .tn-ic-moon{display:none;}
+body.dark-mode .tn-ic-theme .tn-ic-sun{display:block;}
+.tn-avatar{width:24px;height:24px;border-radius:50%;flex-shrink:0;cursor:pointer;background-image:url('images/avatar.png');background-size:cover;background-position:center;}
+
+/* ── LEFT WATCHLIST  0,80 372×556 ───────────────── */
+.pl{position:absolute;left:0;top:80px;width:372px;height:556px;background:#fff;overflow:hidden;}
+.pl-markettab{height:40px;display:flex;align-items:center;padding:0 16px;gap:8px;}
+/* Figma: Market tab fs=14 fw=600 #282d34 active, others fw=500 #7a8699 */
+.pl-mt{font-size:14px;font-weight:500;color:#7a8699;cursor:pointer;padding:0 6px;height:40px;display:flex;align-items:center;}
+.pl-mt.active{font-weight:600;color:#282d34;font-size:16px;}
+.pl-search{height:32px;display:flex;align-items:center;padding:0 12px;gap:8px;border:1px solid #e8e9ea;margin:8px 16px;border-radius:6px;}
+/* Figma: placeholder fs=14 fw=500 #c2c7d0 */
+.pl-search input{flex:1;border:none;outline:none;font-size:14px;font-weight:500;color:#282d34;background:transparent;}
+.pl-search input::placeholder{color:#c2c7d0;font-weight:500;}
+/* Figma: watchlist tabs fs=14 fw=500 */
+.pl-wltabs{height:28px;display:flex;align-items:center;padding:0 16px;gap:0;overflow:hidden;}
+.wltab{font-size:14px;font-weight:500;color:#7a8699;cursor:pointer;padding:0 8px;height:28px;display:flex;align-items:center;position:relative;white-space:nowrap;border-bottom:2px solid transparent;}
+.wltab.active{color:#0a36c7;background:transparent;border-bottom-color:#0a36c7;}
+/* Figma: column header fs=12 fw=500 #282d34 */
+.pl-colhdr{height:14px;display:flex;align-items:center;padding:12px 16px;}
+.plh{font-size:12px;font-weight:500;color:#282d34;}
+.plh-sym{flex:1;display:flex;align-items:center;gap:4px;}
+.plh-sell{width:66px;text-align:right;}
+.plh-buy{width:66px;text-align:right;}
+.plh-chg{width:68px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:2px;}
+.pl-rows{overflow-y:auto;height:calc(556px - 40px - 48px - 28px - 30px);}
+.mrow{height:48px;display:flex;align-items:center;padding:0 16px;cursor:pointer;}
+.mrow:nth-child(even){background:#f4f5f6;}
+.mrow:hover,.mrow.active{background:#edf2ff;}
+.mrow-l{flex:1;display:flex;align-items:center;gap:6px;}
+/* Figma: symbol name fs=12 fw=500 #282d34, sub fs=12 fw=500 #7a8699 */
+.sym-n{font-size:12px;font-weight:500;color:#282d34;display:block;}
+.sym-s{font-size:12px;font-weight:500;color:#7a8699;display:block;}
+/* Figma: sell/buy prices fs=12 fw=500 #282d34 */
+.mrow-sell,.mrow-buy{width:66px;text-align:right;font-size:12px;font-weight:500;color:#282d34;}
+/* Figma: %change fs=12 fw=500 #14b273 / #ff2c40 */
+.mrow-chg{width:68px;text-align:right;font-size:12px;font-weight:500;}
+.mrow-chg.up{color:#14b273;}.mrow-chg.dn{color:#ff2c40;}
+/* Figma: spread fs=12 fw=500 #7a8699 */
+.mrow-spread{width:28px;text-align:center;font-size:12px;font-weight:500;color:#7a8699;}
+/* Watchlist tab badge */
+.wltab-badge{display:inline-block;width:6px;height:6px;background:#ff2c40;border-radius:50%;position:absolute;top:2px;right:2px;}
+/* Watchlist column-toggle drawer */
+.wls-drawer{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.14);padding:8px;z-index:300;min-width:220px;}
+.wls-drawer.open{display:block;}
+.wls-row{display:flex;align-items:center;gap:12px;height:36px;padding:0 12px;border-radius:6px;cursor:pointer;}
+.wls-row:hover:not(.locked){background:#f4f5f6;}
+.wls-cb{width:18px;height:18px;border:1.5px solid #c2c7d0;border-radius:4px;display:flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0;}
+.wls-lbl{font-size:14px;font-weight:500;color:#282d34;}
+.wls-row.locked .wls-cb{background:#c2c7d0;border-color:#c2c7d0;}
+.wls-row.locked .wls-cb::after{content:'';width:10px;height:8px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4l3 3 5-6' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;}
+.wls-row.locked{cursor:default;}
+.wls-row.locked .wls-lbl{color:#a2a6b1;}
+.wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;}
+.wls-row.checked .wls-cb::after{content:'';width:10px;height:8px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4l3 3 5-6' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;}
+/* Dark mode */
+body.dark-mode .wls-drawer{background:#26262B;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+body.dark-mode .wls-row:hover:not(.locked){background:#34343B;}
+body.dark-mode .wls-cb{background:#1D1D21;border-color:#2D3033;}
+body.dark-mode .wls-lbl{color:#FFFFFF;}
+body.dark-mode .wls-row.locked .wls-cb{background:#515867;border-color:#515867;}
+body.dark-mode .wls-row.locked .wls-lbl{color:#7A8699;}
+body.dark-mode .wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;}
+/* Arrow right for tabs */
+.pl-wltabs-wrap{display:flex;align-items:center;padding:0 8px 0 16px;height:28px;border-bottom:1px solid #e8e9ea;}
+.pl-wltabs-inner{flex:1;display:flex;align-items:center;gap:0;overflow:hidden;}
+.pl-wltabs-arrow{display:flex;align-items:center;justify-content:center;width:16px;height:16px;flex-shrink:0;cursor:pointer;}
+/* Active symbol name bold */
+.mrow.active .sym-n{font-weight:600;}
+/* Last row different subtitle color */
+.sym-s.dark{color:#1e1e1e;font-weight:400;}
+
+/* ── CENTER OVERVIEW  376,80  1220×60 ─────────────── */
+.co{position:absolute;left:376px;top:80px;width:1220px;height:60px;background:#fff;display:flex;align-items:center;overflow:visible;padding-left:16px;}
+.co-main{flex:1;display:flex;align-items:center;gap:24px;min-width:0;height:40px;}
+.co-sym-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0;width:108px;}
+.co-sym-ic{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.co-sym{display:flex;flex-direction:column;flex-shrink:0;}
+.co-sym-n{font-size:16px;font-weight:700;color:#282d34;line-height:24px;white-space:nowrap;}
+.co-sym-s{font-size:12px;font-weight:500;color:#7a8699;line-height:16px;white-space:nowrap;}
+.co-price{display:flex;flex-direction:column;flex-shrink:0;width:90px;}
+.co-pm{font-size:16px;font-weight:700;color:#00b565;line-height:24px;white-space:nowrap;}
+.co-pc{font-size:12px;font-weight:500;color:#00b565;line-height:16px;white-space:nowrap;}
+.co-pm.down,.co-pc.down{color:#ff2c40;}
+.co-stats{display:flex;align-items:center;gap:24px;flex-shrink:0;}
+.co-stat{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+.co-sl{font-size:12px;font-weight:400;color:#7a8699;line-height:16px;white-space:nowrap;}
+.co-sl.swap{border-bottom:1px dashed #c2c7d0;cursor:pointer;display:inline-block;}
+.co-sv{font-size:12px;font-weight:500;color:#282d34;line-height:16px;white-space:nowrap;}
+.co-r{flex-shrink:0;width:38px;height:60px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:5px 12px 10px;}
+.co-menu{display:flex;flex-direction:column;gap:3px;cursor:pointer;}
+.co-menu span{display:block;width:6px;height:2px;background:#bac0ca;border-radius:1px;}
+.co-dot{width:7px;height:7px;background:#bac0ca;border-radius:50%;flex-shrink:0;cursor:pointer;}
+.co-badge{position:absolute;top:-8px;right:-8px;width:24px;height:24px;background:#fd435c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.8px;font-weight:500;color:#fff;cursor:pointer;z-index:10;}
+
+/* ── CENTER CHART CARD  376,140  1224×494 ────────── */
+.cc{position:absolute;left:376px;top:144px;width:1220px;height:496px;background:#fff;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── L1 tab bar  h=40 ── */
+.cc-l1tabs{height:40px;flex-shrink:0;display:flex;align-items:center;border-bottom:1px solid #e8e9ea;padding:0 16px;}
+.cc-l1tab{height:40px;display:flex;align-items:center;margin-right:24px;font-size:14px;font-weight:500;color:#7a8699;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.cc-l1tab.active{color:#0a36c7;border-bottom-color:#0a36c7;}
+.cc-l1tabs-r{margin-left:auto;display:flex;align-items:center;gap:24px;}
+.cc-ic{width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.cc-ic:hover{opacity:.7;}
+
+/* ── Toolbar row  h=32 ── */
+.cc-toolbar{height:32px;flex-shrink:0;display:flex;align-items:center;padding:0 12px;gap:0;}
+.cc-tf3{display:flex;align-items:center;height:32px;gap:0;}
+.tf3-btn{height:22px;padding:0 6px;border-radius:3px;font-size:12px;font-weight:500;color:#7a8699;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;}
+.tf3-btn svg path{stroke:#7a8699;}.tf3-btn.active{background:#e8f1ff;color:#0a36c7;}.tf3-btn.active svg path{stroke:#0a36c7;}
+.tf3-btn:hover:not(.active){background:#f4f5f6;}
+.cc-inds{display:flex;align-items:center;gap:16px;margin-left:16px;}
+.cc-ind-ic{width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:6px;}
+.cc-ind-ic:hover{background:#f4f5f6;}
+.cc-ind-ic.active{background:#e8f1ff;}
+.cc-ind-ic.active svg path,.cc-ind-ic.active svg rect,.cc-ind-ic.active svg circle{stroke:#0a36c7;}
+.cc-ind-ic.active svg [fill="#7A8699"],.cc-ind-ic.active svg [fill="#7a8699"]{fill:#0a36c7;}
+.cc-ind-ic{position:relative;}
+.cc-ind-dropdown{display:none;position:absolute;top:28px;left:50%;transform:translateX(-50%);width:160px;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:200;overflow:hidden;padding:4px 0;}
+.cc-ind-dropdown.open{display:block;}
+.cc-ind-ic:hover>.cc-ind-dropdown{display:block;}
+.cc-ind-ic:hover{background:#e8f1ff;}
+.cc-ind-ic:hover>svg path,.cc-ind-ic:hover>svg rect,.cc-ind-ic:hover>svg circle{stroke:#0a36c7;}
+.cc-ind-ic:hover>svg [fill="#7A8699"],.cc-ind-ic:hover>svg [fill="#7a8699"]{fill:#0a36c7;}
+.cc-ind-item{height:34px;display:flex;align-items:center;gap:8px;padding:0 12px 0 12px;cursor:pointer;}
+.cc-ind-item:hover{background:#f4f5f6;}
+.cc-ind-item.active{background:#f4f5f6;}
+.cc-ind-item-ic{width:16px;height:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.cc-ind-item-txt{font-size:12px;font-weight:400;color:#7a8699;line-height:22px;}
+.cc-ind-item.sel .cc-ind-item-txt{color:#0a36c7;}
+.cc-chk-item{height:34px;display:flex;align-items:center;gap:8px;padding:0 12px;cursor:pointer;}
+.cc-chk-item:hover{background:#f4f5f6;}
+.cc-chk-box{width:14px;height:14px;flex-shrink:0;}
+.cc-chk-txt{font-size:12px;font-weight:400;color:#282d34;line-height:22px;white-space:nowrap;}
+.cc-chk-item.checked .cc-chk-txt{color:#0a36c7;}
+.cc-chk-divider{height:1px;background:#f4f5f6;margin:0;}
+.cc-chk-group-lbl{height:34px;display:flex;align-items:center;padding:0 12px;font-size:12px;font-weight:400;color:#282d34;}
+.cc-ind-item-ic img{filter:brightness(0) saturate(100%) invert(55%) sepia(12%) saturate(380%) hue-rotate(182deg);}
+.cc-ind-item.sel .cc-ind-item-ic img{filter:brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(3000%) hue-rotate(214deg) brightness(105%);}
+.cc-depth{height:22px;display:flex;align-items:center;gap:3px;padding:0 8px;border-radius:3px;font-size:12px;font-weight:500;color:#7a8699;cursor:pointer;margin-left:auto;white-space:nowrap;}
+
+/* ── Body row: tools | chart area | y-axis ── */
+.cc-body{flex:1;display:flex;overflow:hidden;}
+.cc-info{display:none;flex:1;overflow-y:auto;padding:16px 16px;background:#fff;font-family:'Roboto',sans-serif;}
+.cc-info.active{display:block;}
+.cc-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 64px;}
+.cc-info-section{width:100%;}
+.cc-info-title{font-size:12px;font-weight:400;color:#282d34;line-height:20px;margin-bottom:10px;}
+.cc-info-rows{display:flex;flex-direction:column;width:100%;}
+.cc-info-row{display:flex;justify-content:space-between;align-items:center;}
+.cc-info-lbl{font-size:12px;font-weight:400;color:#7a8699;height:30px;display:flex;align-items:center;}
+.cc-info-val{font-size:12px;font-weight:400;color:#282d34;height:30px;display:flex;align-items:center;}
+.cc-info-lbl.h28{height:37px;}
+.cc-info-val.h28{height:37px;}
+.cc-info-lbl.h26{height:36px;}
+.cc-info-val.h26{height:36px;}
+
+/* Left tools strip  w=32 */
+.cc-tools{width:32px;flex-shrink:0;background:#fff;border-right:1px solid #f0f1f3;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
+.cc-tool{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.cc-tool:hover{background:#f4f5f6;}
+.cc-tool svg{opacity:.65;}
+.cc-tool:hover svg{opacity:1;}\n.cc-tool img{opacity:.65;}\n.cc-tool:hover img{opacity:1;}
+
+/* Chart column: canvas (flex:1) + x-axis (h=28) */
+.cc-chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.cc-canvas{flex:1;position:relative;overflow:hidden;background:#fff;}
+#tvchart{width:100%;height:100%;}
+
+/* X-axis  h=28 */
+.cc-xaxis{height:28px;flex-shrink:0;display:flex;align-items:center;border-top:1px solid #f0f1f3;}
+.cc-xaxis-lbl{flex:1;text-align:center;font-size:12px;font-weight:400;color:#7a8699;}
+.cc-range{height:32px;flex-shrink:0;display:flex;align-items:center;padding:0 12px;gap:4px;border-top:1px solid #f0f1f3;}
+.cc-range-btn{padding:4px 8px;font-size:12px;font-weight:500;color:#7a8699;background:transparent;border:none;cursor:pointer;border-radius:4px;line-height:1;}
+.cc-range-btn:hover{background:#f4f5f6;color:#282d34;}
+.cc-range-btn.active{color:#0a36c7;font-weight:600;}
+.cc-range-cal{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;}
+.cc-range-cal:hover{background:#f4f5f6;}
+
+/* Y-axis  w=59 */
+.cc-yaxis{width:59px;flex-shrink:0;border-left:1px solid #f0f1f3;display:flex;flex-direction:column;justify-content:space-between;padding:8px 4px 36px;}
+.cc-yaxis span{font-size:12px;font-weight:500;color:#7a8699;text-align:right;display:block;white-space:nowrap;}
+
+/* Order bar — absolutely positioned inside .cc, always visible */
+.ob{position:absolute;left:50%;top:16px;transform:translateX(-50%);width:344px;height:50px;display:flex;background:#fff;border:1px solid #f4f5f6;border-radius:8px;overflow:hidden;z-index:8000;}
+.ob-e{width:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-right:1px solid #f4f5f6;cursor:pointer;background:#fff;}
+.ob-sell{width:100px;flex-shrink:0;background:#ff2c40;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:0;}
+.ob-mid{width:100px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;border-left:1px solid #f4f5f6;border-right:1px solid #f4f5f6;}
+.ob-buy{width:100px;flex-shrink:0;background:#00b565;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:0;}
+.ob-c{width:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;border-left:1px solid #f4f5f6;cursor:pointer;}
+.ob-n{font-size:14px;font-weight:400;color:#fff;line-height:22px;}
+.ob-p{font-size:14px;font-weight:600;color:#fff;line-height:20px;}
+.ob-mid-l{font-size:14px;font-weight:400;color:#282d34;line-height:22px;}
+.ob-mid-v{font-size:14px;font-weight:600;color:#282d34;line-height:22px;width:80px;text-align:center;border:none;outline:none;background:transparent;font-family:inherit;-moz-appearance:textfield;}
+.ob-mid-v::-webkit-outer-spin-button,.ob-mid-v::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.ob-mid-v:focus{outline:none;}
+
+/* ── RIGHT ORDER PANEL  1600,80 320×677 ─────────── */
+.rp{position:absolute;left:1600px;top:80px;width:320px;height:673px;background:#fff;overflow:hidden;}
+.rp-prices{margin:16px 16px 0;width:288px;height:42px;display:flex;align-items:stretch;position:relative;gap:28px;}
+.rp-sell{flex:1;background:#ff2c40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border-radius:8px;transform:skewX(-8deg);}
+.rp-sell>*{transform:skewX(8deg);}
+.rp-buy{flex:1;background:#f4f5f6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border-radius:8px;transform:skewX(-8deg);}
+.rp-buy>*{transform:skewX(8deg);}
+.rp-sell.active{background:#ff2c40;}.rp-buy.active{background:#00b565;}
+.rp-buy.active .rp-sv{color:#fff;}.rp-buy.active .rp-sl{color:#fff;}
+.rp-spread{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:400;color:#7a8699;z-index:2;white-space:nowrap;}
+.rp-sv{font-size:14px;font-weight:600;color:#fff;line-height:16px;}
+.rp-sl{font-size:12px;font-weight:500;color:#fff;line-height:14px;}
+.rp-buy .rp-sv{color:#7a8699;}
+.rp-buy .rp-sl{color:#7a8699;}
+.rp-slider-wrap{padding:16px 16px 0;display:flex;align-items:center;gap:8px;}
+.rp-track-wrap{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.rp-track{width:100%;height:3px;display:flex;gap:2px;}
+.rp-track-green{height:3px;background:#00b565;border-radius:1px;width:50%;transition:width .25s ease;}
+.rp-track-red{height:3px;background:#ff2c40;border-radius:1px;width:50%;transition:width .25s ease;}
+.rp-countdown.up{color:#00b565;}
+.rp-countdown.down{color:#ff2c40;}
+.rp-countdown{font-size:12px;font-weight:400;color:#c2c7d0;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.rp-otabs{margin:8px 16px 0;width:288px;height:28px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #e8e9ea;}
+.rotab{font-size:14px;font-weight:500;color:#7a8699;cursor:pointer;padding-bottom:6px;border-bottom:2px solid transparent;white-space:nowrap;}
+.rotab.active{color:#0a36c7;font-weight:600;border-bottom-color:#0a36c7;}
+.rp-field{margin:12px 16px 0;width:288px;}
+.rp-input-box{width:288px;height:48px;border:1px solid #e8e9ea;border-radius:8px;display:flex;align-items:stretch;position:relative;}
+.rp-input-box:focus-within{border-color:#0a36c7;}
+.rp-input-box.error{border-color:#ff2c40;}
+.rp-input-box.filled{background:#f4f5f6;border-color:#f4f5f6;}
+.rp-input-inner{flex:1;padding:6px 12px;display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0;}
+.rp-input-lbl{font-size:10px;font-weight:400;color:#7a8699;}
+.rp-input-lbl.grey{color:#c2c7d0;font-size:12px;font-weight:400;}
+.rp-input-val{font-size:14px;font-weight:500;color:#282d34;}
+.rp-input-val.bold{font-size:14px;font-weight:600;}
+input.rp-input-val{outline:none;font-family:inherit;border:none;background:transparent;width:100%;}
+input.rp-input-val::-webkit-outer-spin-button,input.rp-input-val::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.rp-stepper{display:flex;flex-direction:column;width:32px;border-left:1px solid #e8e9ea;flex-shrink:0;}
+.rp-step{flex:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:#7a8699;background:#f4f5f6;}
+.rp-step:first-child{border-bottom:1px solid #e8e9ea;}
+.rp-step:hover{background:#e8e9ea;}
+.rp-btn-side{width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#7a8699;}
+.rp-btn-side.left{border-right:1px solid #e8e9ea;}
+.rp-btn-side.right{border-left:1px solid #e8e9ea;}
+.rp-btn-side:hover{background:#f4f5f6;}
+.rp-unit-drop{display:flex;align-items:center;gap:4px;padding:0 10px;border-left:1px solid #e8e9ea;font-size:14px;font-weight:500;color:#282d34;cursor:pointer;white-space:nowrap;}
+.rp-unit-dropdown{position:absolute;top:calc(100% + 4px);right:0;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.12);z-index:1001;overflow:hidden;width:144px;}
+.rp-unit-item{height:44px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:500;color:#282d34;cursor:pointer;border-bottom:1px solid #f0f1f3;}
+.rp-unit-item:last-child{border-bottom:none;}
+.rp-unit-item:hover{background:#f4f5f6;}
+.rp-errtxt{font-size:12px;font-weight:400;color:#ff2c40;margin-top:2px;padding:0 2px;}
+.rp-hint{font-size:12px;font-weight:400;color:#c2c7d0;margin-top:2px;padding:0 2px;}
+.rp-range-wrap{margin:20px 16px 0;width:288px;}
+.rp-range-track{width:280px;height:4px;background:#e7e8eb;border-radius:2px;position:relative;margin:0 auto;cursor:pointer;}
+.rp-range-fill{height:4px;background:#0a36c7;border-radius:2px;position:absolute;left:0;top:0;}
+.rp-range-tick{position:absolute;top:50%;width:6px;height:6px;border-radius:50%;background:#c2c7d0;transform:translate(-50%,-50%);pointer-events:none;}
+.rp-range-tick.filled{background:#0a36c7;}
+.rp-market-fill{width:288px;height:48px;background:#f0f1f3;border-radius:8px;display:flex;align-items:center;padding:0 16px;color:#c2c7d0;font-size:14px;font-weight:400;}
+.rp-range-thumb{position:absolute;top:50%;width:17px;height:17px;background:#0a36c7;border-radius:50%;transform:translate(-50%,-50%);cursor:grab;user-select:none;}
+.rp-range-thumb:active{cursor:grabbing;}
+.rp-range-dots{display:flex;justify-content:space-between;margin-top:2px;padding:0 2px;}
+.rp-range-dot{width:11px;height:11px;background:#e7e8eb;border-radius:2px;}
+.rp-range-dot.active{background:#0a36c7;}
+.rp-range-labels{display:flex;justify-content:space-between;margin-top:8px;}
+.rp-range-labels .rp-rl-0{font-size:12px;font-weight:600;color:#c2c7d0;}
+.rp-range-labels .rp-rl-max{font-size:12px;font-weight:400;color:#c2c7d0;}
+.rp-tpsl-row{margin:8px 16px 0;width:288px;height:22px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.rp-cb{width:16px;height:16px;border:1.5px solid #e8e9ea;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.rp-cb.checked{background:#00b565;border-color:#00b565;}
+.rp-cb-lbl{font-size:12px;font-weight:600;color:#282d34;}
+.rp-tpsl-inputs{margin:8px 16px 0;width:288px;display:flex;gap:8px;position:relative;}
+.rp-tpsl-half{width:136px;}
+.rp-tpsl-tooltip{position:absolute;bottom:calc(100% + 4px);right:0;background:#282d34;border-radius:3px;padding:3px 6px;font-size:10px;font-weight:500;color:#fff;white-space:nowrap;}
+.rp-sell-btn{margin:12px 16px 0;width:288px;height:40px;background:#ff2c40;color:#fff;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;display:block;}
+.rp-sell-btn:hover{background:#e0001a;}
+.rp-sell-btn:active{background:#c8000f;}
+.rp-sell-btn:focus{outline:none;}
+.rp-info{margin:12px 0 0;padding:0 16px;display:flex;flex-direction:column;gap:16px;border-top:1px solid #e8e9ea;padding-top:12px;}
+.rp-irow{display:flex;justify-content:space-between;align-items:center;}
+.rp-ilbl{font-size:12px;font-weight:400;color:#7a8699;}
+.rp-ilbl.underline{text-decoration:underline;text-decoration-color:#7a8699;cursor:pointer;}
+.rp-ival{font-size:12px;font-weight:400;color:#282d34;display:flex;align-items:center;gap:4px;}
+
+/* ── ASSETS PANEL  1600,757 320×319 ─────────────── */
+.ap{position:absolute;left:1600px;top:757px;width:320px;height:319px;background:#fff;overflow:hidden;}
+.ap-hdr{height:40px;display:flex;align-items:center;padding:0 16px;}
+.ap-title{font-size:16px;font-weight:600;color:#282d34;}
+.ap-rows{padding:12px 16px;display:flex;flex-direction:column;gap:16px;}
+.ap-row{display:flex;justify-content:space-between;align-items:center;height:16px;}
+.ap-lbl{font-size:12px;font-weight:500;color:#7a8699;text-decoration:underline;text-decoration-style:dashed;text-decoration-color:#7a8699;cursor:pointer;}
+.ap-lbl.plain{text-decoration:none;}
+.ap-val{font-size:12px;font-weight:500;color:#282d34;}
+.ap-val.green{color:#00b565;}
+.ap-val.row{display:flex;align-items:center;gap:4px;}
+
+/* ── POSITIONS BOTTOM  0,640 1596×436 ─────────────── */
+.pb{position:absolute;left:0;top:640px;width:1596px;height:436px;background:#fff;overflow:hidden;}
+.pb-tabs{height:40px;display:flex;align-items:flex-end;padding:0 12px;gap:24px;}
+.ptab{font-size:14px;font-weight:500;color:#7a8699;padding-bottom:8px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.ptab.active{color:#0a36c7;border-bottom-color:#0a36c7;}
+.pb-tabs-r{margin-left:auto;display:flex;align-items:center;gap:12px;padding-bottom:8px;}
+.pb-hide{display:flex;align-items:center;gap:5px;font-size:12px;color:#282d34;cursor:pointer;}
+.pb-hide input[type="checkbox"]{appearance:none;-webkit-appearance:none;width:14px;height:14px;border:1.5px solid #c2c7d0;border-radius:3px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0;flex-shrink:0;}
+.pb-hide input[type="checkbox"]:checked{background:#00b565;border-color:#00b565;}
+.pb-hide input[type="checkbox"]:checked::after{content:'';width:8px;height:6px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6' fill='none'><path d='M1 3l2 2 4-5' stroke='white' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;}
+.pb-closeall{height:24px;padding:0 10px;border-radius:4px;font-size:12px;border:1px solid #e8e9ea;background:#fff;cursor:pointer;color:#282d34;display:flex;align-items:center;gap:4px;}
+.pb-close-menu{display:none;position:fixed;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.16);padding:6px 0;z-index:9000;min-width:220px;}
+.pb-close-menu.open{display:block;}
+.pbcm-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:13px;color:#282d34;}
+.pbcm-item:hover{background:#f4f5f6;}
+.pbcm-item svg{color:#7a8699;flex-shrink:0;}
+body.dark-mode .pb-close-menu{background:#26262B;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+body.dark-mode .pbcm-item{color:#FFFFFF;}
+body.dark-mode .pbcm-item:hover{background:#34343B;}
+body.dark-mode .pbcm-item svg{color:#7A8699;}
+.pb-tool{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;color:#7a8699;position:relative;}
+.pb-tool:hover{background:#f4f5f6;color:#282d34;}
+.pb-tool.active{color:#0a36c7;background:rgba(10,54,199,.08);}
+.pb-settings-drawer{display:none;position:fixed;background:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.16);padding:12px 0;z-index:9000;min-width:280px;max-height:480px;overflow-y:auto;}
+.pb-settings-drawer.open{display:block;}
+.pbs-section{font-size:13px;color:#7a8699;padding:8px 16px 6px;}
+.pbs-row{display:flex;align-items:center;gap:14px;padding:8px 16px;cursor:pointer;}
+.pbs-row:hover:not(.locked){background:#f4f5f6;}
+.pbs-cb{width:18px;height:18px;border:1.5px solid #c2c7d0;border-radius:4px;display:flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0;}
+.pbs-lbl{font-size:14px;color:#282d34;flex:1;}
+.pbs-grip{width:16px;height:14px;background:linear-gradient(to bottom,#c2c7d0 1.5px,transparent 1.5px) 0 0/100% 5px repeat-y;cursor:grab;}
+.pbs-row.locked{cursor:default;}
+.pbs-row.locked .pbs-cb{background:#c2c7d0;border-color:#c2c7d0;}
+.pbs-row.locked .pbs-cb::after{content:'';width:10px;height:8px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4l3 3 5-6' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;}
+.pbs-row.locked .pbs-lbl{color:#a2a6b1;}
+.pbs-row.checked .pbs-cb{background:#00b565;border-color:#00b565;}
+.pbs-row.checked .pbs-cb::after{content:'';width:10px;height:8px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4l3 3 5-6' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;}
+/* Dark mode */
+body.dark-mode .pb-tool{color:#7A8699;}
+body.dark-mode .pb-tool:hover{background:#26262B;color:#FFFFFF;}
+body.dark-mode .pb-tool.active{color:#00F0FF;background:rgba(0,240,255,.1);}
+body.dark-mode .pb-settings-drawer{background:#26262B;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+body.dark-mode .pbs-section{color:#7A8699;}
+body.dark-mode .pbs-row:hover:not(.locked){background:#34343B;}
+body.dark-mode .pbs-cb{background:#1D1D21;border-color:#2D3033;}
+body.dark-mode .pbs-lbl{color:#FFFFFF;}
+body.dark-mode .pbs-row.locked .pbs-cb{background:#515867;border-color:#515867;}
+body.dark-mode .pbs-row.locked .pbs-lbl{color:#7A8699;}
+body.dark-mode .pbs-row.checked .pbs-cb{background:#00b565;border-color:#00b565;}
+/* Column headers */
+.pb-hdr{height:28px;display:flex;align-items:center;margin:6px 0;font-size:12px;font-weight:500;color:#7a8699;flex-shrink:0;}
+.ph{padding:0 8px;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:4px;}
+.ph.bold{color:#1e1e1e;}
+.ph-sym{width:132px;}
+.ph-vol{width:91px;}
+.ph-entry{width:120px;}
+.ph-cur{width:120px;}
+.ph-pnl{width:100px;}
+.ph-chg{width:120px;}
+.ph-time{width:151px;}
+.ph-ord{width:117px;}
+.ph-tpsl{width:140px;}
+.ph-close{width:166px;}
+.ph-netpnl{width:100px;}
+.ph-rpnl{width:94px;}
+.ph-rcl{width:148px;}
+/* Data rows */
+.pb-rows{overflow-y:auto;height:calc(436px - 40px - 28px);}
+.prow{height:60px;display:flex;align-items:center;border-bottom:1px solid #f0f1f3;font-size:12px;font-weight:500;color:#282d34;}
+.prow:hover{background:#f8faff;}
+.pd{padding:0 8px;white-space:nowrap;flex-shrink:0;overflow:hidden;}
+.pd-sym{width:132px;display:flex;align-items:center;gap:6px;}
+.sym-badge{display:inline-block;padding:1px 6px;border-radius:3px;background:rgba(255,44,64,0.12);color:#ff2c40;font-size:11px;font-weight:500;line-height:18px;white-space:nowrap;flex-shrink:0;}
+.sym-badge.buy{background:rgba(0,181,101,0.12);color:#00b565;}
+.pd-vol{width:91px;}
+.pd-entry{width:120px;}
+.pd-cur{width:120px;}
+.pd-pnl{width:100px;}
+.pd-chg{width:120px;}
+.pd-time{width:151px;font-size:11px;}
+.pd-ord{width:117px;}
+.pd-tpsl{width:140px;display:flex;align-items:center;gap:6px;color:#7a8699;}
+.tpsl-edit{cursor:pointer;flex-shrink:0;}
+.tpsl-edit:hover path{stroke:#0a36c7;}
+.pd-close{width:166px;display:flex;gap:6px;align-items:center;}
+.pd-netpnl{width:100px;}
+.pnl-pos{color:#00b565;}
+.pnl-neg{color:#ff2c40;}
+.btn-cb{height:24px;padding:0 8px;border-radius:4px;font-size:11px;background:#f4f5f6;border:none;cursor:pointer;color:#282d34;}
+/* Right close panel */
+.pb-rpanel{position:absolute;left:1320px;top:40px;width:276px;height:396px;background:#fff;border-left:1px solid #e8e9ea;}
+.pb-rpanel-hdr{height:28px;margin:6px 0;display:flex;align-items:center;}
+.pb-rpanel-row{height:60px;display:flex;align-items:center;padding:0 8px;border-bottom:1px solid #f0f1f3;gap:8px;}
+.pb-rph{padding:0 8px;font-size:12px;font-weight:500;color:#7a8699;width:94px;}
+.pb-rph.bold{color:#1e1e1e;}
+.pb-input-sm{width:72px;height:40px;border:1px solid #e8e9ea;border-radius:4px;font-size:12px;color:#282d34;text-align:center;background:#fff;outline:none;font-family:inherit;-moz-appearance:textfield;}
+.pb-input-sm:focus{border-color:#0a36c7;}
+.pb-input-sm::-webkit-outer-spin-button,.pb-input-sm::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.btn-close-blue{height:24px;padding:0 8px;border-radius:4px;font-size:12px;font-weight:500;background:#0a36c7;color:#fff;border:none;cursor:pointer;white-space:nowrap;}
+
+/* ── SIGNAL BAR  0,1076 1920×28 ─────────────────── */
+.sb{position:absolute;left:0;top:1076px;width:1920px;height:28px;background:#fff;border-top:1px solid #e8e9ea;display:flex;align-items:center;padding:0 8px;gap:8px;}
+.sb-icon{display:flex;align-items:flex-end;gap:1px;height:16px;}
+.sb-bar{width:2px;background:#0aa869;border-radius:1px;}
+.sb-txt{font-size:12px;font-weight:500;color:#0aa869;}
+
+/* ── SCROLLBAR ─────────────────────────────────── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#d0d5de;border-radius:4px;}
+.guide-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;display:none;}
+.guide-overlay.active{display:block;overflow:hidden;}
+.guide-spotlight{position:fixed;z-index:9999;display:none;height:auto;max-width:none;}
+.guide-tooltip{position:fixed;background:#fff;border-radius:10px;padding:19px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10000;width:320px;font-family:'Roboto',sans-serif;transform:scale(0.8);transform-origin:top left;}
+.guide-tooltip-title{font-size:16px;font-weight:600;color:#282d34;margin-bottom:10px;}
+.guide-tooltip-desc{font-size:11px;font-weight:400;color:#282d34;line-height:1.5;margin-bottom:16px;}
+.guide-tooltip-progress{font-size:10px;font-weight:500;color:#7a8699;margin-bottom:12px;}
+.guide-tooltip-btns{display:flex;gap:10px;justify-content:flex-end;align-items:center;}
+.guide-btn-skip{padding:6px 12px;border:none;background:transparent;border-radius:5px;font-size:11px;font-weight:500;color:#7a8699;cursor:pointer;transition:all 0.2s;}
+.guide-btn-skip:hover{background:#f4f5f6;color:#282d34;}
+.guide-btn-next{padding:6px 16px;background:#0a36c7;color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.guide-btn-next:hover{opacity:0.9;}
+/* ── ONE CLICK TRADING MODAL ── */
+.oct-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9000;display:none;align-items:center;justify-content:center;}
+.oct-overlay.show{display:flex;}
+.oct-modal{background:#fff;border-radius:16px;width:400px;padding:28px 28px 24px;position:relative;box-shadow:0 8px 40px rgba(0,0,0,0.18);}
+.oct-close{position:absolute;top:16px;right:16px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%;color:#7a8699;}
+.oct-close:hover{background:#f4f5f6;}
+.oct-icon-wrap{display:flex;justify-content:center;margin-bottom:20px;}
+.oct-icon-bg{width:72px;height:72px;border-radius:50%;background:#fff8e1;display:flex;align-items:center;justify-content:center;}
+.oct-icon-inner{width:52px;height:52px;border-radius:50%;background:#f5a623;display:flex;align-items:center;justify-content:center;}
+.oct-title{font-size:20px;font-weight:700;color:#282d34;text-align:center;margin-bottom:16px;}
+.oct-body{font-size:14px;font-weight:400;color:#282d34;line-height:1.6;margin-bottom:20px;}
+.oct-body a{color:#f5a623;text-decoration:none;font-weight:500;}
+.oct-body a:hover{text-decoration:underline;}
+.oct-check-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;cursor:pointer;}
+.oct-checkbox{width:16px;height:16px;border:1.5px solid #c2c7d0;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;}
+.oct-checkbox.checked{background:#00b565;border-color:#00b565;}
+.oct-check-lbl{font-size:13px;font-weight:400;color:#7a8699;}
+.oct-btn{width:100%;height:48px;background:#0a36c7;color:#fff;font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;}
+.oct-btn:hover{opacity:0.92;}
+/* Dark mode */
+body.dark-mode .oct-overlay{background:rgba(0,0,0,0.65);}
+body.dark-mode .oct-modal{background:#1D1D21;box-shadow:0 8px 40px rgba(0,0,0,0.55);}
+body.dark-mode .oct-close{color:#C2C7D0;}
+body.dark-mode .oct-close svg path{stroke:#C2C7D0;}
+body.dark-mode .oct-close:hover{background:#26262B;}
+body.dark-mode .oct-title{color:#FFFFFF;}
+body.dark-mode .oct-body{color:#C2C7D0;}
+body.dark-mode .oct-check-lbl{color:#7A8699;}
+body.dark-mode .oct-checkbox{background:#26262B;border-color:#2D3033;}
+body.dark-mode .oct-checkbox.checked{background:#00b565;border-color:#00b565;}
+body.dark-mode .oct-btn{background:#0A36C7;}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.order-toast-container{position:fixed;bottom:32px;right:32px;display:flex;flex-direction:column;gap:18px;z-index:10001;}
+.order-toast{background:#fff;border-radius:7.2px;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:10.8px 14.4px;display:flex;align-items:center;gap:9px;animation:slideIn 0.3s ease-out;width:288px;}
+.order-toast:has(.order-toast-desc){align-items:flex-start;padding:12.6px 14.4px;}
+.order-toast.move-up{transition:all 0.35s cubic-bezier(0.4,0,0.2,1);}
+.order-toast-icon{width:25.2px;height:25.2px;background:#00b565;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.order-toast-icon svg{width:14.4px;height:14.4px;}
+.order-toast-content{flex:1;}
+.order-toast-text{font-size:12.6px;font-weight:600;color:#282d34;line-height:1.4;}
+.order-toast-desc{font-size:10.8px;font-weight:400;color:#7a8699;margin-top:3.6px;line-height:1.4;}
+.order-toast-close{width:18px;height:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#c2c7d0;font-size:16.2px;flex-shrink:0;}
+.order-toast-close:hover{color:#7a8699;}
+/* ── CHART SETTINGS MODAL ── */
+.cs-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9100;display:none;align-items:center;justify-content:center;}
+.cs-overlay.show{display:flex;}
+.cs-modal{background:#fff;border-radius:12px;width:760px;max-width:92vw;height:560px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.22);overflow:hidden;}
+.cs-hdr{height:64px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid #e8e9ea;flex-shrink:0;}
+.cs-title{font-size:20px;font-weight:700;color:#282d34;}
+.cs-close{margin-left:auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;color:#282d34;}
+.cs-close:hover{background:#f4f5f6;}
+.cs-body{flex:1;display:flex;min-height:0;}
+.cs-side{width:240px;flex-shrink:0;border-right:1px solid #e8e9ea;padding:16px 12px;display:flex;flex-direction:column;gap:4px;}
+.cs-tab{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:#282d34;}
+.cs-tab:hover{background:#f4f5f6;}
+.cs-tab.active{border:1.5px solid #0a36c7;font-weight:700;background:transparent;}
+.cs-tab svg{flex-shrink:0;}
+.cs-pane{flex:1;padding:24px 28px;overflow-y:auto;}
+.cs-section-lbl{font-size:11px;font-weight:600;color:#7a8699;letter-spacing:0.4px;margin-bottom:18px;}
+.cs-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.cs-cb{width:18px;height:18px;border:1.5px solid #c2c7d0;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;}
+.cs-cb.checked{background:#282d34;border-color:#282d34;}
+.cs-row-lbl{font-size:14px;font-weight:500;color:#282d34;flex:1;min-width:140px;}
+.cs-swatch{width:28px;height:28px;border-radius:4px;border:1px solid #e8e9ea;cursor:pointer;}
+.cs-swatch-pair{display:flex;gap:10px;}
+.cs-ftr{height:72px;display:flex;align-items:center;padding:0 24px;border-top:1px solid #e8e9ea;flex-shrink:0;}
+.cs-template{height:36px;padding:0 12px;display:flex;align-items:center;gap:8px;border:1px solid #e8e9ea;border-radius:6px;font-size:13px;color:#282d34;cursor:pointer;background:#fff;}
+.cs-ftr-r{margin-left:auto;display:flex;gap:10px;}
+.cs-btn{height:40px;padding:0 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid #e8e9ea;background:#fff;color:#282d34;}
+.cs-btn.primary{background:#0a36c7;color:#fff;border-color:#0a36c7;}
+.cs-btn.primary:hover{background:#0930b0;border-color:#0930b0;}
+.cs-btn:hover:not(.primary){background:#f4f5f6;}
+/* Color picker */
+.cs-cp{position:absolute;background:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.16);padding:14px;z-index:9200;width:280px;}
+.cs-cp-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;}
+.cs-cp-c{width:22px;height:22px;border-radius:4px;cursor:pointer;border:1px solid rgba(0,0,0,.05);}
+.cs-cp-c:hover{transform:scale(1.1);}
+.cs-cp-c.sel{outline:2px solid #0a36c7;outline-offset:1px;}
+.cs-cp-divider{height:1px;background:#e8e9ea;margin:12px 0;}
+.cs-cp-add{width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#7a8699;border:1px solid transparent;border-radius:4px;}
+.cs-cp-add:hover{background:#f4f5f6;}
+.cs-cp-op-lbl{font-size:13px;color:#7a8699;margin:8px 0 6px;}
+.cs-cp-op-row{display:flex;align-items:center;gap:10px;}
+.cs-cp-op-track{flex:1;height:14px;border-radius:7px;background:repeating-conic-gradient(#e0e0e0 0% 25%,#fff 0% 50%) 50%/8px 8px;position:relative;}
+.cs-cp-op-fill{position:absolute;left:0;top:0;bottom:0;border-radius:7px;}
+.cs-cp-op-thumb{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #282d34;transform:translate(-50%,-50%);cursor:grab;}
+.cs-cp-op-input{width:54px;height:30px;border:1px solid #e8e9ea;border-radius:6px;text-align:center;font-size:13px;color:#282d34;outline:none;}
+/* Dark */
+body.dark-mode .cs-cp{background:#26262B;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+body.dark-mode .cs-cp-divider{background:#2D3033;}
+body.dark-mode .cs-cp-op-lbl{color:#7A8699;}
+body.dark-mode .cs-cp-op-input{background:#1D1D21;border-color:#2D3033;color:#FFFFFF;}
+body.dark-mode .cs-cp-op-thumb{border-color:#FFFFFF;background:#1D1D21;}
+/* Dark */
+body.dark-mode .cs-overlay{background:rgba(0,0,0,0.65);}
+body.dark-mode .cs-modal{background:#1D1D21;box-shadow:0 12px 48px rgba(0,0,0,0.55);}
+body.dark-mode .cs-hdr,
+body.dark-mode .cs-side,
+body.dark-mode .cs-ftr{border-color:#2D3033;}
+body.dark-mode .cs-title{color:#FFFFFF;}
+body.dark-mode .cs-close{color:#C2C7D0;}
+body.dark-mode .cs-close:hover{background:#26262B;}
+body.dark-mode .cs-tab{color:#C2C7D0;}
+body.dark-mode .cs-tab:hover{background:#26262B;}
+body.dark-mode .cs-tab.active{border-color:#00F0FF;color:#FFFFFF;}
+body.dark-mode .cs-tab svg path,
+body.dark-mode .cs-tab svg line,
+body.dark-mode .cs-tab svg rect,
+body.dark-mode .cs-tab svg circle{stroke:#C2C7D0;}
+body.dark-mode .cs-section-lbl{color:#7A8699;}
+body.dark-mode .cs-row-lbl{color:#FFFFFF;}
+body.dark-mode .cs-cb{background:#26262B;border-color:#2D3033;}
+body.dark-mode .cs-cb.checked{background:#FFFFFF;border-color:#FFFFFF;}
+body.dark-mode .cs-cb.checked svg path{stroke:#1D1D21;}
+body.dark-mode .cs-swatch{border-color:#2D3033;}
+body.dark-mode .cs-template{background:#26262B;border-color:#2D3033;color:#FFFFFF;}
+body.dark-mode .cs-btn{background:#26262B;border-color:#2D3033;color:#FFFFFF;}
+body.dark-mode .cs-btn:hover:not(.primary){background:#34343B;}
+body.dark-mode .cs-btn.primary{background:#0a36c7;color:#FFFFFF;border-color:#0a36c7;}
+body.dark-mode .cs-btn.primary:hover{background:#0930b0;border-color:#0930b0;}
+/* Dark mode */
+body.dark-mode .order-toast{background:#26262B;box-shadow:0 4px 16px rgba(0,0,0,0.45);}
+body.dark-mode .order-toast-text{color:#FFFFFF;}
+body.dark-mode .order-toast-desc{color:#7A8699;}
+body.dark-mode .order-toast-close{color:#515867;}
+body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
+</style>
+</head>
+<body>
+<div class="guide-overlay" id="guideOverlay"></div>
+<img class="guide-spotlight" id="guideSpotlight" src="images/guide-spotlight.png" alt="highlight" />
+<div class="guide-tooltip" id="guideTooltip">
+  <div class="guide-tooltip-title" id="guideTitle">Switch account</div>
+  <div class="guide-tooltip-desc" id="guideDesc">Click here to display list of your trading accounts. You can switch between trading accounts in the list</div>
+  <div class="guide-tooltip-progress"><span id="guideProgress">1</span>/5</div>
+  <div class="guide-tooltip-btns">
+    <button class="guide-btn-skip" onclick="skipGuide()">Skip</button>
+    <button class="guide-btn-next" id="guideBtnNext" onclick="nextGuide()">Next</button>
+  </div>
+</div>
+<!-- ═══ TOPNAV fixed outside scaled container ══════════════════════ -->
+<header class="tn" id="topnav">
+  <a href="index.html" class="tn-logo" style="text-decoration:none;cursor:pointer;"><img id="tnLogoImg" src="images/vtlogo.png" alt="VT"/></a>
+  <div class="tn-ticker">
+    <div class="ticker-track" id="tickerTrack">
+      <div class="ti"><span class="ti-s">BTCUSD</span><span class="ti-c dn">-3.33%</span></div>
+      <div class="ti"><span class="ti-s">ETHUSD</span><span class="ti-c dn">-1.01%</span></div>
+      <div class="ti"><span class="ti-s">XRPUSD</span><span class="ti-c up">+2.33%</span></div>
+      <div class="ti"><span class="ti-s">EOSUSD</span><span class="ti-c up">+6.30%</span></div>
+      <div class="ti"><span class="ti-s">LTCUSD</span><span class="ti-c up">+9.15%</span></div>
+      <div class="ti"><span class="ti-s">UINKUSD</span><span class="ti-c dn">-1.71%</span></div>
+      <div class="ti"><span class="ti-s">TRXUSD</span><span class="ti-c dn">-0.79%</span></div>
+      <div class="ti"><span class="ti-s">DOTUSD</span><span class="ti-c up">+5.55%</span></div>
+      <div class="ti"><span class="ti-s">SOLUSD</span><span class="ti-c up">+0.25%</span></div>
+      <div class="ti"><span class="ti-s">HIVEUSD</span><span class="ti-c up">+0.38%</span></div>
+      <div class="ti"><span class="ti-s">ADAUSD</span><span class="ti-c up">+1.22%</span></div>
+      <div class="ti"><span class="ti-s">XAUUSD</span><span class="ti-c up">+0.52%</span></div>
+      <div class="ti"><span class="ti-s">BTCUSD</span><span class="ti-c dn">-3.33%</span></div>
+      <div class="ti"><span class="ti-s">ETHUSD</span><span class="ti-c dn">-1.01%</span></div>
+      <div class="ti"><span class="ti-s">XRPUSD</span><span class="ti-c up">+2.33%</span></div>
+      <div class="ti"><span class="ti-s">EOSUSD</span><span class="ti-c up">+6.30%</span></div>
+      <div class="ti"><span class="ti-s">LTCUSD</span><span class="ti-c up">+9.15%</span></div>
+      <div class="ti"><span class="ti-s">UINKUSD</span><span class="ti-c dn">-1.71%</span></div>
+      <div class="ti"><span class="ti-s">TRXUSD</span><span class="ti-c dn">-0.79%</span></div>
+      <div class="ti"><span class="ti-s">DOTUSD</span><span class="ti-c up">+5.55%</span></div>
+      <div class="ti"><span class="ti-s">SOLUSD</span><span class="ti-c up">+0.25%</span></div>
+      <div class="ti"><span class="ti-s">HIVEUSD</span><span class="ti-c up">+0.38%</span></div>
+      <div class="ti"><span class="ti-s">ADAUSD</span><span class="ti-c up">+1.22%</span></div>
+      <div class="ti"><span class="ti-s">XAUUSD</span><span class="ti-c up">+0.52%</span></div>
+    </div>
+  </div>
+  <div class="tn-right">
+    <div class="tn-acct">
+      <div class="tn-acct-flag"></div>
+      <span class="tn-acct-txt">123134 - $ - Hedge STP</span>
+      <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <button class="tn-deposit">Deposit</button>
+    <div class="tn-ic" title="Settings"><div class="tn-ic-img tn-ic-settings"></div></div>
+    <div class="tn-ic" title="Support"><div class="tn-ic-img tn-ic-support"></div></div>
+    <div class="tn-ic" title="Language"><div class="tn-ic-img tn-ic-language"></div></div>
+    <div class="tn-ic" id="themeBtn" title="Theme"><div class="tn-ic-img tn-ic-theme">
+      <svg class="tn-ic-moon" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.5 11.8A6.8 6.8 0 018.2 3.5a.5.5 0 00-.62-.62A8 8 0 1017.12 12.42a.5.5 0 00-.62-.62z" stroke="#282d34" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
+      <svg class="tn-ic-sun" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.6" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" fill="none"/><g stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.2"/><path d="M10 16.3v2.2"/><path d="M1.5 10h2.2"/><path d="M16.3 10h2.2"/><path d="M3.9 3.9l1.6 1.6"/><path d="M14.5 14.5l1.6 1.6"/><path d="M3.9 16.1l1.6-1.6"/><path d="M14.5 5.5l1.6-1.6"/></g></svg>
+    </div></div>
+    <div class="tn-ic"><div class="tn-avatar"></div></div>
+  </div>
+</header>
+
+<div class="page-scaler" id="pageScaler">
+<div class="page" id="pageCanvas">
+
+<!-- ═══ LEFT WATCHLIST 0,80 372×556 ══════════════════════════════ -->
+<div class="pl">
+  <div class="pl-markettab">
+    <span class="pl-mt active">Market</span>
+    <div class="tn-ic" id="wlSettingsBtn" style="margin-left:auto;cursor:pointer;position:relative;" onclick="toggleWlSettings(event)">
+      <img src="images/k线/Settings.svg" width="16" height="16" alt=""/>
+      <div class="wls-drawer" id="wlSettingsDrawer">
+        <div class="wls-row locked" data-col="symbol"><div class="wls-cb"></div><span class="wls-lbl">Symbol</span></div>
+        <div class="wls-row locked" data-col="sell"><div class="wls-cb"></div><span class="wls-lbl">Sell</span></div>
+        <div class="wls-row locked" data-col="spread"><div class="wls-cb"></div><span class="wls-lbl">Spread</span></div>
+        <div class="wls-row locked" data-col="buy"><div class="wls-cb"></div><span class="wls-lbl">Buy</span></div>
+        <div class="wls-row checked" data-col="chg" onclick="toggleWls(event,this)"><div class="wls-cb"></div><span class="wls-lbl">%change</span></div>
+        <div class="wls-row" data-col="change" onclick="toggleWls(event,this)"><div class="wls-cb"></div><span class="wls-lbl">Change</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pl-search">
+    <input type="text" placeholder="Search instruments"/>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="#c2c7d0" stroke-width="1.5"/><path d="M11 11L14 14" stroke="#c2c7d0" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </div>
+  <div class="pl-wltabs">
+    <span class="wltab active" onclick="switchWltab(this)">Watchlist</span>
+    <span class="wltab" onclick="switchWltab(this)">Indices</span>
+    <span class="wltab" onclick="switchWltab(this)">Forex</span>
+    <span class="wltab" onclick="switchWltab(this)">Crypto</span>
+    <span class="wltab" onclick="switchWltab(this)">Metals</span>
+    <span class="wltab" onclick="switchWltab(this)" style="overflow:hidden;max-width:42px;">Shares</span>
+    <div style="display:flex;align-items:center;justify-content:center;width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+      <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+  <div class="pl-colhdr">
+    <div class="plh plh-sym">Symbol</div>
+    <div class="plh plh-sell">Sell</div>
+    <div class="plh" style="width:28px;text-align:center;font-size:10px;"></div>
+    <div class="plh plh-buy">Buy</div>
+    <div class="plh plh-chg">
+      %Change
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M3 7l3 3 3-3" stroke="#282d34" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+  <div class="pl-rows" id="plRows"></div>
+</div>
+
+<!-- ═══ CENTER OVERVIEW 376,80  1220×60 ═══════════════════════════ -->
+<!-- Figma: web-概览区/normal  Frame1430104366(x=16,y=10,w=1166,h=40) + Frame1707484419(x=1182,y=0,w=38,h=60) -->
+<div class="co">
+  <div class="co-main">
+    <div class="co-sym-wrap">
+      <div class="co-sym-ic">
+        <img src="images/rili.svg" width="20" height="20" alt="" class="fav-ic" onclick="toggleFav(this)" style="cursor:pointer;"/>
+      </div>
+      <div class="co-sym">
+        <span class="co-sym-n" id="chartSym">BTCUSD</span>
+        <span class="co-sym-s">Bitcoin</span>
+      </div>
+    </div>
+    <div class="co-price">
+      <span class="co-pm" id="coPm">—</span>
+      <span class="co-pc" id="coPc">+0.00  +0.00%</span>
+    </div>
+    <div class="co-stats">
+      <div class="co-stat"><span class="co-sl">Open</span><span class="co-sv" id="coOpen">—</span></div>
+      <div class="co-stat"><span class="co-sl">High</span><span class="co-sv" id="coHigh">—</span></div>
+      <div class="co-stat"><span class="co-sl">Low</span><span class="co-sv" id="coLow">—</span></div>
+      <div class="co-stat"><span class="co-sl">Close</span><span class="co-sv" id="coClose">—</span></div>
+      <div class="co-stat"><span class="co-sl">Trading</span><span class="co-sv" id="coTrading">—</span></div>
+      <div class="co-stat"><span class="co-sl swap">Swap/ Countdown</span><span class="co-sv">+0.005% / 01:00:20</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CENTER CHART CARD 376,140  1224×494 ══════════════════════ -->
+<div class="cc">
+
+  <!-- L1 tab bar  h=40  y=0 -->
+  <div class="cc-l1tabs">
+    <span class="cc-l1tab active" onclick="switchL1(this)">Chart</span>
+    <span class="cc-l1tab" onclick="switchL1(this)">Info</span>
+    <div class="cc-l1tabs-r">
+      <div class="cc-ic" title="Expand">
+        <img src="images/k线侧边/Trading View/Expand.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-ic" title="More">
+        <img src="images/k线侧边/Trading View/More Horizontal.svg" width="16" height="16" alt=""/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar  h=32 -->
+  <div class="cc-toolbar">
+    <div class="cc-tf3">
+      <button class="tf3-btn" onclick="switchTf3(this)">1m</button>
+      <button class="tf3-btn" onclick="switchTf3(this)">5m</button>
+      <button class="tf3-btn" onclick="switchTf3(this)">15m</button>
+      <button class="tf3-btn" onclick="switchTf3(this)">30m</button>
+      <button class="tf3-btn" onclick="switchTf3(this)">1H</button>
+      <button class="tf3-btn" onclick="switchTf3(this)">4H</button>
+      <button class="tf3-btn active" onclick="switchTf3(this)">1D
+        <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 1l3 3 3-3" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="cc-inds">
+      <div class="cc-ind-ic" onclick="toggleIndIc(this)" title="View Chart"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.15998" y="2.1601" width="11.68" height="11.68" rx="1.84" stroke="#7A8699" stroke-width="1.12"/><path d="M4.79993 9.5999L6.39993 7.9999L7.99993 9.5999L11.1999 6.3999" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="cc-ind-ic" title="Permission">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.00049 2.15967H12.0005C13.0165 2.15988 13.8403 2.98442 13.8403 4.00049V12.0005C13.8401 13.0164 13.0164 13.8401 12.0005 13.8403H4.00049C2.98441 13.8403 2.15988 13.0165 2.15967 12.0005V4.00049C2.15967 2.98428 2.98429 2.15967 4.00049 2.15967Z" stroke="#7A8699" stroke-width="1.12"/><path d="M7.9999 6.33149L11.0626 6.33141" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.79998 6.3314L5.59995 6.33142" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.79998 9.93149L5.59995 9.93152" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.00005 9.86265L10.974 9.86265" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="cc-ind-dropdown" id="permissionDropdown">
+          <div class="cc-chk-item checked" data-line="oct" onclick="toggleChk(this)">
+            <img class="cc-chk-box" src="images/Square Check Selected.svg" width="14" height="14" alt=""/>
+            <span class="cc-chk-txt">One-click Trading</span>
+          </div>
+          <div class="cc-chk-item checked" data-line="bid" onclick="toggleChk(this)">
+            <img class="cc-chk-box" src="images/Square Check Selected.svg" width="14" height="14" alt=""/>
+            <span class="cc-chk-txt">Bid Price Line</span>
+          </div>
+          <div class="cc-chk-item checked" data-line="ask" onclick="toggleChk(this)">
+            <img class="cc-chk-box" src="images/Square Check Selected.svg" width="14" height="14" alt=""/>
+            <span class="cc-chk-txt">Ask Price Line</span>
+          </div>
+          <div class="cc-chk-item" data-line="open" onclick="toggleChk(this)">
+            <img class="cc-chk-box" src="images/Square Not selected.svg" width="14" height="14" alt=""/>
+            <span class="cc-chk-txt">Open Position Line</span>
+          </div>
+          <div class="cc-chk-item" data-line="tp" onclick="toggleChk(this)">
+            <img class="cc-chk-box" src="images/Square Not selected.svg" width="14" height="14" alt=""/>
+            <span class="cc-chk-txt">Take Profit Line</span>
+          </div>
+          <div class="cc-chk-item" data-line="sl" onclick="toggleChk(this)">
+            <img class="cc-chk-box" src="images/Square Not selected.svg" width="14" height="14" alt=""/>
+            <span class="cc-chk-txt">Stop Loss Line</span>
+          </div>
+        </div>
+      </div>
+      <div class="cc-ind-ic" title="OHLCV">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31913)"><path d="M6.58206 5.66675H2.80127V11.0001H6.58206V5.66675Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/><path d="M4.69189 2.33325V5.66659" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.69189 11V14.3333" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.1985 5H9.41772V10.3333H13.1985V5Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.3081 1.66675V5.00008" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.3081 10.3333V13.6666" stroke="#7A8699" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_9076_31913"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+        <div class="cc-ind-dropdown" id="chartTypeDropdown">
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Bars">
+            <div class="cc-ind-item-ic"><img src="images/k线/Bars.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Bars</span>
+          </div>
+          <div class="cc-ind-item sel" onclick="selectChartType(this,event)" data-type="Candles">
+            <div class="cc-ind-item-ic"><img src="images/k线/View Chart.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Candles</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Hollow Candles">
+            <div class="cc-ind-item-ic"><img src="images/k线/View Chart_line.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Hollow Candles</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Heikin Ashi">
+            <div class="cc-ind-item-ic"><img src="images/k线/Heikin Ashi.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Heikin Ashi</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Line">
+            <div class="cc-ind-item-ic"><img src="images/k线/Line.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Line</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Area">
+            <div class="cc-ind-item-ic"><img src="images/k线/Area.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Area</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Baseline">
+            <div class="cc-ind-item-ic"><img src="images/k线/Baseline.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Baseline</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Renko">
+            <div class="cc-ind-item-ic"><img src="images/k线/Renko.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Renko</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Line Break">
+            <div class="cc-ind-item-ic"><img src="images/k线/Line Break.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Line Break</span>
+          </div>
+          <div class="cc-ind-item" onclick="selectChartType(this,event)" data-type="Kagi">
+            <div class="cc-ind-item-ic"><img src="images/k线/Kagi.svg" width="16" height="16" alt=""/></div>
+            <span class="cc-ind-item-txt">Kagi</span>
+          </div>
+        </div>
+      </div>
+      <div class="cc-ind-ic" onclick="toggleIndIc(this)" title="Refresh"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31914)"><path d="M12.2426 12.2426C11.1569 13.3284 9.65687 14 8 14C4.6863 14 2 11.3137 2 8C2 4.6863 4.6863 2 8 2C9.65687 2 11.1569 2.67157 12.2426 3.75737C12.7953 4.31003 14 5.66667 14 5.66667" stroke="#7A8699" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2.6665V5.6665H11" stroke="#7A8699" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_9076_31914"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
+      <div class="cc-ind-ic" onclick="toggleIndIc(this)" title="Screenshot"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31915)"><path d="M5 4L6 2H10L11 4H5Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/><path d="M2.3335 4.59961H13.6665C13.8874 4.59961 14.0669 4.77909 14.0669 5V13C14.0669 13.2209 13.8874 13.4004 13.6665 13.4004H2.3335C2.11258 13.4004 1.93311 13.2209 1.93311 13V5C1.93311 4.77909 2.11258 4.59961 2.3335 4.59961Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.00049 6.93286C9.14173 6.93304 10.0669 7.85896 10.0669 9.00024C10.0667 10.1414 9.14163 11.0665 8.00049 11.0667C6.8592 11.0667 5.93328 10.1415 5.93311 9.00024C5.93311 7.85885 6.85909 6.93286 8.00049 6.93286Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/></g><defs><clipPath id="clip0_9076_31915"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
+      <div class="cc-ind-ic" onclick="openChartSettings(event)" title="Chart Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31916)"><path d="M10.5703 13.0004V14.12H5.42963V13.0004H10.5703ZM5.42963 1.88013H10.5703C11.2081 1.88013 11.7984 2.21783 12.1218 2.76763L14.6632 7.08716C14.9946 7.65046 14.9946 8.34964 14.6632 8.91294L12.1218 13.2325C11.7984 13.7823 11.2081 14.12 10.5703 14.12V13.0004C10.8112 13.0004 11.0348 12.8729 11.157 12.6653L13.6976 8.34497C13.8228 8.13217 13.8228 7.86793 13.6976 7.65513L11.157 3.3356C11.0348 3.12789 10.8112 3.00044 10.5703 3.00044H5.42963C5.18866 3.00044 4.96587 3.1279 4.84369 3.3356L2.30229 7.65513C2.1771 7.86793 2.1771 8.13216 2.30229 8.34497L4.84369 12.6653C4.96592 12.8727 5.18882 13.0004 5.42963 13.0004V14.12L5.31088 14.1161C4.75863 14.0797 4.25362 13.7907 3.94213 13.3333L3.87807 13.2325L1.33666 8.91294C1.00529 8.34962 1.00529 7.65047 1.33666 7.08716L3.87807 2.76763C4.18132 2.2521 4.71914 1.92302 5.31088 1.88403L5.42963 1.88013Z" fill="#7A8699"/><path d="M9.23989 8.00005C9.23989 7.31522 8.68487 6.76021 8.00005 6.76021C7.31522 6.76021 6.76021 7.31522 6.76021 8.00005C6.76021 8.68487 7.31522 9.23989 8.00005 9.23989C8.68487 9.23989 9.23989 8.68487 9.23989 8.00005ZM10.3602 8.00005C10.3602 9.30343 9.30343 10.3602 8.00005 10.3602C6.69667 10.3602 5.63989 9.30343 5.63989 8.00005C5.63989 6.69667 6.69667 5.63989 8.00005 5.63989C9.30343 5.63989 10.3602 6.69667 10.3602 8.00005Z" fill="#7A8699"/></g><defs><clipPath id="clip0_9076_31916"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
+    </div>
+  </div>
+
+  <!-- Body row: tools | chart-col | yaxis -->
+  <div class="cc-body">
+    <div class="cc-tools">
+      <div class="cc-tool" title="Focus">
+        <img src="images/k线侧边/Trading View/focus-add-svgrepo-com 1.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Crosshair">
+        <img src="images/k线侧边/Trading View/Drawing.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Trend Line">
+        <img src="images/k线侧边/Trading View/Drawing-1.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Horizontal Lines">
+        <img src="images/k线侧边/Trading View/Drawing-2.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Polyline">
+        <img src="images/k线侧边/Trading View/Drawing-3.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Fibonacci">
+        <img src="images/k线侧边/Trading View/Drawing-4.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Text">
+        <img src="images/k线侧边/Trading View/Drawing-5.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Measure">
+        <img src="images/k线侧边/Trading View/Drawing-6.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Zoom">
+        <img src="images/k线侧边/Trading View/Drawing-7.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Clear">
+        <img src="images/k线侧边/Trading View/Drawing-8.svg" width="16" height="16" alt=""/>
+      </div>
+      <div class="cc-tool" title="Delete">
+        <img src="images/Trash.svg" width="16" height="16" alt=""/>
+      </div>
+    </div>
+    <div class="cc-chart-col">
+      <div class="cc-canvas">
+        <div id="tvchart" style="width:100%;height:100%;"></div>
+      </div>
+      <div class="cc-range">
+        <button class="cc-range-btn active" onclick="switchRange(this)">1d</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">5d</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">1m</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">3m</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">6m</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">1y</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">5y</button>
+        <button class="cc-range-btn" onclick="switchRange(this)">All</button>
+        <div class="cc-range-cal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="2" y="3" width="14" height="13" rx="2" stroke="#7a8699" stroke-width="1.3"/>
+            <path d="M2 7h14" stroke="#7a8699" stroke-width="1.3"/>
+            <path d="M6 2v2M12 2v2" stroke="#7a8699" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M13 12l2 2" stroke="#7a8699" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info panel (shown when Info tab active) -->
+  <div class="cc-info" id="ccInfoPanel">
+    <div class="cc-info-grid">
+      <!-- Dealing -->
+      <div class="cc-info-section">
+        <div class="cc-info-title">Dealing</div>
+        <div class="cc-info-rows">
+          <div class="cc-info-row"><span class="cc-info-lbl">Spread</span><span class="cc-info-val">Floating</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Digits</span><span class="cc-info-val">4</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Stops level</span><span class="cc-info-val">0</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Pendings GTC</span><span class="cc-info-val">Pendings are good till cancel</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Contact size</span><span class="cc-info-val">10000.0</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Minimum Vol</span><span class="cc-info-val">0.01</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Maximum volume</span><span class="cc-info-val">100</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Profit calculation</span><span class="cc-info-val">FOREX</span></div>
+        </div>
+      </div>
+      <!-- Trading Time -->
+      <div class="cc-info-section">
+        <div class="cc-info-title">Trading Time (GMT+3）</div>
+        <div class="cc-info-rows">
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Monday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Tuesday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Wednesday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Thursday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Friday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Saturday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h28">Sunday</span><span class="cc-info-val h28">00:00-24:00</span></div>
+        </div>
+      </div>
+      <!-- Margin -->
+      <div class="cc-info-section">
+        <div class="cc-info-title">Margin</div>
+        <div class="cc-info-rows">
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Margin calculation</span><span class="cc-info-val h26">FOREX</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Initial margin</span><span class="cc-info-val h26">100000.0</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Maintenance Margin</span><span class="cc-info-val h26">0</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Maintenance Margin Rate-Buy</span><span class="cc-info-val h26">0.01</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Maintenance Margin Rate-Sell</span><span class="cc-info-val h26">0.01</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Initial Margin Rate-Buy</span><span class="cc-info-val h26">0.01</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Initial Margin Rate-Sell</span><span class="cc-info-val h26">0.01</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Margin hedge</span><span class="cc-info-val h26">0.0</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl h26">Margin currency</span><span class="cc-info-val h26">USD</span></div>
+        </div>
+      </div>
+      <!-- Funding Rate -->
+      <div class="cc-info-section">
+        <div class="cc-info-title">Funding Rate</div>
+        <div class="cc-info-rows">
+          <div class="cc-info-row"><span class="cc-info-lbl">Est.Funding Rate(Long)</span><span class="cc-info-val">0.003%</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Est.Funding Rate(Short)</span><span class="cc-info-val">-0.003%</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">Interval</span><span class="cc-info-val">02:00/10:00/18:00</span></div>
+          <div class="cc-info-row"><span class="cc-info-lbl">3-day swap</span><span class="cc-info-val">Friday</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- logo watermark bottom-left of chart area -->
+  <img src="images/k线/Icons/Logo.svg" alt="" style="position:absolute;left:52px;bottom:96px;width:140px;height:auto;opacity:0.5;pointer-events:none;z-index:500;"/>
+
+
+</div>
+
+<!-- ═══ RIGHT ORDER PANEL 1600,80 320×677 ═══════════════════════ -->
+<div class="rp">
+  <!-- Sell/Buy price display -->
+  <div class="rp-prices">
+    <div class="rp-sell active" onclick="setSide('sell')">
+      <span class="rp-sv">1.39003</span>
+      <span class="rp-sl">Sell</span>
+    </div>
+    <div class="rp-buy" onclick="setSide('buy')">
+      <span class="rp-sv">1.39003</span>
+      <span class="rp-sl">Buy</span>
+    </div>
+    <span class="rp-spread">15</span>
+  </div>
+  <!-- Slider -->
+  <div class="rp-slider-wrap">
+    <div class="rp-track-wrap">
+      <div class="rp-track">
+        <div class="rp-track-green" id="rpTrackGreen"></div>
+        <div class="rp-track-red" id="rpTrackRed"></div>
+      </div>
+    </div>
+    <span class="rp-countdown" id="rpCountdown">+0</span>
+  </div>
+  <!-- Order type tabs -->
+  <div class="rp-otabs">
+    <span class="rotab active" onclick="switchOtab(this,'market')">Market</span>
+    <span class="rotab" onclick="switchOtab(this,'limit')">Limit</span>
+    <span class="rotab" onclick="switchOtab(this,'stop')">Stop</span>
+  </div>
+  <!-- Fill at market price (Market tab) -->
+  <div class="rp-field" id="fldMarket">
+    <div class="rp-market-fill">Fill at market price</div>
+  </div>
+  <!-- Limit Price input (Limit tab) -->
+  <div class="rp-field" id="fldLimit" style="display:none;">
+    <div class="rp-input-box">
+      <div style="width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;" onclick="decreaseLimitPrice()"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+      <div class="rp-input-inner">
+        <span class="rp-input-lbl">Limit Price</span>
+        <input type="number" class="rp-input-val" id="limitPriceInput" value="109.890" step="0.001"/>
+      </div>
+      <div style="width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;" onclick="increaseLimitPrice()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="rp-hint">Min value: 0.66114</div>
+  </div>
+  <!-- Stop Price input (Stop tab) -->
+  <div class="rp-field" id="fldStop" style="display:none;">
+    <div class="rp-input-box">
+      <div style="width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;" onclick="decreaseStopPrice()"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+      <div class="rp-input-inner">
+        <span class="rp-input-lbl">Stop Price</span>
+        <input type="number" class="rp-input-val" id="stopPriceInput" value="109.890" step="0.001"/>
+      </div>
+      <div style="width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;" onclick="increaseStopPrice()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="rp-errtxt">Min value: 105,598.81</div>
+  </div>
+  <!-- Volume input -->
+  <div class="rp-field" style="position:relative;">
+    <div class="rp-input-box">
+      <div style="width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;" onclick="decreaseVolume()"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+      <div class="rp-input-inner">
+        <span class="rp-input-lbl">Volume</span>
+        <input type="number" class="rp-input-val" id="volumeInput" value="0.00" step="0.01"/>
+      </div>
+      <div style="width:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;" onclick="increaseVolume()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="rp-unit-drop" onclick="toggleUnitDropdown()">Lots <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div id="unitDropdown" class="rp-unit-dropdown" style="display:none;">
+      <div class="rp-unit-item" onclick="selectUnit('Lots')">Lots</div>
+      <div class="rp-unit-item" onclick="selectUnit('USD')">USD</div>
+    </div>
+  </div>
+  <!-- Range bar -->
+  <div class="rp-range-wrap">
+    <div class="rp-range-track" id="rangeTrack">
+      <div class="rp-range-fill" id="rangeFill"></div>
+      <div class="rp-range-tick" data-pct="25" style="left:25%;"></div>
+      <div class="rp-range-tick" data-pct="50" style="left:50%;"></div>
+      <div class="rp-range-tick" data-pct="75" style="left:75%;"></div>
+      <div class="rp-range-thumb" id="rangeThumb" style="left:0%;"></div>
+    </div>
+    <div class="rp-range-labels"><span class="rp-rl-0">0</span><span class="rp-rl-max">Max open 100.00 Lots</span></div>
+  </div>
+  <!-- TP/SL checkbox -->
+  <div class="rp-tpsl-row" onclick="toggleTpsl()">
+    <div class="rp-cb checked" id="tpslCb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <span class="rp-cb-lbl">TP/SL</span>
+  </div>
+  <!-- TP/SL inputs -->
+  <div class="rp-tpsl-inputs" id="tpslInputs">
+    <div class="rp-tpsl-half">
+      <div class="rp-input-box" style="width:136px;">
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+        <div class="rp-input-inner">
+          <span class="rp-input-lbl">Take Profit</span>
+          <span class="rp-input-val">109.890</span>
+        </div>
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+    <div class="rp-tpsl-half" style="position:relative;">
+      <div class="rp-input-box" style="width:136px;">
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+        <div class="rp-input-inner">
+          <span class="rp-input-lbl">Stop Loss</span>
+          <span class="rp-input-val">109.890</span>
+        </div>
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="rp-tpsl-tooltip">Estimated PnL -420.00 USD</div>
+    </div>
+  </div>
+  <!-- Sell button -->
+  <button class="rp-sell-btn" id="orderBtn">Sell</button>
+  <!-- Info rows -->
+  <div class="rp-info">
+    <div class="rp-irow">
+      <span class="rp-ilbl underline" data-tip="Trading fees and margin costs">Margin / Fees</span>
+      <span class="rp-ival">3,800.14</span>
+    </div>
+    <div class="rp-irow">
+      <span class="rp-ilbl">Free Margin</span>
+      <span class="rp-ival">5,000 USD <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1a5.5 5.5 0 100 11A5.5 5.5 0 006.5 1z" fill="#7a8699" opacity=".15"/><path d="M6.5 1a5.5 5.5 0 100 11A5.5 5.5 0 006.5 1z" stroke="#7a8699" stroke-width="1.2"/><path d="M6.5 4v3.5M6.5 9v.5" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="rp-irow">
+      <span class="rp-ilbl">Margin level after trading</span>
+      <span class="rp-ival">1,000.00 %</span>
+    </div>
+    <div class="rp-irow">
+      <span class="rp-ilbl underline" data-tip="Maximum leverage ratio available">Leverage</span>
+      <span class="rp-ival">1:2,000,000,000</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ASSETS PANEL 1600,757 320×319 ═══════════════════════════ -->
+<div class="ap">
+  <div class="ap-hdr">
+    <span class="ap-title">Assets</span>
+  </div>
+  <div class="ap-rows">
+    <div class="ap-row"><span class="ap-lbl">Equity</span><span class="ap-val">1,129.23 USD</span></div>
+    <div class="ap-row"><span class="ap-lbl">Floating PnL</span><span class="ap-val green">+129.22 USD (+12.33%)</span></div>
+    <div class="ap-row">
+      <span class="ap-lbl">Margin Level</span>
+      <span class="ap-val green row">
+        <img src="images/Risk.svg" width="16" height="16" style="display:inline-block;vertical-align:middle;"/>
+        1,000.00%
+      </span>
+    </div>
+    <div class="ap-row"><span class="ap-lbl">Balance</span><span class="ap-val">0.00 USD</span></div>
+    <div class="ap-row"><span class="ap-lbl">Credit</span><span class="ap-val">0.00 USD</span></div>
+    <div class="ap-row"><span class="ap-lbl">Margin</span><span class="ap-val">0.00 USD</span></div>
+    <div class="ap-row"><span class="ap-lbl">Free Margin</span><span class="ap-val">1,129.23 USD</span></div>
+  </div>
+</div>
+
+<!-- ═══ POSITIONS BOTTOM 0,640 1596×436 ════════════════════════ -->
+<div class="pb">
+  <div class="pb-tabs">
+    <span class="ptab active" onclick="switchPtab(this)">Positions (5)</span>
+    <span class="ptab" onclick="switchPtab(this)">Pending Orders (0)</span>
+    <span class="ptab" onclick="switchPtab(this)">Position History</span>
+    <span class="ptab" onclick="switchPtab(this)">Funding History</span>
+    <div class="pb-tabs-r">
+      <label class="pb-hide"><input type="checkbox" style="width:14px;height:14px;"/> Hide Other Symbols</label>
+      <div class="pb-tool" id="pbGroupBtn" title="Group positions" onclick="setPbGrouping('group',event)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M5 9l5-3 5 3-5 3-5-3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+          <path d="M5 13l5 3 5-3" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="pb-tool" id="pbUngroupBtn" title="Ungroup positions" onclick="setPbGrouping('ungroup',event)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 6l6-3 6 3-6 3-6-3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+          <path d="M4 10l6 3 6-3" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+          <path d="M4 14l6 3 6-3" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="pb-tool" id="pbSettingsBtn" title="Settings" onclick="togglePbSettings(event)">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M14.5 9c0-.4 0-.8-.1-1.2l1.4-1.1-1.4-2.4-1.7.5c-.6-.5-1.3-.9-2-1.1L10.4 2h-2.8l-.3 1.7c-.7.2-1.4.6-2 1.1l-1.7-.5L2.2 6.7l1.4 1.1c-.1.4-.1.8-.1 1.2s0 .8.1 1.2l-1.4 1.1 1.4 2.4 1.7-.5c.6.5 1.3.9 2 1.1l.3 1.7h2.8l.3-1.7c.7-.2 1.4-.6 2-1.1l1.7.5 1.4-2.4-1.4-1.1c.1-.4.1-.8.1-1.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div style="position:relative;">
+        <button class="pb-closeall" id="pbCloseAllBtn" onclick="togglePbCloseMenu(event)">Close All <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="pb-hdr" id="pbHdr">
+    <div class="ph ph-sym">Symbol <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#bac0ca" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="ph ph-vol">Vol (Lots) <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#bac0ca" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="ph ph-entry">Entry Price</div>
+    <div class="ph ph-cur">Current Price</div>
+    <div class="ph ph-chg">Swap</div>
+    <div class="ph ph-time">Open Time <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#bac0ca" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="ph ph-ord">Order</div>
+    <div class="ph ph-tpsl">TP/SL</div>
+    <div class="ph ph-close">Close By / Reverse</div>
+  </div>
+  <div class="pb-rows" id="pbRows">
+    <div class="prow">
+      <div class="pd pd-sym"><span class="sym-badge">Sell</span><span>BTCUSD</span></div>
+      <div class="pd pd-vol">0.1</div>
+      <div class="pd pd-entry">30,374.80</div>
+      <div class="pd pd-cur">30,500.00</div>
+      <div class="pd pd-chg">0.00 USD</div>
+      <div class="pd pd-time">18/12/2024 04:49:51</div>
+      <div class="pd pd-ord">#84210573</div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
+    </div>
+    <div class="prow">
+      <div class="pd pd-sym"><span class="sym-badge buy">Buy</span><span>ETHUSD</span></div>
+      <div class="pd pd-vol">0.1</div>
+      <div class="pd pd-entry">2,393.89</div>
+      <div class="pd pd-cur">2,395.12</div>
+      <div class="pd pd-chg">0.00 USD</div>
+      <div class="pd pd-time">18/12/2024 04:49:51</div>
+      <div class="pd pd-ord">#19384726</div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
+    </div>
+    <div class="prow">
+      <div class="pd pd-sym"><span class="sym-badge">Sell</span><span>XAUUSD</span></div>
+      <div class="pd pd-vol">0.1</div>
+      <div class="pd pd-entry">3,327.50</div>
+      <div class="pd pd-cur">3,328.00</div>
+      <div class="pd pd-chg">0.00 USD</div>
+      <div class="pd pd-time">03/02 12:34:21</div>
+      <div class="pd pd-ord">#62018394</div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
+    </div>
+    <div class="prow">
+      <div class="pd pd-sym"><span class="sym-badge buy">Buy</span><span>XRPUSD</span></div>
+      <div class="pd pd-vol">0.1</div>
+      <div class="pd pd-entry">1.2880</div>
+      <div class="pd pd-cur">1.2920</div>
+      <div class="pd pd-chg">0.00 USD</div>
+      <div class="pd pd-time">03/02 12:34:21</div>
+      <div class="pd pd-ord">#47591620</div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
+    </div>
+    <div class="prow">
+      <div class="pd pd-sym"><span class="sym-badge buy">Buy</span><span>SOLUSD</span></div>
+      <div class="pd pd-vol">0.1</div>
+      <div class="pd pd-entry">177.40</div>
+      <div class="pd pd-cur">177.60</div>
+      <div class="pd pd-chg">0.00 USD</div>
+      <div class="pd pd-time">03/02 12:34:21</div>
+      <div class="pd pd-ord">#73625481</div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
+    </div>
+    <div class="prow">
+      <div class="pd pd-sym"><span class="sym-badge">Sell</span><span>BTCUSD</span></div>
+      <div class="pd pd-vol">0.1</div>
+      <div class="pd pd-entry">110,168.09</div>
+      <div class="pd pd-cur">110,762.98</div>
+      <div class="pd pd-chg">0.00 USD</div>
+      <div class="pd pd-time">03/02 12:34:21</div>
+      <div class="pd pd-ord">#28461953</div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
+    </div>
+  </div>
+  <!-- Right close panel at x=1320 -->
+  <div class="pb-rpanel" id="pbRpanel">
+    <div class="pb-rpanel-hdr">
+      <div class="ph ph-rpnl bold" style="padding-left:16px;">PnL <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div class="ph ph-rcl" style="font-size:14px;color:#282d34;font-weight:500;">Volume</div>
+    </div>
+    <div class="pb-rpanel-row">
+      <div style="width:94px;font-size:12px;font-weight:500;color:#00b565;padding:0 8px;">+12,123.33</div>
+      <input class="pb-input-sm" type="number" step="0.01" min="0" value="0.1"/>
+      <button class="btn-close-blue">Close</button>
+    </div>
+    <div class="pb-rpanel-row">
+      <div style="width:94px;font-size:12px;font-weight:500;color:#00b565;padding:0 8px;">+12,123.33</div>
+      <input class="pb-input-sm" type="number" step="0.01" min="0" value="0.1"/>
+      <button class="btn-close-blue">Close</button>
+    </div>
+    <div class="pb-rpanel-row">
+      <div style="width:94px;font-size:12px;font-weight:500;color:#ff2c40;padding:0 8px;">-500.00</div>
+      <input class="pb-input-sm" type="number" step="0.01" min="0" value="0.1"/>
+      <button class="btn-close-blue">Close</button>
+    </div>
+    <div class="pb-rpanel-row">
+      <div style="width:94px;font-size:12px;font-weight:500;color:#00b565;padding:0 8px;">+12,123.33</div>
+      <input class="pb-input-sm" type="number" step="0.01" min="0" value="0.1"/>
+      <button class="btn-close-blue">Close</button>
+    </div>
+    <div class="pb-rpanel-row">
+      <div style="width:94px;font-size:12px;font-weight:500;color:#00b565;padding:0 8px;">+12,123.33</div>
+      <input class="pb-input-sm" type="number" step="0.01" min="0" value="0.1"/>
+      <button class="btn-close-blue">Close</button>
+    </div>
+    <div class="pb-rpanel-row">
+      <div style="width:94px;font-size:12px;font-weight:500;color:#00b565;padding:0 8px;">+2,023.33</div>
+      <input class="pb-input-sm" type="number" step="0.01" min="0" value="0.1"/>
+      <button class="btn-close-blue">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SIGNAL BAR 0,1076 1920×28 ══════════════════════════════ -->
+<div class="sb">
+  <div class="sb-icon">
+    <div class="sb-bar" style="height:3px;"></div>
+    <div class="sb-bar" style="height:5px;"></div>
+    <div class="sb-bar" style="height:8px;"></div>
+    <div class="sb-bar" style="height:12px;"></div>
+  </div>
+  <span class="sb-txt">Stable signal (14ms)</span>
+</div>
+
+
+</div><!-- /page -->
+</div><!-- /page-scaler -->
+
+<!-- Order bar — fixed overlay, always above everything, freely draggable -->
+<div class="ob" id="obBar" style="position:fixed;left:50%;top:96px;transform:translateX(-50%);z-index:100;">
+  <div class="ob-e" id="obHandle">
+    <img src="images/yidong.svg" width="14" height="14" alt="" style="display:block;"/>
+  </div>
+  <div class="ob-sell">
+    <span class="ob-n">Sell</span>
+    <span class="ob-p">91,028.8</span>
+  </div>
+  <div class="ob-mid">
+    <span class="ob-mid-l">Lots</span>
+    <input class="ob-mid-v" type="number" step="0.01" min="0" value="0.01" oninput="syncObLotsToVolume(this)"/>
+  </div>
+  <div class="ob-buy">
+    <span class="ob-n">Buy</span>
+    <span class="ob-p">90,123.8</span>
+  </div>
+  <div class="ob-c">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <path d="M1 1l10 10M11 1L1 11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+</div>
+
+<script>
+/* ── Responsive scale ───────────────────────────── */
+const PW=1920,PH=1104;
+function scale(){
+  const s=window.innerWidth/PW;
+  const p=document.getElementById('pageCanvas');
+  const sc=document.getElementById('pageScaler');
+  const tn=document.getElementById('topnav');
+  const ob=document.getElementById('obBar');
+  p.style.transform='scale('+s+')';
+  sc.style.height=(PH*s)+'px';
+  if(tn){ tn.style.transform='scale('+s+')'; }
+  sc.style.marginTop='0';
+  if(ob){ ob.style.transform='scale('+s+')'; ob.style.transformOrigin='top center'; }
+}
+scale();
+window.addEventListener('resize',scale);
+
+/* ── Pure Canvas K线图 ───────────────────────────── */
+(function(){
+  var IV_MAP = {'1m':'1m','5m':'5m','15m':'15m','30m':'30m','1H':'1h','4H':'4h','1D':'1d','1d':'1m','5d':'5m','1m_r':'30m','3m':'1d','6m':'1d','1y':'1w','5y':'1M','All':'1M'};
+  var currentIV = '1D';
+  var kData = [];
+  var ws = null;
+  var cvs, ctx, W, H;
+  /* layout constants */
+  var PAD = {l:8, r:68, t:12, b:28, vol:50};
+  var offset = 0, barW = 9, barGap = 2;
+  var dragging = false, dragStartX = 0, dragStartOff = 0;
+  var crossX = -1, crossY = -1;
+
+  function setup(){
+    var el = document.getElementById('tvchart');
+    if(!el) return;
+    el.innerHTML = '';
+    cvs = document.createElement('canvas');
+    cvs.style.cssText = 'display:block;width:100%;height:100%;cursor:crosshair;';
+    el.appendChild(cvs);
+
+    function resize(){
+      /* read CSS size directly — works because canvas is inside .cc-canvas which is inside
+         the 1920px layout; offsetWidth here reflects actual layout pixels before scale */
+      W = el.offsetWidth  || el.parentElement.offsetWidth  || 1100;
+      H = el.offsetHeight || el.parentElement.offsetHeight || 380;
+      cvs.width  = W;
+      cvs.height = H;
+      draw();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    cvs.addEventListener('mousedown', function(e){ dragging=true; dragStartX=e.clientX; dragStartOff=offset; });
+    window.addEventListener('mouseup',  function(){ dragging=false; });
+    window.addEventListener('mousemove', function(e){
+      var r = cvs.getBoundingClientRect();
+      var sc = W / r.width;  /* canvas px / css px */
+      crossX = (e.clientX - r.left) * sc;
+      crossY = (e.clientY - r.top)  * sc;
+      if(dragging){
+        var dx = (e.clientX - dragStartX) * sc;
+        offset = Math.round(dragStartOff - dx / (barW + barGap));
+        offset = Math.max(0, Math.min(offset, Math.max(0, kData.length - visibleBars())));
+      }
+      draw();
+    });
+    cvs.addEventListener('mouseleave', function(){ crossX=-1; crossY=-1; draw(); });
+    cvs.addEventListener('wheel', function(e){
+      e.preventDefault();
+      barW = Math.max(3, Math.min(30, barW - (e.deltaY>0?1:-1)));
+      offset = Math.max(0, Math.min(offset, Math.max(0, kData.length - visibleBars())));
+      draw();
+    }, {passive:false});
+
+    loadData();
+  }
+
+  function visibleBars(){
+    return Math.floor((W - PAD.l - PAD.r) / (barW + barGap));
+  }
+
+  window.tvChartColors = { bg:'#fff', grid:'#f0f1f3', label:'#7a8699', crosshair:'#adb5bd', priceLabelBg:'#282d34', priceLabelTxt:'#fff' };
+  window.tvRedraw = function(){ if(cvs) draw(); };
+
+  function draw(){
+    if(!ctx){ ctx = cvs.getContext('2d'); }
+    var C = window.tvChartColors;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0,0,W,H);
+    if(!kData.length){ drawLoading(); return; }
+
+    var chartH = H - PAD.t - PAD.b - PAD.vol;
+    var volH   = PAD.vol - 4;
+    var chartY = PAD.t;
+    var volY   = H - PAD.b - volH;
+    var chartW = W - PAD.l - PAD.r;
+
+    var vis  = visibleBars();
+    var from = Math.min(offset, Math.max(0, kData.length - vis));
+    var to   = Math.min(from + vis, kData.length);
+    var slice = kData.slice(from, to);
+    if(!slice.length) return;
+
+    /* price range */
+    var pMin = Infinity, pMax = -Infinity, vMax = 0;
+    slice.forEach(function(d){
+      pMin = Math.min(pMin, d.low);
+      pMax = Math.max(pMax, d.high);
+      vMax = Math.max(vMax, d.vol);
+    });
+    /* Always keep bid/ask in view */
+    var _last = kData[kData.length-1];
+    var _spread = (typeof RP_SPREAD!=='undefined') ? RP_SPREAD : 1.5;
+    if(_last && isFinite(_last.close)){
+      var _bid = _last.close - _spread/2, _ask = _last.close + _spread/2;
+      var _bidOn = !!document.querySelector('[data-line="bid"].checked');
+      var _askOn = !!document.querySelector('[data-line="ask"].checked');
+      if(_bidOn){ pMin = Math.min(pMin,_bid); pMax = Math.max(pMax,_bid); }
+      if(_askOn){ pMin = Math.min(pMin,_ask); pMax = Math.max(pMax,_ask); }
+    }
+    var pRange = pMax - pMin || 1;
+    var pPad   = pRange * 0.05;
+    pMin -= pPad; pMax += pPad; pRange = pMax - pMin;
+
+    function py(p){ return chartY + chartH - ((p - pMin) / pRange) * chartH; }
+    var vy = function(v){ return volY + volH - (v / vMax) * volH; };
+
+    /* grid lines */
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    for(var g=0;g<=4;g++){
+      var gy = chartY + (chartH/4)*g;
+      ctx.beginPath(); ctx.moveTo(PAD.l, gy); ctx.lineTo(W-PAD.r, gy); ctx.stroke();
+      /* skip bottom-most label to avoid overlap with volume axis 'top' label */
+      if(g===4) continue;
+      var gp = pMax - (pRange/4)*g;
+      ctx.fillStyle=C.label; ctx.font='10px Roboto,sans-serif'; ctx.textAlign='left';
+      ctx.fillText(gp.toFixed(gp>1000?0:4), W-PAD.r+4, gy+4);
+    }
+
+    /* volume axis labels — 0 / 2K / 4K / 6K (or scaled) */
+    var volNice = (function(v){
+      if(v<=0) return [0,2000,4000,6000];
+      var step = v/3;
+      var pow = Math.pow(10, Math.floor(Math.log10(step)));
+      var n = step/pow;
+      var nice = n<=1?1:n<=2?2:n<=5?5:10;
+      step = nice*pow;
+      return [0, step, step*2, step*3];
+    })(vMax);
+    function volFmt(v){
+      if(v>=1e9) return (v/1e9).toFixed(v%1e9?1:0)+'B';
+      if(v>=1e6) return (v/1e6).toFixed(v%1e6?1:0)+'M';
+      if(v>=1e3) return (v/1e3).toFixed(v%1e3?1:0)+'K';
+      return ''+v;
+    }
+    ctx.fillStyle=C.label; ctx.font='10px Roboto,sans-serif'; ctx.textAlign='left';
+    volNice.forEach(function(v){
+      var y = volY + volH - (v / (volNice[volNice.length-1]||1)) * volH;
+      if(v===0) y = volY + volH;
+      ctx.fillText(volFmt(v), W-PAD.r+4, y+3);
+    });
+    /* override vy so volume bars use the nice scale (matches labels) */
+    var volScaleMax = volNice[volNice.length-1] || vMax || 1;
+    vy = function(v){ return volY + volH - (v / volScaleMax) * volH; };
+
+    /* candles */
+    slice.forEach(function(d, i){
+      var x  = PAD.l + i*(barW+barGap) + barGap/2;
+      var cx = x + barW/2;
+      var up = d.close >= d.open;
+      var color = up ? '#00B565' : '#FF2C40';
+      var oY = py(d.open), cY = py(d.close), hY = py(d.high), lY = py(d.low);
+      var top = Math.min(oY,cY), bh = Math.max(1, Math.abs(oY-cY));
+
+      /* wick */
+      ctx.strokeStyle = color; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx, hY); ctx.lineTo(cx, lY); ctx.stroke();
+
+      /* body with radius=2 */
+      ctx.fillStyle = color;
+      var r2 = Math.min(2, barW/2, bh/2);
+      ctx.beginPath();
+      ctx.moveTo(x+r2, top);
+      ctx.lineTo(x+barW-r2, top); ctx.arcTo(x+barW,top,x+barW,top+r2,r2);
+      ctx.lineTo(x+barW, top+bh-r2); ctx.arcTo(x+barW,top+bh,x+barW-r2,top+bh,r2);
+      ctx.lineTo(x+r2, top+bh); ctx.arcTo(x,top+bh,x,top+bh-r2,r2);
+      ctx.lineTo(x, top+r2); ctx.arcTo(x,top,x+r2,top,r2);
+      ctx.closePath(); ctx.fill();
+
+      /* volume */
+      var vColor = up ? 'rgba(0,181,101,0.35)' : 'rgba(255,44,64,0.35)';
+      var vTop = vy(d.vol), vBh = Math.max(1, volY+volH-vTop);
+      ctx.fillStyle = vColor;
+      ctx.fillRect(x, vTop, barW, vBh);
+
+      /* x-axis label every ~60px */
+      if(i % Math.max(1, Math.round(60/(barW+barGap))) === 0){
+        ctx.fillStyle=C.label; ctx.font='10px Roboto,sans-serif'; ctx.textAlign='center';
+        ctx.fillText(d.time.slice(5), cx, H-PAD.b+12);
+      }
+    });
+
+    /* MA(9) over global series, only draw the visible portion */
+    var MA_PERIOD = 9;
+    var maGlobal = [];
+    for(var i=0;i<kData.length;i++){
+      if(i < MA_PERIOD-1){ maGlobal.push(null); continue; }
+      var sum=0; for(var j=i-MA_PERIOD+1;j<=i;j++){ sum+=kData[j].close; }
+      maGlobal.push(sum/MA_PERIOD);
+    }
+    ctx.strokeStyle='#3a8af3'; ctx.lineWidth=1.4;
+    ctx.beginPath();
+    var started=false;
+    for(var i=0;i<slice.length;i++){
+      var idx = from + i;
+      var m = maGlobal[idx];
+      if(m==null) continue;
+      var x = PAD.l + i*(barW+barGap) + barGap/2 + barW/2;
+      var y = py(m);
+      if(!started){ ctx.moveTo(x,y); started=true; } else { ctx.lineTo(x,y); }
+    }
+    if(started) ctx.stroke();
+    var maNow = maGlobal[kData.length-1];
+
+    /* Header: BTCUSD · TF  O.. H.. L.. C..  + MA line */
+    var sym = (document.getElementById('chartSym')&&document.getElementById('chartSym').textContent) || 'BTCUSD';
+    var tf  = (typeof currentIV!=='undefined' && currentIV) || '15';
+    /* Pick the hovered bar if crosshair is inside the chart, else the latest */
+    var hoverIdx = -1;
+    if(crossX >= PAD.l && crossX <= W-PAD.r && crossY >= PAD.t && crossY <= H-PAD.b){
+      var hi = Math.floor((crossX - PAD.l) / (barW + barGap));
+      if(hi >= 0 && hi < slice.length) hoverIdx = from + hi;
+    }
+    var live = (hoverIdx>=0) ? kData[hoverIdx] : kData[kData.length-1];
+    var maAtHeader = (hoverIdx>=0) ? maGlobal[hoverIdx] : maNow;
+    if(live){
+      var dec = live.close>1000?2:4;
+      var fmt = function(v){return v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});};
+      var upBar = live.close>=live.open;
+      var ohlcColor = upBar?'#00B565':'#FF2C40';
+      ctx.font='600 13px Roboto,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      var hx = PAD.l + 4, hy = PAD.t + 12;
+      ctx.fillStyle = C.label; ctx.fillText(sym, hx, hy);
+      var symW = ctx.measureText(sym).width;
+      ctx.font='400 12px Roboto,sans-serif';
+      ctx.fillStyle = C.label;
+      ctx.fillText(' · '+tf, hx+symW, hy);
+      var dotW = ctx.measureText(' · '+tf).width;
+      var cursorX = hx+symW+dotW+10;
+      var pairs = [['O',live.open],['H',live.high],['L',live.low],['C',live.close]];
+      pairs.forEach(function(p){
+        ctx.fillStyle = C.label;
+        ctx.font='400 12px Roboto,sans-serif';
+        ctx.fillText(p[0], cursorX, hy);
+        var lblW = ctx.measureText(p[0]).width;
+        ctx.fillStyle = ohlcColor;
+        ctx.font='600 12px Roboto,sans-serif';
+        var num = fmt(p[1]);
+        ctx.fillText(num, cursorX + lblW + 2, hy);
+        cursorX += lblW + 2 + ctx.measureText(num).width + 12;
+      });
+      /* MA line */
+      var hy2 = hy + 16;
+      ctx.font='400 12px Roboto,sans-serif'; ctx.fillStyle = C.label;
+      ctx.fillText('MA '+MA_PERIOD+' close 0', hx, hy2);
+      var maLblW = ctx.measureText('MA '+MA_PERIOD+' close 0').width;
+      if(isFinite(maAtHeader)){
+        ctx.fillStyle = '#3a8af3';
+        ctx.font='600 12px Roboto,sans-serif';
+        ctx.fillText(fmt(maAtHeader), hx + maLblW + 8, hy2);
+      }
+    }
+
+    /* bid/ask price lines */
+    var lastClose = kData[kData.length-1] && kData[kData.length-1].close;
+    if(isFinite(lastClose)){
+      var spread = (typeof RP_SPREAD!=='undefined') ? RP_SPREAD : 1.5;
+      var bid = lastClose - spread/2;
+      var ask = lastClose + spread/2;
+      var bidOn = !!document.querySelector('[data-line="bid"].checked');
+      var askOn = !!document.querySelector('[data-line="ask"].checked');
+      var yAsk = py(ask), yBid = py(bid);
+      var labelH = 16, gap = 2;
+      var labelYAsk = yAsk, labelYBid = yBid;
+      var lineYAsk = yAsk, lineYBid = yBid;
+      if(bidOn && askOn){
+        if(lineYBid - lineYAsk < gap){
+          var midL = (lineYAsk + lineYBid)/2;
+          lineYAsk = midL - gap/2;
+          lineYBid = midL + gap/2;
+        }
+        var minSep = labelH + gap;
+        if(labelYBid - labelYAsk < minSep){
+          var midLb = (labelYAsk + labelYBid)/2;
+          labelYAsk = midLb - minSep/2;
+          labelYBid = midLb + minSep/2;
+        }
+      }
+      function drawPriceLine(price,color,label,lineY,labelY){
+        lineY = Math.max(chartY, Math.min(chartY+chartH, lineY));
+        labelY = Math.max(chartY+labelH/2, Math.min(chartY+chartH-labelH/2, labelY));
+        ctx.setLineDash([4,3]);
+        ctx.strokeStyle = color; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(PAD.l, lineY); ctx.lineTo(W-PAD.r, lineY); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = color;
+        ctx.fillRect(W-PAD.r+1, labelY-labelH/2, PAD.r-2, labelH);
+        ctx.fillStyle = '#fff'; ctx.font='10px Roboto,sans-serif'; ctx.textAlign='left';
+        ctx.fillText(label+' '+price.toFixed(price>1000?2:4), W-PAD.r+4, labelY+4);
+      }
+      if(bidOn) drawPriceLine(bid,'#ff2c40','Bid',lineYBid,labelYBid);
+      if(askOn) drawPriceLine(ask,'#00b565','Ask',lineYAsk,labelYAsk);
+    }
+    /* crosshair */
+    if(crossX >= PAD.l && crossX <= W-PAD.r && crossY >= PAD.t && crossY <= H-PAD.b){
+      ctx.setLineDash([3,3]);
+      ctx.strokeStyle = C.crosshair; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(crossX, PAD.t); ctx.lineTo(crossX, H-PAD.b); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(PAD.l, crossY); ctx.lineTo(W-PAD.r, crossY); ctx.stroke();
+      ctx.setLineDash([]);
+      /* price label */
+      var cp = pMin + (1-(crossY-chartY)/chartH)*pRange;
+      if(cp>pMin && cp<pMax){
+        ctx.fillStyle=C.priceLabelBg; ctx.fillRect(W-PAD.r+1, crossY-8, PAD.r-2, 16);
+        ctx.fillStyle=C.priceLabelTxt; ctx.font='10px Roboto,sans-serif'; ctx.textAlign='left';
+        ctx.fillText(cp.toFixed(cp>1000?2:4), W-PAD.r+4, crossY+4);
+      }
+    }
+  }
+
+  function drawLoading(){
+    ctx = ctx || cvs.getContext('2d');
+    ctx.fillStyle='#7a8699'; ctx.font='13px Roboto,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Loading…', W/2, H/2);
+  }
+
+  async function loadData(){
+    var iv = IV_MAP[currentIV]||'1d';
+    try{
+      var r = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval='+iv+'&limit=300');
+      var raw = await r.json();
+      kData = raw.map(function(k){
+        return { time:new Date(k[0]).toLocaleDateString('en-CA'),
+          open:+k[1], high:+k[2], low:+k[3], close:+k[4], vol:+k[5] };
+      });
+      offset = Math.max(0, kData.length - visibleBars());
+      draw();
+      if(kData.length) updateLivePrices(kData[kData.length-1].close);
+      connectWS(iv);
+    }catch(e){
+      kData = makeMock();
+      offset = Math.max(0, kData.length - visibleBars());
+      draw();
+      if(kData.length) updateLivePrices(kData[kData.length-1].close);
+    }
+  }
+
+  function connectWS(iv){
+    if(ws){ try{ws.close();}catch(e){} }
+    ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_'+iv);
+    ws.onmessage = function(e){
+      var k = JSON.parse(e.data).k;
+      var bar = { time:new Date(k.t).toLocaleDateString('en-CA'),
+        open:+k.o, high:+k.h, low:+k.l, close:+k.c, vol:+k.v };
+      if(kData.length && kData[kData.length-1].time===bar.time)
+        kData[kData.length-1]=bar;
+      else kData.push(bar);
+      draw();
+      updateLivePrices(bar.close);
+    };
+  }
+  /* Spread in price units; integer-pip display uses spread*10 */
+  var RP_SPREAD = 1.5;
+  function fmtPrice(v){
+    return v.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1});
+  }
+  function fmtPrice2(v){
+    return v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function updateCoMain(){
+    var last = kData[kData.length-1];
+    if(!last) return;
+    var diff = last.close - last.open;
+    var pct  = last.open ? (diff/last.open)*100 : 0;
+    var sign = diff>=0?'+':'';
+    var pm = document.getElementById('coPm');
+    var pc = document.getElementById('coPc');
+    if(pm){
+      pm.textContent = fmtPrice2(last.close);
+      pm.classList.toggle('down', diff<0);
+    }
+    if(pc){
+      pc.textContent = sign+fmtPrice2(diff)+'  '+sign+pct.toFixed(2)+'%';
+      pc.classList.toggle('down', diff<0);
+    }
+    var setTxt=function(id,v){var el=document.getElementById(id);if(el)el.textContent=fmtPrice2(v);};
+    setTxt('coOpen', last.open);
+    setTxt('coHigh', last.high);
+    setTxt('coLow',  last.low);
+    setTxt('coClose',last.close);
+    var t = document.getElementById('coTrading');
+    if(t){
+      var d = new Date();
+      var pad=function(n){return String(n).padStart(2,'0');};
+      var off = -d.getTimezoneOffset()/60;
+      var gmt = 'GMT'+(off>=0?'+':'')+off;
+      t.textContent = pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+' '+gmt;
+    }
+  }
+  function updateLivePrices(mid){
+    if(!isFinite(mid)) return;
+    var sell = mid - RP_SPREAD/2;
+    var buy  = mid + RP_SPREAD/2;
+    var sellTxt = fmtPrice(sell), buyTxt = fmtPrice(buy);
+    var rpSell = document.querySelector('.rp-sell .rp-sv');
+    var rpBuy  = document.querySelector('.rp-buy .rp-sv');
+    var rpSpread = document.querySelector('.rp-spread');
+    if(rpSell) rpSell.textContent = sellTxt;
+    if(rpBuy)  rpBuy.textContent  = buyTxt;
+    if(rpSpread) rpSpread.textContent = Math.round(RP_SPREAD*10);
+    var obSell = document.querySelector('#obBar .ob-sell .ob-p');
+    var obBuy  = document.querySelector('#obBar .ob-buy  .ob-p');
+    if(obSell) obSell.textContent = sellTxt;
+    if(obBuy)  obBuy.textContent  = buyTxt;
+    var obLots = document.querySelector('#obBar .ob-mid-v');
+    var vol = document.getElementById('volumeInput');
+    if(obLots && vol){
+      var v = parseFloat(vol.value);
+      obLots.textContent = isNaN(v)?'0.00':v.toFixed(2);
+    }
+    /* Slider — position in current bar's [low, high] range */
+    var last = kData[kData.length-1];
+    if(last){
+      var rng = last.high - last.low;
+      var pct = rng>0 ? Math.max(0,Math.min(100,((mid-last.low)/rng)*100)) : 50;
+      var g = document.getElementById('rpTrackGreen');
+      var r = document.getElementById('rpTrackRed');
+      if(g) g.style.width = pct + '%';
+      if(r) r.style.width = (100 - pct) + '%';
+      /* Countdown — pips change vs current bar's open */
+      var diff = mid - last.open;
+      var pips = Math.round(diff * 10);
+      var cd = document.getElementById('rpCountdown');
+      if(cd){
+        cd.textContent = (pips>=0?'+':'') + pips;
+        cd.classList.toggle('up', pips>0);
+        cd.classList.toggle('down', pips<0);
+      }
+    }
+    updateCoMain();
+  }
+  /* Mirror Volume input → obBar lots immediately */
+  document.addEventListener('input',function(e){
+    if(e.target && e.target.id==='volumeInput'){
+      var obLots = document.querySelector('#obBar .ob-mid-v');
+      var v = parseFloat(e.target.value);
+      if(obLots) obLots.textContent = isNaN(v)?'0.00':v.toFixed(2);
+    }
+  });
+
+  function makeMock(){
+    var out=[]; var p=94000;
+    var now=new Date();
+    for(var i=299;i>=0;i--){
+      var d=new Date(now); d.setDate(d.getDate()-i);
+      var o=p+(Math.random()-0.48)*400;
+      var c=o+(Math.random()-0.48)*600;
+      out.push({ time:d.toLocaleDateString('en-CA'),
+        open:+o.toFixed(2), high:+(Math.max(o,c)+Math.random()*200).toFixed(2),
+        low:+(Math.min(o,c)-Math.random()*200).toFixed(2), close:+c.toFixed(2),
+        vol:+(Math.random()*800+100).toFixed(2) });
+      p=c;
+    }
+    return out;
+  }
+
+  window.switchTf3 = function(el){
+    document.querySelectorAll('.tf3-btn').forEach(function(x){x.classList.remove('active');});
+    el.classList.add('active');
+    currentIV = el.textContent.trim().split(/\s/)[0];
+    kData=[];
+    loadData();
+  };
+
+  window.switchRange = function(el){
+    document.querySelectorAll('.cc-range-btn').forEach(function(x){x.classList.remove('active');});
+    el.classList.add('active');
+    var label = el.textContent.trim();
+    // map range label to IV_MAP key
+    var rangeToKey = {'1d':'1d','5d':'5d','1m':'1m_r','3m':'3m','6m':'6m','1y':'1y','5y':'5y','All':'All'};
+    currentIV = rangeToKey[label] || '1d';
+    kData=[];
+    loadData();
+  };
+
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded', setup);
+  else
+    setup();
+})();
+
+/* ── Interactions ───────────────────────────────── */
+function toggleWlSettings(e){
+  e.stopPropagation();
+  document.getElementById('wlSettingsDrawer').classList.toggle('open');
+}
+function togglePbSettings(e){
+  e.stopPropagation();
+  var d=document.getElementById('pbSettingsDrawer');
+  var btn=document.getElementById('pbSettingsBtn');
+  if(!d||!btn)return;
+  if(d.classList.contains('open')){d.classList.remove('open');return;}
+  d.classList.add('open');
+  /* show then measure */
+  var br=btn.getBoundingClientRect();
+  var dw=d.offsetWidth, dh=d.offsetHeight;
+  var left=Math.max(8, br.right - dw);
+  var top=br.top - dh - 8;
+  if(top<8) top=Math.min(window.innerHeight-dh-8, br.bottom+8);
+  d.style.left=left+'px';
+  d.style.top=top+'px';
+}
+function togglePbs(e,el){
+  e.stopPropagation();
+  if(el.classList.contains('locked'))return;
+  el.classList.toggle('checked');
+}
+function setPbGrouping(mode,e){
+  e.stopPropagation();
+  document.getElementById('pbGroupBtn').classList.toggle('active',mode==='group');
+  document.getElementById('pbUngroupBtn').classList.toggle('active',mode==='ungroup');
+}
+function togglePbCloseMenu(e){
+  e.stopPropagation();
+  var m=document.getElementById('pbCloseMenu');
+  var btn=document.getElementById('pbCloseAllBtn');
+  if(!m||!btn)return;
+  if(m.classList.contains('open')){m.classList.remove('open');return;}
+  m.classList.add('open');
+  var br=btn.getBoundingClientRect();
+  var mw=m.offsetWidth, mh=m.offsetHeight;
+  var left=Math.max(8, br.right - mw);
+  var top=br.top - mh - 6;
+  if(top<8) top=Math.min(window.innerHeight-mh-8, br.bottom+6);
+  m.style.left=left+'px';
+  m.style.top=top+'px';
+}
+function pbCloseAction(mode,e){
+  e.stopPropagation();
+  document.getElementById('pbCloseMenu').classList.remove('open');
+  /* hook for actual close logic */
+}
+document.addEventListener('click',function(e){
+  var m=document.getElementById('pbCloseMenu');
+  if(m && !e.target.closest('#pbCloseAllBtn')) m.classList.remove('open');
+});
+document.addEventListener('click',function(e){
+  var d=document.getElementById('pbSettingsDrawer');
+  if(d && !e.target.closest('#pbSettingsBtn')) d.classList.remove('open');
+});
+function toggleWls(e,el){
+  e.stopPropagation();
+  if(el.classList.contains('locked'))return;
+  el.classList.toggle('checked');
+}
+document.addEventListener('click',function(e){
+  var d=document.getElementById('wlSettingsDrawer');
+  if(d && !e.target.closest('#wlSettingsBtn')) d.classList.remove('open');
+});
+var WL_DATA = {
+  'Watchlist':[
+    {sym:'XAUUSD',  name:'Gold/US Dollar',          sell:'2,393.893',  spread:'12',  buy:'2,393.913',  chg:'+12.02%', up:true},
+    {sym:'BTCUSD',  name:'Bitcoin',                 sell:'110,168.09', spread:'1',   buy:'110,762.98', chg:'+2.16%',  up:true},
+    {sym:'EURUSD',  name:'Euro/US Dollar',          sell:'1.0824',     spread:'2',   buy:'1.0826',     chg:'-0.18%',  up:false},
+    {sym:'ETHUSD',  name:'Ethereum',                sell:'3,492.55',   spread:'5',   buy:'3,493.05',   chg:'+1.42%',  up:true},
+    {sym:'SOLUSD',  name:'Solana',                  sell:'177.40',     spread:'8',   buy:'177.60',     chg:'+0.25%',  up:true},
+    {sym:'GBPJPY',  name:'British Pound/Japanese Yen', sell:'195.842', spread:'18',  buy:'195.860',    chg:'-0.42%',  up:false},
+  ],
+  'Indices':[
+    {sym:'US500',     name:'S&P 500 Index',           sell:'5,627.45',  spread:'3',  buy:'5,627.75',  chg:'+0.62%',  up:true},
+    {sym:'US30',      name:'Dow Jones 30',            sell:'41,028.5',  spread:'4',  buy:'41,032.5',  chg:'+0.31%',  up:true},
+    {sym:'NAS100',    name:'NASDAQ 100',              sell:'19,562.4',  spread:'5',  buy:'19,567.4',  chg:'+0.88%',  up:true},
+    {sym:'GER40',     name:'DAX 40',                  sell:'18,729.1',  spread:'6',  buy:'18,735.1',  chg:'-0.21%',  up:false},
+    {sym:'UK100',     name:'FTSE 100',                sell:'8,201.55',  spread:'3',  buy:'8,204.55',  chg:'+0.14%',  up:true},
+    {sym:'JPN225',    name:'Nikkei 225',              sell:'38,492.0',  spread:'10', buy:'38,502.0',  chg:'-0.55%',  up:false},
+    {sym:'HK50',      name:'Hang Seng',               sell:'17,824.6',  spread:'12', buy:'17,836.6',  chg:'+1.04%',  up:true},
+    {sym:'AUS200',    name:'ASX 200',                 sell:'8,012.40',  spread:'5',  buy:'8,017.40',  chg:'+0.27%',  up:true},
+    {sym:'FRA40',     name:'CAC 40',                  sell:'7,548.20',  spread:'6',  buy:'7,554.20',  chg:'-0.18%',  up:false},
+  ],
+  'Forex':[
+    {sym:'EURUSD',  name:'Euro/US Dollar',           sell:'1.08245',   spread:'2',  buy:'1.08265',   chg:'-0.18%',  up:false},
+    {sym:'GBPUSD',  name:'British Pound/US Dollar',  sell:'1.27310',   spread:'3',  buy:'1.27340',   chg:'+0.22%',  up:true},
+    {sym:'USDJPY',  name:'US Dollar/Japanese Yen',   sell:'149.842',   spread:'2',  buy:'149.862',   chg:'+0.41%',  up:true},
+    {sym:'AUDUSD',  name:'Australian Dollar/USD',    sell:'0.65820',   spread:'2',  buy:'0.65840',   chg:'-0.32%',  up:false},
+    {sym:'USDCAD',  name:'US Dollar/Canadian Dollar',sell:'1.36450',   spread:'3',  buy:'1.36480',   chg:'+0.15%',  up:true},
+    {sym:'USDCHF',  name:'US Dollar/Swiss Franc',    sell:'0.88420',   spread:'2',  buy:'0.88440',   chg:'-0.05%',  up:false},
+    {sym:'NZDUSD',  name:'NZ Dollar/US Dollar',      sell:'0.59812',   spread:'3',  buy:'0.59842',   chg:'-0.27%',  up:false},
+    {sym:'EURGBP',  name:'Euro/British Pound',       sell:'0.84982',   spread:'2',  buy:'0.85002',   chg:'-0.40%',  up:false},
+    {sym:'EURJPY',  name:'Euro/Japanese Yen',        sell:'162.225',   spread:'3',  buy:'162.255',   chg:'+0.22%',  up:true},
+    {sym:'GBPJPY',  name:'British Pound/Japanese Yen', sell:'195.842', spread:'18', buy:'195.860',   chg:'-0.42%',  up:false},
+  ],
+  'Crypto':[
+    {sym:'BTCUSD',  name:'Bitcoin',           sell:'110,168.09', spread:'1',  buy:'110,762.98', chg:'+2.16%',  up:true},
+    {sym:'ETHUSD',  name:'Ethereum',          sell:'3,492.55',   spread:'5',  buy:'3,493.05',   chg:'+1.42%',  up:true},
+    {sym:'SOLUSD',  name:'Solana',            sell:'177.40',     spread:'8',  buy:'177.60',     chg:'+0.25%',  up:true},
+    {sym:'XRPUSD',  name:'Ripple',            sell:'0.5821',     spread:'4',  buy:'0.5825',     chg:'+2.33%',  up:true},
+    {sym:'ADAUSD',  name:'Cardano',           sell:'0.4582',     spread:'5',  buy:'0.4587',     chg:'+1.22%',  up:true},
+    {sym:'DOTUSD',  name:'Polkadot',          sell:'7.1245',     spread:'4',  buy:'7.1285',     chg:'+5.55%',  up:true},
+    {sym:'LTCUSD',  name:'Litecoin',          sell:'92.420',     spread:'6',  buy:'92.480',     chg:'+0.81%',  up:true},
+    {sym:'TRXUSD',  name:'TRON',              sell:'0.1542',     spread:'2',  buy:'0.1544',     chg:'-0.79%',  up:false},
+    {sym:'EOSUSD',  name:'EOS',               sell:'0.7821',     spread:'4',  buy:'0.7825',     chg:'-1.31%',  up:false},
+    {sym:'LINKUSD', name:'Chainlink',         sell:'14.852',     spread:'5',  buy:'14.857',     chg:'-1.71%',  up:false},
+  ],
+  'Metals':[
+    {sym:'XAUUSD',  name:'Gold/US Dollar',     sell:'2,393.893',  spread:'12', buy:'2,393.913',  chg:'+0.52%',  up:true},
+    {sym:'XAGUSD',  name:'Silver/US Dollar',   sell:'28.420',     spread:'18', buy:'28.438',     chg:'+0.84%',  up:true},
+    {sym:'XPTUSD',  name:'Platinum/US Dollar', sell:'945.20',     spread:'45', buy:'945.65',     chg:'-0.31%',  up:false},
+    {sym:'XPDUSD',  name:'Palladium/US Dollar',sell:'1,028.50',   spread:'80', buy:'1,029.30',   chg:'-1.22%',  up:false},
+    {sym:'XAUEUR',  name:'Gold/Euro',          sell:'2,210.45',   spread:'14', buy:'2,210.59',   chg:'+0.62%',  up:true},
+    {sym:'XAUAUD',  name:'Gold/Australian Dollar', sell:'3,635.20', spread:'22', buy:'3,635.42', chg:'+0.74%',  up:true},
+  ],
+  'Shares':[
+    {sym:'AAPL.US', name:'Apple Inc.',         sell:'228.40',  spread:'4',  buy:'228.44',  chg:'+1.25%',  up:true},
+    {sym:'MSFT.US', name:'Microsoft Corp.',    sell:'420.18',  spread:'5',  buy:'420.23',  chg:'+0.84%',  up:true},
+    {sym:'NVDA.US', name:'NVIDIA Corp.',       sell:'128.45',  spread:'4',  buy:'128.49',  chg:'+2.42%',  up:true},
+    {sym:'TSLA.US', name:'Tesla Inc.',         sell:'248.20',  spread:'6',  buy:'248.26',  chg:'-1.12%',  up:false},
+    {sym:'AMZN.US', name:'Amazon.com Inc.',    sell:'186.34',  spread:'5',  buy:'186.39',  chg:'+0.55%',  up:true},
+    {sym:'META.US', name:'Meta Platforms',     sell:'528.42',  spread:'6',  buy:'528.48',  chg:'+1.04%',  up:true},
+    {sym:'GOOGL.US',name:'Alphabet Inc.',      sell:'168.74',  spread:'4',  buy:'168.78',  chg:'-0.31%',  up:false},
+    {sym:'NFLX.US', name:'Netflix Inc.',       sell:'692.10',  spread:'8',  buy:'692.18',  chg:'+0.42%',  up:true},
+  ],
+};
+function renderWlRows(tab){
+  var rows = WL_DATA[tab] || [];
+  var isWatch = tab==='Watchlist';
+  var starSrc = isWatch ? 'images/Star - selected.svg' : 'images/rili.svg';
+  var html = rows.map(function(r){
+    return '<div class="mrow" onclick="selectSym(this,\''+r.sym+'\')">'+
+      '<div class="mrow-l">'+
+        '<img src="'+starSrc+'" width="14" height="14" alt="" class="fav-ic" onclick="toggleFav(this)" style="cursor:pointer;"/>'+
+        '<div><span class="sym-n">'+r.sym+'</span><span class="sym-s">'+r.name+'</span></div>'+
+      '</div>'+
+      '<div class="mrow-sell">'+r.sell+'</div>'+
+      '<div class="mrow-spread">'+r.spread+'</div>'+
+      '<div class="mrow-buy">'+r.buy+'</div>'+
+      '<div class="mrow-chg '+(r.up?'up':'dn')+'">'+r.chg+'</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('plRows').innerHTML = html;
+}
+function switchWltab(el){
+  document.querySelectorAll('.wltab').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  renderWlRows(el.textContent.trim());
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var active=document.querySelector('.wltab.active');
+  renderWlRows(active ? active.textContent.trim() : 'Watchlist');
+});
+function toggleFav(el){
+  event.stopPropagation();
+  const isSelected = el.dataset.selected==='1';
+  el.src = isSelected ? 'images/rili.svg' : 'images/Star - selected.svg';
+  el.dataset.selected = isSelected ? '0' : '1';
+}
+
+/* ── ob drag ── */
+(function(){
+  const handle = document.getElementById('obHandle');
+  if(!handle) return;
+  const ob = handle.closest('.ob');
+  let dragging = false, startX, startY, initLeft, initTop;
+  const TN_H = 80;
+
+  handle.style.cursor = 'grab';
+
+  handle.addEventListener('mousedown', function(e){
+    e.preventDefault();
+    dragging = true;
+    handle.style.cursor = 'grabbing';
+    const s = window.innerWidth / 1920;
+    const obRect = ob.getBoundingClientRect();
+    startX = e.clientX;
+    startY = e.clientY;
+    initLeft = obRect.left / s;
+    initTop  = obRect.top;
+    ob.style.left = (initLeft * s) + 'px';
+    ob.style.top  = initTop + 'px';
+    ob.style.transform = 'scale('+s+')';
+    ob.style.transformOrigin = 'top left';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+
+  function onMove(e){
+    if(!dragging) return;
+    const s = window.innerWidth / 1920;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    ob.style.left = (initLeft * s + dx) + 'px';
+    ob.style.top  = Math.max(TN_H * s, initTop + dy) + 'px';
+  }
+
+  function onUp(){
+    dragging = false;
+    handle.style.cursor = 'grab';
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+  }
+})();
+function switchL1(el){
+  document.querySelectorAll('.cc-l1tab').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  const isInfo=el.textContent.trim()==='Info';
+  document.querySelector('.cc-toolbar').style.display=isInfo?'none':'';
+  document.querySelector('.cc-body').style.display=isInfo?'none':'';
+  const info=document.getElementById('ccInfoPanel');
+  if(isInfo)info.classList.add('active');else info.classList.remove('active');
+}
+function switchTf3(el){document.querySelectorAll('.tf3-btn').forEach(x=>x.classList.remove('active'));el.classList.add('active');}
+function toggleIndIc(el){
+  const isActive=el.classList.contains('active');
+  document.querySelectorAll('.cc-ind-ic').forEach(x=>{x.classList.remove('active');const d=x.querySelector('.cc-ind-dropdown');if(d)d.classList.remove('open');});
+  if(!isActive){
+    el.classList.add('active');
+    const dd=el.querySelector('.cc-ind-dropdown');
+    if(dd)dd.classList.add('open');
+  }
+}
+function toggleChk(el){
+  event.stopPropagation();
+  const isChecked=el.classList.contains('checked');
+  el.classList.toggle('checked',!isChecked);
+  const img=el.querySelector('.cc-chk-box');
+  img.src=!isChecked?'images/Square Check Selected.svg':'images/Square Not selected.svg';
+  el.querySelector('.cc-chk-txt').style.color=!isChecked?'#0a36c7':'#282d34';
+  if(typeof window.tvRedraw==='function') window.tvRedraw();
+}
+function selectChartType(el,e){
+  e.stopPropagation();
+  el.closest('.cc-ind-dropdown').querySelectorAll('.cc-ind-item').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.cc-ind-ic')){
+    document.querySelectorAll('.cc-ind-ic').forEach(x=>{x.classList.remove('active');const d=x.querySelector('.cc-ind-dropdown');if(d)d.classList.remove('open');});
+  }
+});
+function switchTf(el){document.querySelectorAll('.tf-btn').forEach(x=>x.classList.remove('active'));el.classList.add('active');}
+function switchOtab(el,type){
+  document.querySelectorAll('.rotab').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  var m=document.getElementById('fldMarket'),l=document.getElementById('fldLimit'),s=document.getElementById('fldStop');
+  if(m)m.style.display=type==='market'?'':'none';
+  if(l)l.style.display=type==='limit'?'':'none';
+  if(s)s.style.display=type==='stop'?'':'none';
+}
+function decreaseLimitPrice(){var el=document.getElementById('limitPriceInput');el.value=(parseFloat(el.value)-parseFloat(el.step||0.001)).toFixed(3);}
+function increaseLimitPrice(){var el=document.getElementById('limitPriceInput');el.value=(parseFloat(el.value)+parseFloat(el.step||0.001)).toFixed(3);}
+function switchPtab(el){
+  document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  const tabText=el.textContent.trim();
+  const pbRows=document.getElementById('pbRows');
+  const pbHdr=document.getElementById('pbHdr');
+  const pbRpanel=document.getElementById('pbRpanel');
+
+  if(tabText.includes('Positions')){
+    pbRows.innerHTML=`
+      <div class="prow"><div class="pd pd-sym"><span class="sym-badge">Sell</span><span>BTCUSD</span></div><div class="pd pd-vol">0.1</div><div class="pd pd-entry">30,374.80</div><div class="pd pd-cur">30,500.00</div><div class="pd pd-pnl pnl-pos">+12,123.33</div><div class="pd pd-chg">0.00 USD</div><div class="pd pd-time">18/12/2024 04:49:51</div><div class="pd pd-ord">12345634</div><div class="pd pd-tpsl">—</div><div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div><div class="pd pd-netpnl pnl-pos">+2,023.33</div></div>
+      <div class="prow"><div class="pd pd-sym"><span class="sym-badge buy">Buy</span><span>ETHUSD</span></div><div class="pd pd-vol">0.1</div><div class="pd pd-entry">2,393.89</div><div class="pd pd-cur">2,395.12</div><div class="pd pd-pnl pnl-pos">+12,123.33</div><div class="pd pd-chg">0.00 USD</div><div class="pd pd-time">18/12/2024 04:49:51</div><div class="pd pd-ord">12345635</div><div class="pd pd-tpsl">—</div><div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div><div class="pd pd-netpnl pnl-pos">+2,023.33</div></div>
+      <div class="prow"><div class="pd pd-sym"><span class="sym-badge">Sell</span><span>XAUUSD</span></div><div class="pd pd-vol">0.1</div><div class="pd pd-entry">3,327.50</div><div class="pd pd-cur">3,328.00</div><div class="pd pd-pnl pnl-neg">-500.00</div><div class="pd pd-chg">0.00 USD</div><div class="pd pd-time">03/02 12:34:21</div><div class="pd pd-ord">12345636</div><div class="pd pd-tpsl">—</div><div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div><div class="pd pd-netpnl pnl-neg">-500.00</div></div>
+      <div class="prow"><div class="pd pd-sym"><span class="sym-badge buy">Buy</span><span>XRPUSD</span></div><div class="pd pd-vol">0.1</div><div class="pd pd-entry">1.2880</div><div class="pd pd-cur">1.2920</div><div class="pd pd-pnl pnl-pos">+12,123.33</div><div class="pd pd-chg">0.00 USD</div><div class="pd pd-time">03/02 12:34:21</div><div class="pd pd-ord">12345637</div><div class="pd pd-tpsl">—</div><div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div><div class="pd pd-netpnl pnl-pos">+2,023.33</div></div>
+      <div class="prow"><div class="pd pd-sym"><span class="sym-badge buy">Buy</span><span>SOLUSD</span></div><div class="pd pd-vol">0.1</div><div class="pd pd-entry">177.40</div><div class="pd pd-cur">177.60</div><div class="pd pd-pnl pnl-pos">+12,123.33</div><div class="pd pd-chg">0.00 USD</div><div class="pd pd-time">03/02 12:34:21</div><div class="pd pd-ord">12345638</div><div class="pd pd-tpsl">—</div><div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div><div class="pd pd-netpnl pnl-pos">+2,023.33</div></div>
+      <div class="prow"><div class="pd pd-sym"><span class="sym-badge">Sell</span><span>BTCUSD</span></div><div class="pd pd-vol">0.1</div><div class="pd pd-entry">110,168.09</div><div class="pd pd-cur">110,762.98</div><div class="pd pd-pnl pnl-pos">+2,023.33</div><div class="pd pd-chg">0.00 USD</div><div class="pd pd-time">03/02 12:34:21</div><div class="pd pd-ord">12345639</div><div class="pd pd-tpsl">—</div><div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div><div class="pd pd-netpnl pnl-pos">+2,023.33</div></div>
+    `;
+    pbHdr.style.display='flex';
+    pbRpanel.style.display='block';
+  }else{
+    let emptyText='';
+    if(tabText.includes('Pending Orders'))emptyText='No pending orders';
+    else if(tabText.includes('Position History'))emptyText='No position history';
+    else emptyText='No funding history';
+    pbRows.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;transform:translateY(-40px);"><img src="images/emptystates.png" alt="empty" style="max-width:200px;max-height:200px;"/><div style="color:#7a8699;font-size:14px;">${emptyText}</div></div>`;
+    pbHdr.style.display='none';
+    pbRpanel.style.display='none';
+  }
+}
+function selectSym(el,sym){document.querySelectorAll('.mrow').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('chartSym').textContent=sym;}
+function setSide(side){
+  const btn=document.getElementById('orderBtn');
+  const sellEl=document.querySelector('.rp-sell');
+  const buyEl=document.querySelector('.rp-buy');
+  if(side==='sell'){
+    btn.textContent='Sell';btn.style.background='#ff2c40';
+    sellEl.classList.add('active');buyEl.classList.remove('active');
+    sellEl.style.background='';buyEl.style.background='#f4f5f6';
+    sellEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='';});
+    buyEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='#7a8699';});
+  }else{
+    btn.textContent='Buy';btn.style.background='#00b565';
+    buyEl.classList.add('active');sellEl.classList.remove('active');
+    buyEl.style.background='';sellEl.style.background='#f4f5f6';
+    buyEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='';});
+    sellEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='#7a8699';});
+  }
+}
+function toggleTpsl(){
+  const cb=document.getElementById('tpslCb');
+  const inputs=document.getElementById('tpslInputs');
+  const on=cb.classList.toggle('checked');
+  cb.innerHTML=on?'<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
+  inputs.style.display=on?'flex':'none';
+}
+function decreaseStopPrice(){var el=document.getElementById('stopPriceInput');el.value=(parseFloat(el.value)-parseFloat(el.step||0.001)).toFixed(3);}
+function increaseStopPrice(){var el=document.getElementById('stopPriceInput');el.value=(parseFloat(el.value)+parseFloat(el.step||0.001)).toFixed(3);}
+function syncObLotsToVolume(el){
+  var v=parseFloat(el.value);
+  var vol=document.getElementById('volumeInput');
+  if(vol){vol.value=isNaN(v)?'':v.toFixed(2);}
+}
+function decreaseVolume(){var el=document.getElementById('volumeInput');el.value=Math.max(0,(parseFloat(el.value)||0)-0.01).toFixed(2);el.dispatchEvent(new Event('input',{bubbles:true}));}
+function increaseVolume(){var el=document.getElementById('volumeInput');el.value=((parseFloat(el.value)||0)+0.01).toFixed(2);el.dispatchEvent(new Event('input',{bubbles:true}));}
+function toggleUnitDropdown(){var d=document.getElementById('unitDropdown');d.style.display=d.style.display==='none'?'block':'none';}
+function selectUnit(u){document.querySelector('.rp-unit-drop').childNodes[0].textContent=u+' ';document.getElementById('unitDropdown').style.display='none';}
+(function initRangeSlider(){
+  var track=document.getElementById('rangeTrack');
+  var fill=document.getElementById('rangeFill');
+  var thumb=document.getElementById('rangeThumb');
+  var dots=document.querySelectorAll('.rp-range-dot');
+  var ticks=document.querySelectorAll('.rp-range-tick');
+  if(!track||!fill||!thumb)return;
+  function setVal(pct){
+    pct=Math.max(0,Math.min(100,pct));
+    fill.style.width=pct+'%';
+    thumb.style.left=pct+'%';
+    var idx=Math.round(pct/25);
+    dots.forEach(function(d,i){d.classList.toggle('active',i<=idx);});
+    ticks.forEach(function(t){t.classList.toggle('filled',pct>=parseFloat(t.dataset.pct));});
+  }
+  track.addEventListener('click',function(e){
+    var r=track.getBoundingClientRect();
+    setVal((e.clientX-r.left)/r.width*100);
+  });
+  thumb.addEventListener('mousedown',function(e){
+    e.preventDefault();
+    function onMove(e){var r=track.getBoundingClientRect();setVal((e.clientX-r.left)/r.width*100);}
+    function onUp(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+  });
+})();
+
+/* ── 新手引导 ───────────────────────────────────── */
+const guideSteps=[
+  {element:'.tn-acct',title:'Switch account',desc:'Click here to display list of your trading accounts. You can switch between trading accounts in the list',spotlight:'images/guide-spotlight.png'},
+  {element:'.mrow',title:'Switch symbol',desc:'Click on the symbol in the list to switch.',spotlight:'images/guide-symbol.png'},
+  {element:'.rp-otabs',title:'Switch order type',desc:'Click here to switch order types.',spotlight:'images/guide-order-tabs.png'},
+  {element:'.rp-sell-btn',title:'Place order',desc:'Click the button to submit your order.',spotlight:'images/guide-sell-button-full.png'},
+  {element:'.pb-tabs',title:'Manage orders',desc:'You can manage your positions, pending orders, and view your trading history in this area.',spotlight:'images/guide-positions-tabs.png'},
+];
+let currentStep=0;
+
+function showGuide(){
+  if(currentStep>=guideSteps.length){completeGuide();return;}
+  const step=guideSteps[currentStep];
+  const el=document.querySelector(step.element);
+  if(!el){nextGuide();return;}
+  const rect=el.getBoundingClientRect();
+  const overlay=document.getElementById('guideOverlay');
+  const spotlight=document.getElementById('guideSpotlight');
+  const tooltip=document.getElementById('guideTooltip');
+  document.getElementById('guideTitle').textContent=step.title;
+  document.getElementById('guideDesc').textContent=step.desc;
+  document.getElementById('guideProgress').textContent=currentStep+1;
+  overlay.classList.add('active');
+  document.body.style.overflow='hidden';
+  spotlight.src=step.spotlight;
+  spotlight.style.display='block';
+  spotlight.style.left=rect.left+'px';
+  spotlight.style.top=rect.top+'px';
+  spotlight.style.width=rect.width+'px';
+  spotlight.style.height=rect.height+'px';
+  if(currentStep===4){
+    const tabEl=document.querySelector('.pb-tabs');
+    if(tabEl){
+      const tabRect=tabEl.getBoundingClientRect();
+      tooltip.style.left='40px';
+      tooltip.style.top=(tabRect.bottom+12)+'px';
+    }
+    document.getElementById('guideBtnNext').textContent='Done';
+  }else{
+    const tooltipWidth=320*0.8;
+    const tooltipX=rect.right-tooltipWidth;
+    const tooltipY=rect.bottom+12;
+    tooltip.style.left=Math.max(20,tooltipX)+'px';
+    tooltip.style.top=tooltipY+'px';
+    document.getElementById('guideBtnNext').textContent='Next';
+  }
+  tooltip.style.display='block';
+}
+function nextGuide(){currentStep++;showGuide();}
+function skipGuide(){completeGuide();}
+function completeGuide(){
+  document.getElementById('guideOverlay').classList.remove('active');
+  document.getElementById('guideSpotlight').style.display='none';
+  document.getElementById('guideTooltip').style.display='none';
+  document.body.style.overflow='auto';
+  localStorage.setItem('guideCompleted','true');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    localStorage.removeItem('guideCompleted');
+    showGuide();
+  },500);
+});
+</script>
+<script src="theme.js"></script>
+
+
+<script>
+function openOct(){document.getElementById('octOverlay').classList.add('show');}
+function closeOct(){document.getElementById('octOverlay').classList.remove('show');var ob=document.getElementById('obBar');if(ob)ob.style.zIndex='100';}
+function toggleOctCheck(){var cb=document.getElementById('octCheckbox');var checked=cb.src.includes('Selected');cb.src=checked?'images/Square Not selected.svg':'images/Square Check Selected.svg';}
+function getOrCreateToastContainer(){var c=document.querySelector('.order-toast-container');if(!c){c=document.createElement('div');c.className='order-toast-container';document.body.appendChild(c);}return c;}
+function createToast(title,desc){var t=document.createElement('div');t.className='order-toast';t.innerHTML='<div class="order-toast-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="order-toast-content"><div class="order-toast-text">'+title+'</div>'+(desc?'<div class="order-toast-desc">'+desc+'</div>':'')+'</div><div class="order-toast-close" onclick="this.closest(\'.order-toast\').remove()">×</div>';return t;}
+function showOrderToast(){var container=getOrCreateToastContainer();var toast1=createToast('Order submitted');container.appendChild(toast1);setTimeout(function(){toast1.remove();},4000);setTimeout(function(){toast1.classList.add('move-up');var toast2=createToast('Order filled','Sell 0.01 lots XAUUSD, at 4556.25.');container.appendChild(toast2);setTimeout(function(){toast2.remove();},4000);},2000);}
+document.addEventListener('DOMContentLoaded',function(){var btn=document.querySelector('.rp-sell-btn');if(btn)btn.addEventListener('click',showOrderToast);});
+document.querySelector('.ob-sell').addEventListener('click',openOct);
+document.querySelector('.ob-buy').addEventListener('click',openOct);
+document.getElementById('octOverlay').addEventListener('click',function(e){if(e.target===this)closeOct();});
+
+/* Chart Settings modal */
+function openChartSettings(e){
+  if(e){e.stopPropagation();}
+  document.getElementById('csOverlay').classList.add('show');
+}
+function closeChartSettings(){
+  document.getElementById('csOverlay').classList.remove('show');
+}
+function csSwitchTab(el){
+  document.querySelectorAll('.cs-tab').forEach(function(x){x.classList.remove('active');});
+  el.classList.add('active');
+}
+function csToggleCb(el){
+  var on=el.classList.toggle('checked');
+  el.innerHTML=on?'<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
+}
+document.getElementById('csOverlay').addEventListener('click',function(e){if(e.target===this)closeChartSettings();});
+
+/* Color picker */
+var CS_PALETTE=[
+  ['#FFFFFF','#D6D6D6','#B6B6B6','#969696','#787878','#5A5A5A','#3D3D3D','#262626','#0D0D0D','#000000'],
+  ['#E04A55','#E89039','#F4D738','#56A65A','#2E8775','#3FB6C9','#1F4ED8','#5934C8','#8E3FB0','#C92E64'],
+  ['#F8D5D6','#FCE2C8','#FCEFB6','#D4ECCB','#CDE7DD','#CFEBEF','#D7DEF7','#DAD3F0','#E3D2EB','#F1D2DA'],
+  ['#F3AAB1','#F9C589','#F8DD79','#A9D6A6','#9DD0BC','#A0D8E0','#AEBCEF','#B5A7E1','#C8A5D7','#E4A5B5'],
+  ['#EE7F87','#F4A856','#F4CB47','#7BBF7B','#6CB99A','#71C5D1','#7E9CE6','#9080D2','#AC78C2','#D6788F'],
+  ['#E66874','#F2A340','#F4C92E','#5DA85D','#479B7E','#4FB1C0','#5A82E0','#6F58C2','#9258AE','#C75E7C'],
+  ['#A23A41','#C7752C','#DBA92A','#3F7E3F','#1F5E4D','#2E7A86','#1A3F9C','#3D2B95','#5E2880','#9C2A52'],
+  ['#601B1F','#9C5519','#B58200','#1B4F1E','#093C2F','#175663','#0E1F66','#23156B','#3E1359','#6E1239'],
+];
+function buildColorGrid(){
+  var grid=document.getElementById('csColorGrid');
+  if(!grid||grid.dataset.built)return;
+  CS_PALETTE.forEach(function(row){row.forEach(function(c){
+    var d=document.createElement('div');
+    d.className='cs-cp-c';d.style.background=c;d.dataset.color=c;
+    d.addEventListener('click',function(e){e.stopPropagation();csPickColor(c,d);});
+    grid.appendChild(d);
+  });});
+  grid.dataset.built='1';
+}
+var csCpTarget=null;
+function openColorPicker(e,el){
+  e.stopPropagation();
+  buildColorGrid();
+  csCpTarget=el;
+  var cp=document.getElementById('csColorPicker');
+  cp.style.display='block';
+  var r=el.getBoundingClientRect();
+  var cpW=cp.offsetWidth, cpH=cp.offsetHeight;
+  var x=Math.min(window.innerWidth-cpW-8, r.left);
+  var y=r.bottom+8;
+  if(y+cpH>window.innerHeight-8) y=Math.max(8, r.top-cpH-8);
+  cp.style.left=x+'px';
+  cp.style.top=y+'px';
+  document.querySelectorAll('.cs-cp-c').forEach(function(c){
+    c.classList.toggle('sel', c.dataset.color.toLowerCase()===rgbToHex(el.style.background).toLowerCase());
+  });
+  setOpacity(100);
+}
+function closeColorPicker(){var cp=document.getElementById('csColorPicker');if(cp)cp.style.display='none';csCpTarget=null;}
+function csPickColor(c){
+  if(!csCpTarget)return;
+  csCpTarget.style.background=c;
+  document.querySelectorAll('.cs-cp-c').forEach(function(x){x.classList.toggle('sel',x.dataset.color===c);});
+}
+function rgbToHex(rgb){
+  if(!rgb||rgb.charAt(0)==='#')return rgb||'#000000';
+  var m=rgb.match(/\d+/g);if(!m||m.length<3)return '#000000';
+  return '#'+m.slice(0,3).map(function(n){return (+n).toString(16).padStart(2,'0').toUpperCase();}).join('');
+}
+function setOpacity(pct){
+  pct=Math.max(0,Math.min(100,pct));
+  var fill=document.getElementById('csOpFill');
+  var thumb=document.getElementById('csOpThumb');
+  var input=document.getElementById('csOpInput');
+  var color=csCpTarget?rgbToHex(csCpTarget.style.background):'#26a69a';
+  fill.style.background='linear-gradient(to right, transparent, '+color+')';
+  fill.style.width=pct+'%';
+  thumb.style.left=pct+'%';
+  input.value=Math.round(pct)+'%';
+}
+(function bindOpacity(){
+  var track=document.getElementById('csOpTrack');
+  var input=document.getElementById('csOpInput');
+  if(!track)return;
+  function pctFromX(e){var r=track.getBoundingClientRect();return ((e.clientX-r.left)/r.width)*100;}
+  var dragging=false;
+  track.addEventListener('mousedown',function(e){dragging=true;setOpacity(pctFromX(e));});
+  document.addEventListener('mousemove',function(e){if(dragging)setOpacity(pctFromX(e));});
+  document.addEventListener('mouseup',function(){dragging=false;});
+  input.addEventListener('change',function(){var n=parseInt(input.value)||0;setOpacity(n);});
+})();
+document.addEventListener('click',function(e){
+  var cp=document.getElementById('csColorPicker');
+  if(!cp||cp.style.display==='none')return;
+  if(!cp.contains(e.target) && !(e.target.classList&&e.target.classList.contains('cs-swatch'))) closeColorPicker();
+});
+
+</script>
+
+<!-- One Click Trading Modal -->
+<div class="oct-overlay" id="octOverlay">
+  <div class="oct-modal">
+    <div class="oct-close" onclick="closeOct()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="#7a8699" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="oct-icon-wrap">
+      <img src="images/icon.png" alt="" style="width:80px;height:80px;"/>
+    </div>
+    <div class="oct-title">One Click Trading</div>
+    <div class="oct-body">After enabling One Click Trading, click the "Buy" or "Sell" button on the chart to place a market order instantly. You acknowledge and agree to assume all related risks, including but not limited to potential errors or incomplete information at the time of order submission. Use of this feature constitutes acceptance of the <a href="#">Disclaimer</a>.</div>
+    <div class="oct-check-row" onclick="toggleOctCheck()">
+      <img id="octCheckbox" src="images/Square Not selected.svg" alt="" style="width:16px;height:16px;flex-shrink:0;"/>
+      <span class="oct-check-lbl">Do not show this again</span>
+    </div>
+    <button class="oct-btn" onclick="closeOct()">Got It</button>
+  </div>
+</div>
+
+<!-- Chart Settings Modal -->
+<div class="cs-overlay" id="csOverlay">
+  <div class="cs-modal">
+    <div class="cs-hdr">
+      <span class="cs-title">Settings</span>
+      <div class="cs-close" onclick="closeChartSettings()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="cs-body">
+      <div class="cs-side">
+        <div class="cs-tab active" onclick="csSwitchTab(this)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="10" y1="2" x2="10" y2="18" stroke="#282d34" stroke-width="1.5"/><rect x="6" y="6" width="8" height="6" stroke="#282d34" stroke-width="1.5" fill="none"/></svg>
+          <span>Symbol</span>
+        </div>
+        <div class="cs-tab" onclick="csSwitchTab(this)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="4" y1="6" x2="16" y2="6" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="10" x2="13" y2="10" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="14" x2="16" y2="14" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Status line</span>
+        </div>
+        <div class="cs-tab" onclick="csSwitchTab(this)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 16V4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/><path d="M4 16h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/><path d="M4 16l-2-2M4 16l2-2" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/><path d="M16 16l-2-2M16 16l-2 2" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Scales and lines</span>
+        </div>
+        <div class="cs-tab" onclick="csSwitchTab(this)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 17l4-4 8-8 2 2-8 8-4 4-2-2z" stroke="#282d34" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
+          <span>Canvas</span>
+        </div>
+      </div>
+      <div class="cs-pane">
+        <div class="cs-section-lbl">CANDLES</div>
+        <div class="cs-row">
+          <div class="cs-cb" onclick="csToggleCb(this)"></div>
+          <span class="cs-row-lbl">Color bars based on previous close</span>
+        </div>
+        <div class="cs-row">
+          <div class="cs-cb checked" onclick="csToggleCb(this)"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="cs-row-lbl">Body</span>
+          <div class="cs-swatch-pair">
+            <div class="cs-swatch" style="background:#26a69a;" onclick="openColorPicker(event,this)"></div>
+            <div class="cs-swatch" style="background:#ef5350;" onclick="openColorPicker(event,this)"></div>
+          </div>
+        </div>
+        <div class="cs-row">
+          <div class="cs-cb checked" onclick="csToggleCb(this)"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="cs-row-lbl">Borders</span>
+          <div class="cs-swatch-pair">
+            <div class="cs-swatch" style="background:#26a69a;" onclick="openColorPicker(event,this)"></div>
+            <div class="cs-swatch" style="background:#ef5350;" onclick="openColorPicker(event,this)"></div>
+          </div>
+        </div>
+        <div class="cs-row">
+          <div class="cs-cb checked" onclick="csToggleCb(this)"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="cs-row-lbl">Wick</span>
+          <div class="cs-swatch-pair">
+            <div class="cs-swatch" style="background:#27817b;" onclick="openColorPicker(event,this)"></div>
+            <div class="cs-swatch" style="background:#e53935;" onclick="openColorPicker(event,this)"></div>
+          </div>
+        </div>
+        <div class="cs-section-lbl" style="margin-top:8px;">DATA MODIFICATION</div>
+      </div>
+    </div>
+    <div class="cs-ftr">
+      <button class="cs-template">Template <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      <div class="cs-ftr-r">
+        <button class="cs-btn" onclick="closeChartSettings()">Cancel</button>
+        <button class="cs-btn primary" onclick="closeChartSettings()">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Close All menu -->
+<div class="pb-close-menu" id="pbCloseMenu">
+  <div class="pbcm-item" onclick="pbCloseAction('all',event)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <span>Close all positions</span>
+  </div>
+  <div class="pbcm-item" onclick="pbCloseAction('selected',event)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M5 8l2 2 4-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Close selected positions</span>
+  </div>
+</div>
+
+<!-- Positions Settings Drawer -->
+<div class="pb-settings-drawer" id="pbSettingsDrawer">
+  <div class="pbs-section">Displayed Columns</div>
+  <div class="pbs-row locked"><div class="pbs-cb"></div><span class="pbs-lbl">Symbol</span></div>
+  <div class="pbs-row checked" data-col="vol" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Vol(Lots)</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="entry" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Entry Price</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="cur" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Current Price</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="swap" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Swap</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="time" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Open Time</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="ord" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Order</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="tpsl" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">TP/SL</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row checked" data-col="close" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Close By/Reverse</span><span class="pbs-grip"></span></div>
+  <div class="pbs-row locked"><div class="pbs-cb"></div><span class="pbs-lbl">PnL</span></div>
+  <div class="pbs-row locked"><div class="pbs-cb"></div><span class="pbs-lbl">Close All</span></div>
+  <div class="pbs-section">Hidden Columns</div>
+  <div class="pbs-row" data-col="netpnl" onclick="togglePbs(event,this)"><div class="pbs-cb"></div><span class="pbs-lbl">Net PnL</span></div>
+</div>
+
+<!-- Color Picker -->
+<div class="cs-cp" id="csColorPicker" style="display:none;">
+  <div class="cs-cp-grid" id="csColorGrid"></div>
+  <div class="cs-cp-divider"></div>
+  <div class="cs-cp-add" title="Add custom color"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+  <div class="cs-cp-op-lbl">Opacity</div>
+  <div class="cs-cp-op-row">
+    <div class="cs-cp-op-track" id="csOpTrack">
+      <div class="cs-cp-op-fill" id="csOpFill"></div>
+      <div class="cs-cp-op-thumb" id="csOpThumb" style="left:100%;"></div>
+    </div>
+    <input class="cs-cp-op-input" id="csOpInput" type="text" value="100%"/>
+  </div>
+</div>
+</body>
+</html>
