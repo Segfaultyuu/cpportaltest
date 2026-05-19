@@ -355,6 +355,16 @@
         ${navItem('index.html',   'Home.png',           'Home-selected.png',           'Home',         'Home')}
         ${navItem('account.html', 'Account.png',        'Account-selected.png',        'Account',      'Account')}
         ${navItem('funds.html',   'Funds.png',          'Fund-selected.png',           'Funds',        'Funds')}
+        <a class="nav-item${page === 'trading.html' ? ' active' : ''}" href="trading.html" data-tooltip="Trade">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3,13 8,8 11,11 17,5"/>
+              <polyline points="13,5 17,5 17,9"/>
+            </svg>
+          </span>
+          <span class="nav-label">Trade</span>
+          <span class="nav-tooltip">Trade</span>
+        </a>
         ${navGroup('wallet',      'Wallet.png',         'Wallet-selected.png',         'VT-Wallet',    'VT-Wallet',    'NEW',
             [
               { label: 'Overview',                    href: 'wallet.html'    },
