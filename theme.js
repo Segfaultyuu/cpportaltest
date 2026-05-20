@@ -141,7 +141,7 @@ body.dark-mode .cc-range-cal:hover { background: #26262B; }
 body.dark-mode .cc-range-cal svg path,
 body.dark-mode .cc-range-cal svg rect { stroke: #C2C7D0; }
 body.dark-mode .cc-range-clock { color: #C2C7D0; }
-body.dark-mode .cc-range-r .cc-range-btn.active { color: #ff8a3d; }
+body.dark-mode .cc-range-r .cc-range-btn.active { color: #00F0FF; }
 body.dark-mode .cc-yaxis {
   border-left-color: #2D3033;
 }
