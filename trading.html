@@ -413,6 +413,87 @@ body.dark-mode .pbs-row.checked .pbs-cb{background:#00b565;border-color:#00b565;
 .pd-tpsl{width:140px;display:flex;align-items:center;gap:6px;color:#7a8699;}
 .tpsl-edit{cursor:pointer;flex-shrink:0;}
 .tpsl-edit:hover path{stroke:#0a36c7;}
+/* Indicators Modal */
+.ind-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9100;display:none;align-items:center;justify-content:center;}
+.ind-overlay.show{display:flex;}
+.ind-modal{background:#fff;border-radius:14px;width:560px;max-width:92vw;height:680px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.22);overflow:hidden;}
+.ind-hdr{height:64px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid #e8e9ea;flex-shrink:0;}
+.ind-title{font-size:22px;font-weight:700;color:#282d34;}
+.ind-close{margin-left:auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;color:#282d34;}
+.ind-close:hover{background:#f4f5f6;}
+.ind-search-wrap{height:52px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid #e8e9ea;gap:10px;flex-shrink:0;}
+.ind-search-wrap input{flex:1;border:none;outline:none;font-size:15px;color:#282d34;background:transparent;font-family:inherit;}
+.ind-search-wrap input::placeholder{color:#a2a6b1;}
+.ind-list{flex:1;overflow-y:auto;padding:4px 0;}
+.ind-list-hdr{padding:14px 24px 10px;font-size:12px;font-weight:600;color:#7a8699;letter-spacing:0.4px;}
+.ind-row{padding:14px 24px;font-size:15px;color:#282d34;cursor:pointer;display:flex;align-items:center;gap:10px;}
+.ind-row:hover{background:#f4f5f6;}
+.ind-row.added{color:#7a8699;}
+.ind-row .ind-tag{margin-left:auto;font-size:11px;font-weight:600;color:#0a36c7;background:rgba(10,54,199,.08);padding:2px 8px;border-radius:4px;}
+/* Dark */
+body.dark-mode .ind-overlay{background:rgba(0,0,0,0.65);}
+body.dark-mode .ind-modal{background:#1D1D21;box-shadow:0 12px 48px rgba(0,0,0,0.55);}
+body.dark-mode .ind-hdr,body.dark-mode .ind-search-wrap{border-color:#2D3033;}
+body.dark-mode .ind-title,body.dark-mode .ind-row{color:#FFFFFF;}
+body.dark-mode .ind-close{color:#C2C7D0;}
+body.dark-mode .ind-close:hover{background:#26262B;}
+body.dark-mode .ind-search-wrap input{color:#FFFFFF;}
+body.dark-mode .ind-search-wrap input::placeholder{color:#515867;}
+body.dark-mode .ind-list-hdr{color:#7A8699;}
+body.dark-mode .ind-row:hover{background:#26262B;}
+body.dark-mode .ind-row .ind-tag{color:#00F0FF;background:rgba(0,240,255,.08);}
+/* TP/SL Modal */
+.tpm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9100;display:none;align-items:center;justify-content:center;}
+.tpm-overlay.show{display:flex;}
+.tpm-modal{background:#fff;border-radius:14px;width:540px;max-width:92vw;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.22);overflow:hidden;}
+.tpm-hdr{padding:24px 28px 0;display:flex;align-items:center;}
+.tpm-title{font-size:20px;font-weight:700;color:#282d34;}
+.tpm-close{margin-left:auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;color:#282d34;}
+.tpm-close:hover{background:#f4f5f6;}
+.tpm-sym{padding:18px 28px 0;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:#282d34;}
+.tpm-side{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;font-size:13px;font-weight:600;color:#fff;}
+.tpm-side.sell{background:#ff2c40;}
+.tpm-side.buy{background:#00b565;}
+.tpm-prices{padding:14px 28px 0;display:flex;flex-direction:column;gap:6px;}
+.tpm-prow{display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+.tpm-prow-lbl{color:#7a8699;}
+.tpm-prow-val{color:#282d34;font-weight:700;}
+.tpm-divider{margin:18px 28px 0;border-top:1px solid #e8e9ea;}
+.tpm-section{padding:18px 28px 0;}
+.tpm-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.tpm-section-title{font-size:15px;font-weight:700;color:#282d34;}
+.tpm-toggle{display:flex;align-items:center;gap:4px;font-size:14px;color:#282d34;cursor:pointer;}
+.tpm-row{display:flex;gap:12px;}
+.tpm-input{flex:1;height:48px;background:#f4f5f6;border:1px solid #f4f5f6;border-radius:10px;display:flex;align-items:center;padding:0 14px;}
+.tpm-input:focus-within{border-color:#0a36c7;background:#fff;}
+.tpm-input input{flex:1;border:none;outline:none;background:transparent;font-size:14px;font-weight:500;color:#282d34;font-family:inherit;}
+.tpm-input input::placeholder{color:#a2a6b1;font-weight:400;}
+.tpm-input-stepper{display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid #e0e2e6;color:#7a8699;}
+.tpm-input-stepper svg{cursor:pointer;}
+.tpm-ftr{padding:24px 28px 24px;display:flex;gap:12px;}
+.tpm-btn{flex:1;height:48px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;border:none;}
+.tpm-btn.cancel{background:#f4f5f6;color:#282d34;}
+.tpm-btn.cancel:hover{background:#e8e9ea;}
+.tpm-btn.confirm{background:#0a36c7;color:#fff;}
+.tpm-btn.confirm:hover{background:#0930b0;}
+/* Dark */
+body.dark-mode .tpm-overlay{background:rgba(0,0,0,0.65);}
+body.dark-mode .tpm-modal{background:#1D1D21;box-shadow:0 12px 48px rgba(0,0,0,0.55);}
+body.dark-mode .tpm-title,body.dark-mode .tpm-section-title,body.dark-mode .tpm-toggle{color:#FFFFFF;}
+body.dark-mode .tpm-close{color:#C2C7D0;}
+body.dark-mode .tpm-close:hover{background:#26262B;}
+body.dark-mode .tpm-sym{color:#FFFFFF;}
+body.dark-mode .tpm-prow-lbl{color:#7A8699;}
+body.dark-mode .tpm-prow-val{color:#FFFFFF;}
+body.dark-mode .tpm-divider{border-top-color:#2D3033;}
+body.dark-mode .tpm-input{background:#26262B;border-color:#26262B;}
+body.dark-mode .tpm-input:focus-within{border-color:#00F0FF;background:#1D1D21;}
+body.dark-mode .tpm-input input{color:#FFFFFF;}
+body.dark-mode .tpm-input input::placeholder{color:#515867;}
+body.dark-mode .tpm-input-stepper{border-left-color:#2D3033;color:#7A8699;}
+body.dark-mode .tpm-btn.cancel{background:#26262B;color:#FFFFFF;}
+body.dark-mode .tpm-btn.cancel:hover{background:#34343B;}
+body.dark-mode .tpm-btn.confirm{background:#0a36c7;color:#FFFFFF;}
 .pd-close{width:166px;display:flex;gap:6px;align-items:center;}
 .pd-netpnl{width:100px;}
 .pnl-pos{color:#00b565;}
@@ -439,9 +520,9 @@ body.dark-mode .pbs-row.checked .pbs-cb{background:#00b565;border-color:#00b565;
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#d0d5de;border-radius:4px;}
-.guide-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;display:none;}
+.guide-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:transparent;z-index:9998;display:none;}
 .guide-overlay.active{display:block;overflow:hidden;}
-.guide-spotlight{position:fixed;z-index:9999;display:none;height:auto;max-width:none;}
+.guide-spotlight{position:fixed;z-index:9999;display:none;background:transparent;border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,0.55);pointer-events:none;}
 .guide-tooltip{position:fixed;background:#fff;border-radius:10px;padding:19px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10000;width:320px;font-family:'Roboto',sans-serif;transform:scale(0.8);transform-origin:top left;}
 .guide-tooltip-title{font-size:16px;font-weight:600;color:#282d34;margin-bottom:10px;}
 .guide-tooltip-desc{font-size:11px;font-weight:400;color:#282d34;line-height:1.5;margin-bottom:16px;}
@@ -581,7 +662,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
 </head>
 <body>
 <div class="guide-overlay" id="guideOverlay"></div>
-<img class="guide-spotlight" id="guideSpotlight" src="images/guide-spotlight.png" alt="highlight" />
+<div class="guide-spotlight" id="guideSpotlight"></div>
 <div class="guide-tooltip" id="guideTooltip">
   <div class="guide-tooltip-title" id="guideTitle">Switch account</div>
   <div class="guide-tooltip-desc" id="guideDesc">Click here to display list of your trading accounts. You can switch between trading accounts in the list</div>
@@ -746,7 +827,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       </button>
     </div>
     <div class="cc-inds">
-      <div class="cc-ind-ic" onclick="toggleIndIc(this)" title="View Chart"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.15998" y="2.1601" width="11.68" height="11.68" rx="1.84" stroke="#7A8699" stroke-width="1.12"/><path d="M4.79993 9.5999L6.39993 7.9999L7.99993 9.5999L11.1999 6.3999" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="cc-ind-ic" onclick="openIndicatorsModal(event)" title="Indicators"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.15998" y="2.1601" width="11.68" height="11.68" rx="1.84" stroke="#7A8699" stroke-width="1.12"/><path d="M4.79993 9.5999L6.39993 7.9999L7.99993 9.5999L11.1999 6.3999" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="cc-ind-ic" title="Permission">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.00049 2.15967H12.0005C13.0165 2.15988 13.8403 2.98442 13.8403 4.00049V12.0005C13.8401 13.0164 13.0164 13.8401 12.0005 13.8403H4.00049C2.98441 13.8403 2.15988 13.0165 2.15967 12.0005V4.00049C2.15967 2.98428 2.98429 2.15967 4.00049 2.15967Z" stroke="#7A8699" stroke-width="1.12"/><path d="M7.9999 6.33149L11.0626 6.33141" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.79998 6.3314L5.59995 6.33142" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.79998 9.93149L5.59995 9.93152" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.00005 9.86265L10.974 9.86265" stroke="#7A8699" stroke-width="1.12" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div class="cc-ind-dropdown" id="permissionDropdown">
@@ -1165,7 +1246,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       <div class="pd pd-chg">0.00 USD</div>
       <div class="pd pd-time">18/12/2024 04:49:51</div>
       <div class="pd pd-ord">#84210573</div>
-      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" onclick="openTpslModal(this,event)" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
       <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
     </div>
     <div class="prow">
@@ -1176,7 +1257,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       <div class="pd pd-chg">0.00 USD</div>
       <div class="pd pd-time">18/12/2024 04:49:51</div>
       <div class="pd pd-ord">#19384726</div>
-      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" onclick="openTpslModal(this,event)" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
       <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
     </div>
     <div class="prow">
@@ -1187,7 +1268,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       <div class="pd pd-chg">0.00 USD</div>
       <div class="pd pd-time">03/02 12:34:21</div>
       <div class="pd pd-ord">#62018394</div>
-      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" onclick="openTpslModal(this,event)" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
       <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
     </div>
     <div class="prow">
@@ -1198,7 +1279,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       <div class="pd pd-chg">0.00 USD</div>
       <div class="pd pd-time">03/02 12:34:21</div>
       <div class="pd pd-ord">#47591620</div>
-      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" onclick="openTpslModal(this,event)" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
       <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
     </div>
     <div class="prow">
@@ -1209,7 +1290,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       <div class="pd pd-chg">0.00 USD</div>
       <div class="pd pd-time">03/02 12:34:21</div>
       <div class="pd pd-ord">#73625481</div>
-      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" onclick="openTpslModal(this,event)" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
       <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
     </div>
     <div class="prow">
@@ -1220,15 +1301,15 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
       <div class="pd pd-chg">0.00 USD</div>
       <div class="pd pd-time">03/02 12:34:21</div>
       <div class="pd pd-ord">#28461953</div>
-      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <div class="pd pd-tpsl">--/-- <svg class="tpsl-edit" onclick="openTpslModal(this,event)" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 1.5l2.5 2.5-7 7H2V8.5l7-7z" stroke="#7a8699" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
       <div class="pd pd-close"><button class="btn-cb">Close By</button><button class="btn-cb">Reverse</button></div>
     </div>
   </div>
   <!-- Right close panel at x=1320 -->
   <div class="pb-rpanel" id="pbRpanel">
     <div class="pb-rpanel-hdr">
-      <div class="ph ph-rpnl bold" style="padding-left:16px;">PnL <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-      <div class="ph ph-rcl" style="font-size:14px;color:#282d34;font-weight:500;">Volume</div>
+      <div class="ph ph-rpnl" style="padding-left:16px;font-size:12px;color:#7a8699;font-weight:500;">PnL <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div class="ph ph-rcl" style="padding:0;font-size:12px;color:#7a8699;font-weight:500;">Volume</div>
     </div>
     <div class="pb-rpanel-row">
       <div style="width:94px;font-size:12px;font-weight:500;color:#00b565;padding:0 8px;">+12,123.33</div>
@@ -1834,6 +1915,75 @@ function setPbGrouping(mode,e){
   document.getElementById('pbGroupBtn').classList.toggle('active',mode==='group');
   document.getElementById('pbUngroupBtn').classList.toggle('active',mode==='ungroup');
 }
+var IND_LIST=[
+  '52 Week High/Low','Accelerator Oscillator','Accumulation/Distribution','Accumulative Swing Index','Advance/Decline',
+  'Arnaud Legoux Moving Average','Aroon','Average Directional Index','Average Price','Average True Range',
+  'Awesome Oscillator','Balance of Power','Bollinger Bands','Bollinger Bands %B','Bollinger Bands Width',
+  'Chaikin Money Flow','Chaikin Oscillator','Chande Kroll Stop','Chande Momentum Oscillator','Choppiness Index',
+  'Commodity Channel Index','Connors RSI','Coppock Curve','Correlation Coefficient','Detrended Price Oscillator',
+  'Donchian Channels','Double EMA','Ease Of Movement','Elder Force Index','Envelope',
+  'Exponential Moving Average','Fisher Transform','Guppy Multiple Moving Average','Hull Moving Average',
+  'Ichimoku Cloud','Keltner Channels','KST','Linear Regression Channel','MA Cross','MACD',
+  'Mass Index','Median Price','Momentum','Money Flow Index','Moving Average','Moving Average Ribbon',
+  'Net Volume','OBV','Parabolic SAR','Pivot Points Standard','Price Channel','Price Oscillator',
+  'Rate of Change','Relative Strength Index','Relative Vigor Index','Relative Volatility Index',
+  'SMI Ergodic Indicator','Smoothed Moving Average','Stochastic','Stochastic RSI','SuperTrend',
+  'TRIX','True Strength Index','Ultimate Oscillator','VWAP','VWMA','Volume','Vortex Indicator',
+  'Williams %R','Williams Alligator','Williams Fractals','Zig Zag'
+];
+function renderIndicators(filter){
+  var q=(filter||'').trim().toLowerCase();
+  var items=IND_LIST.filter(function(n){return !q || n.toLowerCase().indexOf(q)!==-1;});
+  var html='<div class="ind-list-hdr">SCRIPT NAME</div>'+items.map(function(n){
+    return '<div class="ind-row" onclick="addIndicator(this)">'+n+'</div>';
+  }).join('');
+  document.getElementById('indList').innerHTML=html;
+}
+function openIndicatorsModal(e){
+  if(e)e.stopPropagation();
+  document.getElementById('indSearch').value='';
+  renderIndicators('');
+  document.getElementById('indOverlay').classList.add('show');
+}
+function closeIndicatorsModal(){document.getElementById('indOverlay').classList.remove('show');}
+function filterIndicators(v){renderIndicators(v);}
+function addIndicator(el){
+  if(el.classList.contains('added'))return;
+  el.classList.add('added');
+  var tag=document.createElement('span');tag.className='ind-tag';tag.textContent='Added';el.appendChild(tag);
+}
+document.addEventListener('click',function(e){
+  var ov=document.getElementById('indOverlay');
+  if(ov && e.target===ov) closeIndicatorsModal();
+});
+function openTpslModal(el,e){
+  e.stopPropagation();
+  var row=el.closest('.prow');if(!row)return;
+  var badge=row.querySelector('.sym-badge');
+  var sideTxt=badge?badge.textContent.trim():'Sell';
+  var sym=row.querySelector('.pd-sym span:last-child').textContent.trim();
+  var entry=row.querySelector('.pd-entry').textContent.trim();
+  var cur=row.querySelector('.pd-cur').textContent.trim();
+  var sideEl=document.getElementById('tpmSide');
+  sideEl.textContent=sideTxt.charAt(0);
+  sideEl.classList.toggle('sell',sideTxt.toLowerCase()==='sell');
+  sideEl.classList.toggle('buy',sideTxt.toLowerCase()==='buy');
+  document.getElementById('tpmSym').textContent=sym;
+  document.getElementById('tpmEntry').textContent=entry;
+  document.getElementById('tpmCur').textContent=cur;
+  ['tpmTpPrice','tpmTpPnl','tpmSlPrice','tpmSlPnl'].forEach(function(id){var x=document.getElementById(id);if(x)x.value='';});
+  document.getElementById('tpmOverlay').classList.add('show');
+}
+function closeTpslModal(){document.getElementById('tpmOverlay').classList.remove('show');}
+function tpmStep(id,dir){
+  var el=document.getElementById(id);if(!el)return;
+  var v=parseFloat(el.value)||0;
+  el.value=(v+dir*0.001).toFixed(5);
+}
+document.addEventListener('click',function(e){
+  var ov=document.getElementById('tpmOverlay');
+  if(ov && e.target===ov) closeTpslModal();
+});
 function togglePbCloseMenu(e){
   e.stopPropagation();
   var m=document.getElementById('pbCloseMenu');
@@ -2134,6 +2284,7 @@ function selectUnit(u){document.querySelector('.rp-unit-drop').childNodes[0].tex
   var dots=document.querySelectorAll('.rp-range-dot');
   var ticks=document.querySelectorAll('.rp-range-tick');
   if(!track||!fill||!thumb)return;
+  var RP_MAX_LOTS=100;
   function setVal(pct){
     pct=Math.max(0,Math.min(100,pct));
     fill.style.width=pct+'%';
@@ -2141,6 +2292,11 @@ function selectUnit(u){document.querySelector('.rp-unit-drop').childNodes[0].tex
     var idx=Math.round(pct/25);
     dots.forEach(function(d,i){d.classList.toggle('active',i<=idx);});
     ticks.forEach(function(t){t.classList.toggle('filled',pct>=parseFloat(t.dataset.pct));});
+    var vol=document.getElementById('volumeInput');
+    if(vol){
+      vol.value=(pct/100*RP_MAX_LOTS).toFixed(2);
+      vol.dispatchEvent(new Event('input',{bubbles:true}));
+    }
   }
   track.addEventListener('click',function(e){
     var r=track.getBoundingClientRect();
@@ -2420,6 +2576,76 @@ document.addEventListener('click',function(e){
         <button class="cs-btn" onclick="closeChartSettings()">Cancel</button>
         <button class="cs-btn primary" onclick="closeChartSettings()">Ok</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Indicators Modal -->
+<div class="ind-overlay" id="indOverlay">
+  <div class="ind-modal">
+    <div class="ind-hdr">
+      <span class="ind-title">Indicators</span>
+      <div class="ind-close" onclick="closeIndicatorsModal()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ind-search-wrap">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="#a2a6b1" stroke-width="1.5"/><path d="M11 11L14 14" stroke="#a2a6b1" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="indSearch" type="text" placeholder="Search" oninput="filterIndicators(this.value)"/>
+    </div>
+    <div class="ind-list" id="indList"></div>
+  </div>
+</div>
+
+<!-- TP/SL Edit Modal -->
+<div class="tpm-overlay" id="tpmOverlay">
+  <div class="tpm-modal">
+    <div class="tpm-hdr">
+      <span class="tpm-title">Take Profit/Stop Loss</span>
+      <div class="tpm-close" onclick="closeTpslModal()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="tpm-sym">
+      <span class="tpm-side sell" id="tpmSide">S</span>
+      <span id="tpmSym">EURUSD</span>
+    </div>
+    <div class="tpm-prices">
+      <div class="tpm-prow"><span class="tpm-prow-lbl">Entry Price (USD)</span><span class="tpm-prow-val" id="tpmEntry">1.17278</span></div>
+      <div class="tpm-prow"><span class="tpm-prow-lbl">Current Price (USD)</span><span class="tpm-prow-val" id="tpmCur">1.16001</span></div>
+    </div>
+    <div class="tpm-divider"></div>
+    <div class="tpm-section">
+      <div class="tpm-section-hdr">
+        <span class="tpm-section-title">Take Profit</span>
+        <span class="tpm-toggle">PnL <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      </div>
+      <div class="tpm-row">
+        <div class="tpm-input">
+          <input id="tpmTpPrice" type="text" inputmode="decimal" placeholder="Price (USD)"/>
+          <div class="tpm-input-stepper">
+            <svg width="14" height="2" viewBox="0 0 14 2" fill="none" onclick="tpmStep('tpmTpPrice',-1)"><path d="M0 1h14" stroke="currentColor" stroke-width="1.5"/></svg>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" onclick="tpmStep('tpmTpPrice',1)"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="tpm-input"><input id="tpmTpPnl" type="text" inputmode="decimal" placeholder="PnL (USD)"/></div>
+      </div>
+    </div>
+    <div class="tpm-section">
+      <div class="tpm-section-hdr">
+        <span class="tpm-section-title">Stop Loss</span>
+        <span class="tpm-toggle">PnL <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      </div>
+      <div class="tpm-row">
+        <div class="tpm-input">
+          <input id="tpmSlPrice" type="text" inputmode="decimal" placeholder="Price (USD)"/>
+          <div class="tpm-input-stepper">
+            <svg width="14" height="2" viewBox="0 0 14 2" fill="none" onclick="tpmStep('tpmSlPrice',-1)"><path d="M0 1h14" stroke="currentColor" stroke-width="1.5"/></svg>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" onclick="tpmStep('tpmSlPrice',1)"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="tpm-input"><input id="tpmSlPnl" type="text" inputmode="decimal" placeholder="PnL (USD)"/></div>
+      </div>
+    </div>
+    <div class="tpm-ftr">
+      <button class="tpm-btn cancel" onclick="closeTpslModal()">Cancel</button>
+      <button class="tpm-btn confirm" onclick="closeTpslModal()">Confirm</button>
     </div>
   </div>
 </div>
