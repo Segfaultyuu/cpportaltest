@@ -23,10 +23,21 @@ html,body{width:100%;overflow-x:hidden;overflow-y:auto;font-family:'Roboto',sans
 .ti-c{font-size:12px;font-weight:500;}
 .ti-c.up{color:#00b565;}.ti-c.dn{color:#ff2c40;}
 .tn-right{display:flex;align-items:center;gap:16px;padding:0 24px 0 0;flex-shrink:0;}
-.tn-acct{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+.tn-acct{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:6px;position:relative;}
 .tn-acct:hover{background:#f4f5f6;}
 .tn-acct-txt{font-size:14px;font-weight:500;color:#282d34;white-space:nowrap;}
-.tn-acct-flag{width:24px;height:24px;border-radius:50%;background-image:url('images/country-flag.png');background-size:cover;background-position:center;flex-shrink:0;}
+.tn-acct-flag{width:24px;height:24px;border-radius:50%;background-size:cover;background-position:center;flex-shrink:0;background-image:url('https://flagcdn.com/w40/us.png');}
+.tn-acct-flag.flag-us{background-image:url('https://flagcdn.com/w40/us.png');}
+.tn-acct-flag.flag-jp{background-image:url('https://flagcdn.com/w40/jp.png');}
+.tn-acct-menu{display:none;position:fixed;min-width:280px;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.16);padding:6px 0;z-index:10005;}
+.tn-acct-menu.open{display:block;}
+.tn-acct-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:14px;color:#282d34;}
+.tn-acct-item:hover{background:#f4f5f6;}
+.tn-acct-item .tn-acct-check{margin-left:auto;visibility:hidden;}
+.tn-acct-item.active .tn-acct-check{visibility:visible;}
+.tn-acct-mini-flag{width:20px;height:20px;border-radius:50%;background-size:cover;background-position:center;flex-shrink:0;}
+.tn-acct-mini-flag.flag-us{background-image:url('https://flagcdn.com/w40/us.png');}
+.tn-acct-mini-flag.flag-jp{background-image:url('https://flagcdn.com/w40/jp.png');}
 .tn-deposit{width:80px;height:40px;background:#0a36c7;color:#fff;font-size:14px;font-weight:400;border:none;border-radius:8px;cursor:pointer;flex-shrink:0;}
 .tn-ic{width:20px;height:20px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;opacity:.75;}
 .tn-ic:hover{opacity:1;}
@@ -51,7 +62,13 @@ body.dark-mode .tn-ic-theme .tn-ic-sun{display:block;}
 .pl-search input{flex:1;border:none;outline:none;font-size:14px;font-weight:500;color:#282d34;background:transparent;}
 .pl-search input::placeholder{color:#c2c7d0;font-weight:500;}
 /* Figma: watchlist tabs fs=14 fw=500 */
-.pl-wltabs{height:28px;display:flex;align-items:center;padding:0 16px;gap:0;overflow:hidden;}
+.pl-wltabs{height:28px;display:flex;align-items:center;padding:0 4px 0 16px;gap:0;}
+.pl-wltabs-scroll{flex:1;display:flex;align-items:center;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;}
+.pl-wltabs-scroll::-webkit-scrollbar{display:none;}
+.pl-wltabs-arrow{display:flex;align-items:center;justify-content:center;width:20px;height:20px;cursor:pointer;flex-shrink:0;border-radius:4px;}
+.pl-wltabs-arrow:hover{background:#f4f5f6;}
+.pl-wltabs-arrow.disabled{opacity:.3;cursor:default;}
+.pl-wltabs-arrow.disabled:hover{background:transparent;}
 .wltab{font-size:14px;font-weight:500;color:#7a8699;cursor:pointer;padding:0 8px;height:28px;display:flex;align-items:center;position:relative;white-space:nowrap;border-bottom:2px solid transparent;}
 .wltab.active{color:#0a36c7;background:transparent;border-bottom-color:#0a36c7;}
 /* Figma: column header fs=12 fw=500 #282d34 */
@@ -65,10 +82,11 @@ body.dark-mode .tn-ic-theme .tn-ic-sun{display:block;}
 .mrow{height:48px;display:flex;align-items:center;padding:0 16px;cursor:pointer;}
 .mrow:nth-child(even){background:#f4f5f6;}
 .mrow:hover,.mrow.active{background:#edf2ff;}
-.mrow-l{flex:1;display:flex;align-items:center;gap:6px;}
+.mrow-l{flex:1;display:flex;align-items:center;gap:6px;min-width:0;}
+.mrow-l>div{min-width:0;flex:1;}
 /* Figma: symbol name fs=12 fw=500 #282d34, sub fs=12 fw=500 #7a8699 */
 .sym-n{font-size:12px;font-weight:500;color:#282d34;display:block;}
-.sym-s{font-size:12px;font-weight:500;color:#7a8699;display:block;}
+.sym-s{font-size:12px;font-weight:500;color:#7a8699;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
 /* Figma: sell/buy prices fs=12 fw=500 #282d34 */
 .mrow-sell,.mrow-buy{width:66px;text-align:right;font-size:12px;font-weight:500;color:#282d34;}
 /* Figma: %change fs=12 fw=500 #14b273 / #ff2c40 */
@@ -215,6 +233,10 @@ body.dark-mode .wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;
 .cc-range-btn.active{color:#0a36c7;font-weight:600;}
 .cc-range-cal{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;}
 .cc-range-cal:hover{background:#f4f5f6;}
+.cc-range-r{margin-left:auto;display:flex;align-items:center;gap:8px;padding-right:4px;}
+.cc-range-clock{font-size:12px;font-weight:500;color:#282d34;font-feature-settings:'tnum';margin-right:6px;}
+.cc-range-r .cc-range-btn{font-size:12px;cursor:pointer;}
+.cc-range-r .cc-range-btn.active{color:#ff6a00;font-weight:600;background:transparent;}
 
 /* Y-axis  w=59 */
 .cc-yaxis{width:59px;flex-shrink:0;border-left:1px solid #f0f1f3;display:flex;flex-direction:column;justify-content:space-between;padding:8px 4px 36px;}
@@ -306,7 +328,7 @@ input.rp-input-val::-webkit-outer-spin-button,input.rp-input-val::-webkit-inner-
 .rp-cb-lbl{font-size:12px;font-weight:600;color:#282d34;}
 .rp-tpsl-inputs{margin:8px 16px 0;width:288px;display:flex;gap:8px;position:relative;}
 .rp-tpsl-half{width:136px;}
-.rp-tpsl-tooltip{position:absolute;bottom:calc(100% + 4px);right:0;background:#282d34;border-radius:3px;padding:3px 6px;font-size:10px;font-weight:500;color:#fff;white-space:nowrap;}
+.rp-tpsl-tooltip{position:absolute;bottom:calc(100% + 4px);right:0;background:#282d34;border-radius:3px;padding:3px 6px;font-size:8px;font-weight:500;color:#fff;white-space:nowrap;}
 .rp-sell-btn{margin:12px 16px 0;width:288px;height:40px;background:#ff2c40;color:#fff;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;display:block;}
 .rp-sell-btn:hover{background:#e0001a;}
 .rp-sell-btn:active{background:#c8000f;}
@@ -413,6 +435,96 @@ body.dark-mode .pbs-row.checked .pbs-cb{background:#00b565;border-color:#00b565;
 .pd-tpsl{width:140px;display:flex;align-items:center;gap:6px;color:#7a8699;}
 .tpsl-edit{cursor:pointer;flex-shrink:0;}
 .tpsl-edit:hover path{stroke:#0a36c7;}
+/* Reused topbar Language dropdown */
+.topbar-lang-dropdown{display:none;position:fixed;width:220px;max-height:420px;overflow-y:auto;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06);z-index:10005;}
+.topbar-lang-dropdown.open{display:block;}
+.topbar-lang-dropdown::-webkit-scrollbar{width:4px;}
+.topbar-lang-dropdown::-webkit-scrollbar-thumb{background:#e8e9ea;border-radius:2px;}
+.topbar-lang-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .12s;border-bottom:1px solid #f4f5f6;}
+.topbar-lang-item:last-child{border-bottom:none;}
+.topbar-lang-item:hover{background:#f4f6f9;}
+.topbar-lang-item.active{background:#e8f1ff;}
+.topbar-lang-flag{font-size:18px;line-height:1;flex-shrink:0;}
+.topbar-lang-name{font-size:14px;font-weight:500;color:#282d34;flex:1;}
+.topbar-lang-check{flex-shrink:0;color:#0a36c7;}
+.topbar-lang-item:not(.active) .topbar-lang-check{display:none;}
+body.dark-mode .topbar-lang-dropdown{background:#26262B;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+body.dark-mode .topbar-lang-item{border-bottom-color:#2D3033;}
+body.dark-mode .topbar-lang-item:hover{background:#34343B;}
+body.dark-mode .topbar-lang-item.active{background:rgba(0,240,255,.08);}
+body.dark-mode .topbar-lang-name{color:#FFFFFF;}
+body.dark-mode .topbar-lang-check{color:#00F0FF;}
+/* Support Chatbot */
+.sc-chat{position:fixed;right:24px;bottom:64px;width:360px;height:520px;max-height:calc(100vh - 96px);background:#fff;border-radius:14px;box-shadow:0 12px 48px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;z-index:10004;}
+.sc-chat.open{display:flex;animation:scSlideIn .25s ease-out;}
+@keyframes scSlideIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.sc-hdr{height:60px;display:flex;align-items:center;padding:0 16px;background:#0a36c7;color:#fff;flex-shrink:0;gap:10px;}
+.sc-avatar{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#0a36c7;flex-shrink:0;}
+.sc-hdr-info{flex:1;display:flex;flex-direction:column;line-height:1.2;min-width:0;}
+.sc-hdr-name{font-size:14px;font-weight:600;}
+.sc-hdr-status{font-size:11px;opacity:.85;display:flex;align-items:center;gap:6px;}
+.sc-hdr-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#00d97e;display:inline-block;}
+.sc-hdr-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;color:#fff;flex-shrink:0;}
+.sc-hdr-close:hover{background:rgba(255,255,255,.15);}
+.sc-body{flex:1;overflow-y:auto;padding:16px;background:#f7f8fa;display:flex;flex-direction:column;gap:10px;}
+.sc-msg{max-width:80%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.45;}
+.sc-msg.bot{background:#fff;color:#282d34;align-self:flex-start;border-top-left-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+.sc-msg.user{background:#0a36c7;color:#fff;align-self:flex-end;border-top-right-radius:4px;}
+.sc-msg-time{font-size:10px;color:#a2a6b1;margin:2px 4px;}
+.sc-msg-time.bot{align-self:flex-start;}
+.sc-msg-time.user{align-self:flex-end;}
+.sc-quick{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px;background:#f7f8fa;}
+.sc-quick-btn{font-size:12px;padding:6px 10px;border:1px solid #d6dcec;background:#fff;color:#0a36c7;border-radius:14px;cursor:pointer;}
+.sc-quick-btn:hover{background:#e8f1ff;}
+.sc-input-row{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid #e8e9ea;background:#fff;flex-shrink:0;}
+.sc-input{flex:1;height:36px;border:1px solid #e8e9ea;border-radius:18px;padding:0 14px;font-size:13px;color:#282d34;outline:none;font-family:inherit;background:#fff;}
+.sc-input:focus{border-color:#0a36c7;}
+.sc-send{width:36px;height:36px;border-radius:50%;background:#0a36c7;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sc-send:hover{background:#0930b0;}
+/* Dark */
+body.dark-mode .sc-chat{background:#1D1D21;box-shadow:0 12px 48px rgba(0,0,0,.55);}
+body.dark-mode .sc-body{background:#121214;}
+body.dark-mode .sc-msg.bot{background:#26262B;color:#FFFFFF;}
+body.dark-mode .sc-quick{background:#121214;}
+body.dark-mode .sc-quick-btn{background:#26262B;border-color:#2D3033;color:#00F0FF;}
+body.dark-mode .sc-quick-btn:hover{background:#34343B;}
+body.dark-mode .sc-input-row{background:#1D1D21;border-top-color:#2D3033;}
+body.dark-mode .sc-input{background:#26262B;border-color:#2D3033;color:#FFFFFF;}
+body.dark-mode .sc-input:focus{border-color:#00F0FF;}
+/* Trade Settings Modal */
+.ts-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9100;display:none;align-items:center;justify-content:center;}
+.ts-overlay.show{display:flex;}
+.ts-modal{background:#fff;border-radius:14px;width:520px;max-width:92vw;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.22);overflow:hidden;}
+.ts-hdr{padding:24px 28px 20px;display:flex;align-items:center;}
+.ts-title{font-size:22px;font-weight:700;color:#282d34;}
+.ts-close{margin-left:auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;color:#282d34;}
+.ts-close:hover{background:#f4f5f6;}
+.ts-row{padding:14px 28px;display:flex;align-items:center;cursor:pointer;}
+.ts-row.no-click{cursor:default;}
+.ts-row-lbl{font-size:16px;font-weight:700;color:#282d34;display:flex;align-items:center;gap:8px;}
+.ts-row-val{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:14px;color:#7a8699;}
+.ts-row:hover:not(.no-click){background:#f9fafc;}
+.ts-info-ic{width:16px;height:16px;display:flex;align-items:center;justify-content:center;color:#7a8699;}
+.ts-divider{margin:6px 28px;border-top:1px solid #e8e9ea;}
+.ts-section-hdr{padding:16px 28px 6px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:#282d34;}
+.ts-toggle-row{padding:14px 28px;display:flex;align-items:center;}
+.ts-toggle-lbl{font-size:15px;color:#282d34;}
+.ts-toggle{margin-left:auto;width:38px;height:22px;border-radius:11px;background:#e0e2e6;cursor:pointer;position:relative;transition:background .2s;}
+.ts-toggle::after{content:'';position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s;}
+.ts-toggle.on{background:#0a36c7;}
+.ts-toggle.on::after{transform:translateX(16px);}
+.ts-bottom{padding:24px 28px;}
+/* Dark */
+body.dark-mode .ts-overlay{background:rgba(0,0,0,0.65);}
+body.dark-mode .ts-modal{background:#1D1D21;box-shadow:0 12px 48px rgba(0,0,0,0.55);}
+body.dark-mode .ts-title,body.dark-mode .ts-row-lbl,body.dark-mode .ts-section-hdr,body.dark-mode .ts-toggle-lbl{color:#FFFFFF;}
+body.dark-mode .ts-close{color:#C2C7D0;}
+body.dark-mode .ts-close:hover{background:#26262B;}
+body.dark-mode .ts-row:hover:not(.no-click){background:#26262B;}
+body.dark-mode .ts-divider{border-top-color:#2D3033;}
+body.dark-mode .ts-row-val,body.dark-mode .ts-info-ic{color:#7A8699;}
+body.dark-mode .ts-toggle{background:#34343B;}
+body.dark-mode .ts-toggle.on{background:#0a36c7;}
 /* Indicators Modal */
 .ind-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9100;display:none;align-items:center;justify-content:center;}
 .ind-overlay.show{display:flex;}
@@ -499,6 +611,39 @@ body.dark-mode .tpm-btn.confirm{background:#0a36c7;color:#FFFFFF;}
 .pnl-pos{color:#00b565;}
 .pnl-neg{color:#ff2c40;}
 .btn-cb{height:24px;padding:0 8px;border-radius:4px;font-size:11px;background:#f4f5f6;border:none;cursor:pointer;color:#282d34;}
+/* History/Funding filter bar */
+.pb-filter{display:flex;align-items:center;gap:8px;padding:12px 16px 8px;flex-wrap:wrap;}
+.pb-chip{height:28px;padding:0 12px;border-radius:5px;font-size:12px;font-weight:500;color:#282d34;background:#f4f5f6;cursor:pointer;display:inline-flex;align-items:center;}
+.pb-chip:hover{background:#e8e9ea;}
+.pb-chip.active{background:#0a36c7;color:#fff;}
+.pb-date{height:28px;width:104px;border:1px solid #e8e9ea;border-radius:5px;padding:0 10px;font-size:12px;color:#282d34;background:#fff;outline:none;font-family:inherit;}
+.pb-date-sep{color:#7a8699;font-size:12px;}
+.pb-cal{width:28px;height:28px;border:1px solid #e8e9ea;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;}
+.pb-cal:hover{background:#f4f5f6;}
+.pb-select{height:28px;padding:0 12px;border:1px solid #e8e9ea;border-radius:5px;font-size:12px;color:#282d34;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#fff;}
+.pb-select:hover{background:#f4f5f6;}
+.pb-search{height:28px;padding:0 16px;border:none;border-radius:5px;font-size:12px;font-weight:600;color:#fff;background:#0a36c7;cursor:pointer;}
+.pb-search:hover{background:#0930b0;}
+.pb-reset{height:28px;padding:0 16px;border:1px solid #e8e9ea;border-radius:5px;font-size:12px;font-weight:500;color:#282d34;background:#fff;cursor:pointer;}
+.pb-reset:hover{background:#f4f5f6;}
+.pb-summary{padding:8px 16px;display:flex;gap:32px;font-size:12px;color:#282d34;}
+.pb-summary b{font-weight:500;}
+.pb-summary .muted{color:#7a8699;}
+.pb-history-hdr{display:flex;align-items:center;padding:6px 16px;font-size:12px;color:#7a8699;border-bottom:1px solid #f0f1f3;}
+.pb-history-hdr>div{padding:0 4px;}
+.pb-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:48px 0 32px;color:#7a8699;font-size:14px;}
+.pb-empty img{max-width:120px;max-height:120px;}
+/* Dark mode */
+body.dark-mode .pb-chip{background:#26262B;color:#FFFFFF;}
+body.dark-mode .pb-chip:hover{background:#34343B;}
+body.dark-mode .pb-chip.active{background:#0a36c7;color:#FFFFFF;}
+body.dark-mode .pb-date,body.dark-mode .pb-cal,body.dark-mode .pb-select,body.dark-mode .pb-reset{background:#1D1D21;border-color:#2D3033;color:#FFFFFF;}
+body.dark-mode .pb-cal:hover,body.dark-mode .pb-select:hover,body.dark-mode .pb-reset:hover{background:#26262B;}
+body.dark-mode .pb-search{background:#0a36c7;color:#FFFFFF;}
+body.dark-mode .pb-search:hover{background:#0930b0;}
+body.dark-mode .pb-summary{color:#FFFFFF;}
+body.dark-mode .pb-summary .muted,body.dark-mode .pb-history-hdr,body.dark-mode .pb-date-sep,body.dark-mode .pb-empty{color:#7A8699;}
+body.dark-mode .pb-history-hdr{border-bottom-color:#2D3033;}
 /* Right close panel */
 .pb-rpanel{position:absolute;left:1320px;top:40px;width:276px;height:396px;background:#fff;border-left:1px solid #e8e9ea;}
 .pb-rpanel-hdr{height:28px;margin:6px 0;display:flex;align-items:center;}
@@ -704,15 +849,15 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
     </div>
   </div>
   <div class="tn-right">
-    <div class="tn-acct">
-      <div class="tn-acct-flag"></div>
-      <span class="tn-acct-txt">123134 - $ - Hedge STP</span>
+    <div class="tn-acct" id="tnAcctBtn" onclick="toggleAcctMenu(event)">
+      <div class="tn-acct-flag" id="tnAcctFlag"></div>
+      <span class="tn-acct-txt" id="tnAcctTxt">123134 - $ - Hedge STP</span>
       <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/></svg>
     </div>
     <button class="tn-deposit">Deposit</button>
-    <div class="tn-ic" title="Settings"><div class="tn-ic-img tn-ic-settings"></div></div>
-    <div class="tn-ic" title="Support"><div class="tn-ic-img tn-ic-support"></div></div>
-    <div class="tn-ic" title="Language"><div class="tn-ic-img tn-ic-language"></div></div>
+    <div class="tn-ic" title="Settings" onclick="openTradeSettings()"><div class="tn-ic-img tn-ic-settings"></div></div>
+    <div class="tn-ic" title="Support" onclick="toggleSupportChat()"><div class="tn-ic-img tn-ic-support"></div></div>
+    <div class="tn-ic" id="tnLangBtn" title="Language" onclick="toggleLangMenu(event)"><div class="tn-ic-img tn-ic-language"></div></div>
     <div class="tn-ic" id="themeBtn" title="Theme"><div class="tn-ic-img tn-ic-theme">
       <svg class="tn-ic-moon" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.5 11.8A6.8 6.8 0 018.2 3.5a.5.5 0 00-.62-.62A8 8 0 1017.12 12.42a.5.5 0 00-.62-.62z" stroke="#282d34" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
       <svg class="tn-ic-sun" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.6" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" fill="none"/><g stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.2"/><path d="M10 16.3v2.2"/><path d="M1.5 10h2.2"/><path d="M16.3 10h2.2"/><path d="M3.9 3.9l1.6 1.6"/><path d="M14.5 14.5l1.6 1.6"/><path d="M3.9 16.1l1.6-1.6"/><path d="M14.5 5.5l1.6-1.6"/></g></svg>
@@ -745,13 +890,20 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="#c2c7d0" stroke-width="1.5"/><path d="M11 11L14 14" stroke="#c2c7d0" stroke-width="1.5" stroke-linecap="round"/></svg>
   </div>
   <div class="pl-wltabs">
-    <span class="wltab active" onclick="switchWltab(this)">Watchlist</span>
-    <span class="wltab" onclick="switchWltab(this)">Indices</span>
-    <span class="wltab" onclick="switchWltab(this)">Forex</span>
-    <span class="wltab" onclick="switchWltab(this)">Crypto</span>
-    <span class="wltab" onclick="switchWltab(this)">Metals</span>
-    <span class="wltab" onclick="switchWltab(this)" style="overflow:hidden;max-width:42px;">Shares</span>
-    <div style="display:flex;align-items:center;justify-content:center;width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+    <div class="pl-wltabs-scroll" id="plWltabsScroll">
+      <span class="wltab active" onclick="switchWltab(this)">Watchlist</span>
+      <span class="wltab" onclick="switchWltab(this)">Indices</span>
+      <span class="wltab" onclick="switchWltab(this)">Forex</span>
+      <span class="wltab" onclick="switchWltab(this)">Crypto</span>
+      <span class="wltab" onclick="switchWltab(this)">Metals</span>
+      <span class="wltab" onclick="switchWltab(this)">Shares</span>
+      <span class="wltab" onclick="switchWltab(this)">Bonds</span>
+      <span class="wltab" onclick="switchWltab(this)">Energy</span>
+    </div>
+    <div class="pl-wltabs-arrow" onclick="scrollWltabs(-1)">
+      <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M5 1L1 5l4 4" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="pl-wltabs-arrow" onclick="scrollWltabs(1)">
       <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
   </div>
@@ -760,10 +912,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
     <div class="plh plh-sell">Sell</div>
     <div class="plh" style="width:28px;text-align:center;font-size:10px;"></div>
     <div class="plh plh-buy">Buy</div>
-    <div class="plh plh-chg">
-      %Change
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M3 7l3 3 3-3" stroke="#282d34" stroke-width="1.2" stroke-linecap="round"/></svg>
-    </div>
+    <div class="plh plh-chg">%Change</div>
   </div>
   <div class="pl-rows" id="plRows"></div>
 </div>
@@ -902,7 +1051,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
           </div>
         </div>
       </div>
-      <div class="cc-ind-ic" onclick="toggleIndIc(this)" title="Refresh"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31914)"><path d="M12.2426 12.2426C11.1569 13.3284 9.65687 14 8 14C4.6863 14 2 11.3137 2 8C2 4.6863 4.6863 2 8 2C9.65687 2 11.1569 2.67157 12.2426 3.75737C12.7953 4.31003 14 5.66667 14 5.66667" stroke="#7A8699" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2.6665V5.6665H11" stroke="#7A8699" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_9076_31914"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
+      <div class="cc-ind-ic" onclick="refreshChart(this)" title="Refresh"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31914)"><path d="M12.2426 12.2426C11.1569 13.3284 9.65687 14 8 14C4.6863 14 2 11.3137 2 8C2 4.6863 4.6863 2 8 2C9.65687 2 11.1569 2.67157 12.2426 3.75737C12.7953 4.31003 14 5.66667 14 5.66667" stroke="#7A8699" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2.6665V5.6665H11" stroke="#7A8699" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_9076_31914"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
       <div class="cc-ind-ic" onclick="toggleIndIc(this)" title="Screenshot"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31915)"><path d="M5 4L6 2H10L11 4H5Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/><path d="M2.3335 4.59961H13.6665C13.8874 4.59961 14.0669 4.77909 14.0669 5V13C14.0669 13.2209 13.8874 13.4004 13.6665 13.4004H2.3335C2.11258 13.4004 1.93311 13.2209 1.93311 13V5C1.93311 4.77909 2.11258 4.59961 2.3335 4.59961Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.00049 6.93286C9.14173 6.93304 10.0669 7.85896 10.0669 9.00024C10.0667 10.1414 9.14163 11.0665 8.00049 11.0667C6.8592 11.0667 5.93328 10.1415 5.93311 9.00024C5.93311 7.85885 6.85909 6.93286 8.00049 6.93286Z" stroke="#7A8699" stroke-width="1.2" stroke-linejoin="round"/></g><defs><clipPath id="clip0_9076_31915"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
       <div class="cc-ind-ic" onclick="openChartSettings(event)" title="Chart Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_9076_31916)"><path d="M10.5703 13.0004V14.12H5.42963V13.0004H10.5703ZM5.42963 1.88013H10.5703C11.2081 1.88013 11.7984 2.21783 12.1218 2.76763L14.6632 7.08716C14.9946 7.65046 14.9946 8.34964 14.6632 8.91294L12.1218 13.2325C11.7984 13.7823 11.2081 14.12 10.5703 14.12V13.0004C10.8112 13.0004 11.0348 12.8729 11.157 12.6653L13.6976 8.34497C13.8228 8.13217 13.8228 7.86793 13.6976 7.65513L11.157 3.3356C11.0348 3.12789 10.8112 3.00044 10.5703 3.00044H5.42963C5.18866 3.00044 4.96587 3.1279 4.84369 3.3356L2.30229 7.65513C2.1771 7.86793 2.1771 8.13216 2.30229 8.34497L4.84369 12.6653C4.96592 12.8727 5.18882 13.0004 5.42963 13.0004V14.12L5.31088 14.1161C4.75863 14.0797 4.25362 13.7907 3.94213 13.3333L3.87807 13.2325L1.33666 8.91294C1.00529 8.34962 1.00529 7.65047 1.33666 7.08716L3.87807 2.76763C4.18132 2.2521 4.71914 1.92302 5.31088 1.88403L5.42963 1.88013Z" fill="#7A8699"/><path d="M9.23989 8.00005C9.23989 7.31522 8.68487 6.76021 8.00005 6.76021C7.31522 6.76021 6.76021 7.31522 6.76021 8.00005C6.76021 8.68487 7.31522 9.23989 8.00005 9.23989C8.68487 9.23989 9.23989 8.68487 9.23989 8.00005ZM10.3602 8.00005C10.3602 9.30343 9.30343 10.3602 8.00005 10.3602C6.69667 10.3602 5.63989 9.30343 5.63989 8.00005C5.63989 6.69667 6.69667 5.63989 8.00005 5.63989C9.30343 5.63989 10.3602 6.69667 10.3602 8.00005Z" fill="#7A8699"/></g><defs><clipPath id="clip0_9076_31916"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></div>
     </div>
@@ -965,6 +1114,12 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
             <path d="M6 2v2M12 2v2" stroke="#7a8699" stroke-width="1.3" stroke-linecap="round"/>
             <path d="M13 12l2 2" stroke="#7a8699" stroke-width="1.3" stroke-linecap="round"/>
           </svg>
+        </div>
+        <div class="cc-range-r">
+          <span class="cc-range-clock" id="ccRangeClock">--:--:-- UTC</span>
+          <span class="cc-range-btn" id="ccRangePct" onclick="toggleRangeMode(this,'pct')">%</span>
+          <span class="cc-range-btn" id="ccRangeLog" onclick="toggleRangeMode(this,'log')">log</span>
+          <span class="cc-range-btn active" id="ccRangeAuto" onclick="toggleRangeMode(this,'auto')">auto</span>
         </div>
       </div>
     </div>
@@ -1105,7 +1260,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
     </div>
     <div id="unitDropdown" class="rp-unit-dropdown" style="display:none;">
       <div class="rp-unit-item" onclick="selectUnit('Lots')">Lots</div>
-      <div class="rp-unit-item" onclick="selectUnit('USD')">USD</div>
+      <div class="rp-unit-item" id="rpUnitCurrencyItem" onclick="selectUnit('USD')">USD</div>
     </div>
   </div>
   <!-- Range bar -->
@@ -1126,26 +1281,27 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
   </div>
   <!-- TP/SL inputs -->
   <div class="rp-tpsl-inputs" id="tpslInputs">
-    <div class="rp-tpsl-half">
+    <div class="rp-tpsl-half" style="position:relative;">
       <div class="rp-input-box" style="width:136px;">
-        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;" onclick="stepTpsl('tpInput',-1)"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
         <div class="rp-input-inner">
           <span class="rp-input-lbl">Take Profit</span>
-          <span class="rp-input-val">109.890</span>
+          <input type="number" inputmode="decimal" class="rp-input-val" id="tpInput" step="0.001" placeholder="0.000" oninput="calcTpslPnl()"/>
         </div>
-        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;" onclick="stepTpsl('tpInput',1)"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
       </div>
+      <div class="rp-tpsl-tooltip" id="tpTooltip" style="display:none;">+0.00 USD</div>
     </div>
     <div class="rp-tpsl-half" style="position:relative;">
       <div class="rp-input-box" style="width:136px;">
-        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #e8e9ea;" onclick="stepTpsl('slInput',-1)"><svg width="13" height="2" viewBox="0 0 13 2" fill="none"><path d="M0 1h13" stroke="#7a8699" stroke-width="1.5"/></svg></div>
         <div class="rp-input-inner">
           <span class="rp-input-lbl">Stop Loss</span>
-          <span class="rp-input-val">109.890</span>
+          <input type="number" inputmode="decimal" class="rp-input-val" id="slInput" step="0.001" placeholder="0.000" oninput="calcTpslPnl()"/>
         </div>
-        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div style="width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #e8e9ea;" onclick="stepTpsl('slInput',1)"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="#7a8699" stroke-width="1.5" stroke-linecap="round"/></svg></div>
       </div>
-      <div class="rp-tpsl-tooltip">Estimated PnL -420.00 USD</div>
+      <div class="rp-tpsl-tooltip" id="slTooltip" style="display:none;">+0.00 USD</div>
     </div>
   </div>
   <!-- Sell button -->
@@ -1227,12 +1383,12 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
     </div>
   </div>
   <div class="pb-hdr" id="pbHdr">
-    <div class="ph ph-sym">Symbol <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#bac0ca" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-    <div class="ph ph-vol">Vol (Lots) <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#bac0ca" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="ph ph-sym">Symbol</div>
+    <div class="ph ph-vol">Vol (Lots)</div>
     <div class="ph ph-entry">Entry Price</div>
     <div class="ph ph-cur">Current Price</div>
     <div class="ph ph-chg">Swap</div>
-    <div class="ph ph-time">Open Time <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#bac0ca" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <div class="ph ph-time">Open Time</div>
     <div class="ph ph-ord">Order</div>
     <div class="ph ph-tpsl">TP/SL</div>
     <div class="ph ph-close">Close By / Reverse</div>
@@ -1308,7 +1464,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
   <!-- Right close panel at x=1320 -->
   <div class="pb-rpanel" id="pbRpanel">
     <div class="pb-rpanel-hdr">
-      <div class="ph ph-rpnl" style="padding-left:16px;font-size:12px;color:#7a8699;font-weight:500;">PnL <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3 3 3-3" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div class="ph ph-rpnl" style="padding-left:16px;font-size:12px;color:#7a8699;font-weight:500;">PnL</div>
       <div class="ph ph-rcl" style="padding:0;font-size:12px;color:#7a8699;font-weight:500;">Volume</div>
     </div>
     <div class="pb-rpanel-row">
@@ -1427,8 +1583,15 @@ window.addEventListener('resize',scale);
          the 1920px layout; offsetWidth here reflects actual layout pixels before scale */
       W = el.offsetWidth  || el.parentElement.offsetWidth  || 1100;
       H = el.offsetHeight || el.parentElement.offsetHeight || 380;
-      cvs.width  = W;
-      cvs.height = H;
+      /* HiDPI: backing store at devicePixelRatio × layout-scale, then scale ctx so logical (W,H) drawing stays sharp */
+      var pageScale = window.innerWidth / 1920;
+      var dpr = (window.devicePixelRatio || 1) * Math.max(1, pageScale);
+      cvs.width  = Math.round(W * dpr);
+      cvs.height = Math.round(H * dpr);
+      cvs.style.width  = W + 'px';
+      cvs.style.height = H + 'px';
+      ctx = cvs.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       draw();
     }
     window.addEventListener('resize', resize);
@@ -1833,6 +1996,7 @@ window.addEventListener('resize',scale);
       }
     }
     updateCoMain();
+    if(typeof calcTpslPnl==='function') calcTpslPnl();
   }
   /* Mirror Volume input → obBar lots immediately */
   document.addEventListener('input',function(e){
@@ -1859,6 +2023,22 @@ window.addEventListener('resize',scale);
     return out;
   }
 
+  window.refreshChart = function(btn){
+    if(ws){ try{ws.close();}catch(e){} ws=null; }
+    kData=[];
+    offset=0;
+    barW=9;
+    crossX=-1; crossY=-1;
+    if(btn){
+      var svg=btn.querySelector('svg');
+      if(svg){
+        svg.style.transition='transform .6s ease';
+        svg.style.transform='rotate(360deg)';
+        setTimeout(function(){svg.style.transition='';svg.style.transform='';},650);
+      }
+    }
+    loadData();
+  };
   window.switchTf3 = function(el){
     document.querySelectorAll('.tf3-btn').forEach(function(x){x.classList.remove('active');});
     el.classList.add('active');
@@ -1939,6 +2119,78 @@ function renderIndicators(filter){
   }).join('');
   document.getElementById('indList').innerHTML=html;
 }
+function toggleRangeMode(el,mode){
+  ['ccRangePct','ccRangeLog','ccRangeAuto'].forEach(function(id){
+    var x=document.getElementById(id);if(x)x.classList.remove('active');
+  });
+  el.classList.add('active');
+}
+(function tickRangeClock(){
+  function pad(n){return String(n).padStart(2,'0');}
+  function update(){
+    var el=document.getElementById('ccRangeClock');if(!el)return;
+    var d=new Date();
+    var off=-d.getTimezoneOffset()/60;
+    var gmt='UTC'+(off>=0?'+':'')+off;
+    el.textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+' '+gmt;
+  }
+  update();setInterval(update,1000);
+})();
+function toggleSupportChat(){
+  var c=document.getElementById('scChat');
+  if(!c)return;
+  c.classList.toggle('open');
+  if(c.classList.contains('open')){
+    setTimeout(function(){var inp=document.getElementById('scInput');if(inp)inp.focus();},100);
+  }
+}
+function scNow(){
+  var d=new Date();var pad=function(n){return String(n).padStart(2,'0');};
+  return pad(d.getHours())+':'+pad(d.getMinutes());
+}
+function scSend(text){
+  text=(text||'').trim();if(!text)return;
+  var body=document.getElementById('scBody');
+  var msg=document.createElement('div');msg.className='sc-msg user';msg.textContent=text;body.appendChild(msg);
+  var t=document.createElement('span');t.className='sc-msg-time user';t.textContent=scNow();body.appendChild(t);
+  body.scrollTop=body.scrollHeight;
+  setTimeout(function(){
+    var reply=document.createElement('div');reply.className='sc-msg bot';
+    reply.textContent="Thanks for your message — a support specialist will be with you shortly.";
+    body.appendChild(reply);
+    var rt=document.createElement('span');rt.className='sc-msg-time bot';rt.textContent=scNow();body.appendChild(rt);
+    body.scrollTop=body.scrollHeight;
+  },800);
+}
+function toggleLangMenu(e){
+  e.stopPropagation();
+  var menu=document.getElementById('topbar-lang-dropdown');
+  var btn=document.getElementById('tnLangBtn');
+  if(!menu||!btn)return;
+  if(menu.classList.contains('open')){menu.classList.remove('open');return;}
+  menu.classList.add('open');
+  var br=btn.getBoundingClientRect();
+  var mw=menu.offsetWidth;
+  var left=Math.min(window.innerWidth-mw-8, Math.max(8, br.right-mw));
+  menu.style.left=left+'px';
+  menu.style.top=(br.bottom+10)+'px';
+}
+function selectLang(el){
+  document.querySelectorAll('#topbar-lang-dropdown .topbar-lang-item').forEach(function(x){x.classList.remove('active');});
+  el.classList.add('active');
+  document.getElementById('topbar-lang-dropdown').classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  var m=document.getElementById('topbar-lang-dropdown');
+  if(m && !e.target.closest('#tnLangBtn') && !e.target.closest('#topbar-lang-dropdown')) m.classList.remove('open');
+});
+function openTradeSettings(){document.getElementById('tsOverlay').classList.add('show');}
+function closeTradeSettings(){document.getElementById('tsOverlay').classList.remove('show');}
+function toggleTs(el){el.classList.toggle('on');}
+document.addEventListener('click',function(e){
+  var ov=document.getElementById('tsOverlay');
+  if(ov && e.target===ov) closeTradeSettings();
+});
 function openIndicatorsModal(e){
   if(e)e.stopPropagation();
   document.getElementById('indSearch').value='';
@@ -2084,12 +2336,19 @@ var WL_DATA = {
     {sym:'NFLX.US', name:'Netflix Inc.',       sell:'692.10',  spread:'8',  buy:'692.18',  chg:'+0.42%',  up:true},
   ],
 };
+function parseNum(s){return parseFloat(String(s).replace(/,/g,''));}
+function fmtNum(v,decimals){
+  return v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
 function renderWlRows(tab){
   var rows = WL_DATA[tab] || [];
   var isWatch = tab==='Watchlist';
   var starSrc = isWatch ? 'images/Star - selected.svg' : 'images/rili.svg';
-  var html = rows.map(function(r){
-    return '<div class="mrow" onclick="selectSym(this,\''+r.sym+'\')">'+
+  var html = rows.map(function(r,i){
+    var sellN=parseNum(r.sell), buyN=parseNum(r.buy);
+    var dec=(String(r.sell).split('.')[1]||'').length;
+    var basePct=parseFloat(r.chg)||0;
+    return '<div class="mrow" data-base-sell="'+sellN+'" data-base-buy="'+buyN+'" data-dec="'+dec+'" data-base-pct="'+basePct+'" onclick="selectSym(this,\''+r.sym+'\')">'+
       '<div class="mrow-l">'+
         '<img src="'+starSrc+'" width="14" height="14" alt="" class="fav-ic" onclick="toggleFav(this)" style="cursor:pointer;"/>'+
         '<div><span class="sym-n">'+r.sym+'</span><span class="sym-s">'+r.name+'</span></div>'+
@@ -2102,10 +2361,43 @@ function renderWlRows(tab){
   }).join('');
   document.getElementById('plRows').innerHTML = html;
 }
+/* Tick prices ~every 1.2s */
+setInterval(function(){
+  var rows=document.querySelectorAll('#plRows .mrow');
+  rows.forEach(function(row){
+    var base=parseFloat(row.dataset.baseSell)||0;
+    if(!base)return;
+    var dec=parseInt(row.dataset.dec)||2;
+    var basePct=parseFloat(row.dataset.basePct)||0;
+    var jitter=(Math.random()-0.5)*0.0008;
+    var sell=base*(1+jitter);
+    var spreadFrac=parseFloat(parseNum(row.querySelector('.mrow-spread').textContent))*Math.pow(10,-dec)/2 || 0.00002;
+    var buy=sell+Math.abs(parseNum(row.querySelector('.mrow-buy').textContent)-base);
+    /* mutate base slowly so prices walk */
+    row.dataset.baseSell=String(sell);
+    row.dataset.baseBuy=String(buy);
+    row.querySelector('.mrow-sell').textContent=fmtNum(sell,dec);
+    row.querySelector('.mrow-buy').textContent=fmtNum(buy,dec);
+    /* update %change with small noise */
+    var pct=basePct + jitter*100*8;
+    row.dataset.basePct=String(pct);
+    var chgEl=row.querySelector('.mrow-chg');
+    chgEl.textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';
+    chgEl.classList.toggle('up',pct>=0);
+    chgEl.classList.toggle('dn',pct<0);
+  });
+},1200);
 function switchWltab(el){
   document.querySelectorAll('.wltab').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
   renderWlRows(el.textContent.trim());
+  /* keep clicked tab in view */
+  el.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function scrollWltabs(dir){
+  var s=document.getElementById('plWltabsScroll');
+  if(!s)return;
+  s.scrollBy({left:dir*120,behavior:'smooth'});
 }
 document.addEventListener('DOMContentLoaded',function(){
   var active=document.querySelector('.wltab.active');
@@ -2230,17 +2522,110 @@ function switchPtab(el){
     `;
     pbHdr.style.display='flex';
     pbRpanel.style.display='block';
-  }else{
-    let emptyText='';
-    if(tabText.includes('Pending Orders'))emptyText='No pending orders';
-    else if(tabText.includes('Position History'))emptyText='No position history';
-    else emptyText='No funding history';
-    pbRows.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;transform:translateY(-40px);"><img src="images/emptystates.png" alt="empty" style="max-width:200px;max-height:200px;"/><div style="color:#7a8699;font-size:14px;">${emptyText}</div></div>`;
+  }else if(tabText.includes('Position History')){
     pbHdr.style.display='none';
     pbRpanel.style.display='none';
+    pbRows.innerHTML=`
+      <div class="pb-filter">
+        <span class="pb-chip" onclick="setPbChip(this)">1Day</span>
+        <span class="pb-chip active" onclick="setPbChip(this)">1Week</span>
+        <span class="pb-chip" onclick="setPbChip(this)">1Month</span>
+        <span class="pb-chip" onclick="setPbChip(this)">3 Months</span>
+        <input class="pb-date" type="text" value="2026/05/13" readonly/>
+        <span class="pb-date-sep">-</span>
+        <input class="pb-date" type="text" value="2026/05/20" readonly/>
+        <div class="pb-cal"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="#7a8699" stroke-width="1.2"/><path d="M2 6h12" stroke="#7a8699" stroke-width="1.2"/><path d="M5 2v2M11 2v2" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="pb-select">All <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <button class="pb-search">Search</button>
+        <button class="pb-reset">Reset</button>
+      </div>
+      <div class="pb-summary">
+        <span><b>Closed PnL:</b> <span class="muted">--</span></span>
+        <span><b>Net PnL:</b> <span class="muted">--</span></span>
+      </div>
+      <div class="pb-history-hdr">
+        <div style="flex:1;">Symbol</div><div style="flex:1.2;">Closed/Total Vol. (Lots)</div><div style="flex:1;">Entry Price</div><div style="flex:1;">Avg.Price</div><div style="flex:0.8;">PnL</div><div style="flex:0.8;">Net PnL</div><div style="flex:1;">Charges/Swap</div><div style="flex:1.2;">Open Time</div><div style="flex:1.2;">Close Time</div><div style="flex:0.9;">Order</div><div style="flex:0.7;">Status</div><div style="flex:0.6;">Action</div>
+      </div>
+      <div class="pb-empty"><img src="images/emptystates.png" alt="empty"/><div>No history.</div></div>
+    `;
+  }else if(tabText.includes('Funding History')){
+    pbHdr.style.display='none';
+    pbRpanel.style.display='none';
+    pbRows.innerHTML=`
+      <div class="pb-filter">
+        <span class="pb-chip" onclick="setPbChip(this)">1Day</span>
+        <span class="pb-chip active" onclick="setPbChip(this)">1Week</span>
+        <span class="pb-chip" onclick="setPbChip(this)">1Month</span>
+        <span class="pb-chip" onclick="setPbChip(this)">3 Months</span>
+        <input class="pb-date" type="text" value="2026/05/13" readonly/>
+        <span class="pb-date-sep">-</span>
+        <input class="pb-date" type="text" value="2026/05/20" readonly/>
+        <div class="pb-cal"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="#7a8699" stroke-width="1.2"/><path d="M2 6h12" stroke="#7a8699" stroke-width="1.2"/><path d="M5 2v2M11 2v2" stroke="#7a8699" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="pb-select">All Types <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <button class="pb-search">Search</button>
+        <button class="pb-reset">Reset</button>
+      </div>
+      <div class="pb-summary">
+        <span><b>Deposit:</b> <span class="muted">--</span></span>
+        <span><b>Withdraw:</b> <span class="muted">--</span></span>
+      </div>
+      <div class="pb-history-hdr">
+        <div style="flex:1;">Time</div><div style="flex:1;">Currency</div><div style="flex:1;">Amount</div><div style="flex:1;">Type</div><div style="flex:1.6;">Comment</div>
+      </div>
+      <div class="pb-empty"><img src="images/emptystates.png" alt="empty"/><div>No funding history.</div></div>
+    `;
+  }else{
+    pbHdr.style.display='none';
+    pbRpanel.style.display='none';
+    pbRows.innerHTML=`<div class="pb-empty"><img src="images/emptystates.png" alt="empty"/><div>No pending orders</div></div>`;
   }
 }
+function setPbChip(el){
+  el.parentElement.querySelectorAll('.pb-chip').forEach(function(x){x.classList.remove('active');});
+  el.classList.add('active');
+}
 function selectSym(el,sym){document.querySelectorAll('.mrow').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('chartSym').textContent=sym;}
+function stepTpsl(id,dir){
+  var el=document.getElementById(id);if(!el)return;
+  var v=parseFloat(el.value)||0;
+  el.value=(v+dir*0.001).toFixed(3);
+  calcTpslPnl();
+}
+function calcTpslPnl(){
+  var side='sell';
+  var sellActive=document.querySelector('.rp-sell.active');
+  if(!sellActive) side='buy';
+  var sellPriceEl=document.querySelector('.rp-sell .rp-sv');
+  var buyPriceEl=document.querySelector('.rp-buy .rp-sv');
+  var entry=side==='sell' ? parseFloat((sellPriceEl&&sellPriceEl.textContent||'0').replace(/,/g,''))
+                          : parseFloat((buyPriceEl &&buyPriceEl.textContent ||'0').replace(/,/g,''));
+  var vol=parseFloat(document.getElementById('volumeInput').value)||0;
+  function compute(target){
+    if(!target||!entry||!vol)return null;
+    /* PnL: long profits when price↑, short profits when price↓ */
+    return (side==='buy' ? (target-entry) : (entry-target)) * vol;
+  }
+  function fmt(n){
+    if(n===null)return '';
+    var sign=n>=0?'+':'-';
+    return sign+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USD';
+  }
+  function paint(tipEl,pnl){
+    if(pnl===null){tipEl.style.display='none';return;}
+    tipEl.style.display='block';
+    tipEl.textContent='Estimated PnL '+fmt(pnl);
+    tipEl.style.background = pnl>=0 ? '#00b565' : '#ff2c40';
+    tipEl.style.color='#fff';
+  }
+  var tp=parseFloat(document.getElementById('tpInput').value);
+  var sl=parseFloat(document.getElementById('slInput').value);
+  paint(document.getElementById('tpTooltip'), isFinite(tp)?compute(tp):null);
+  paint(document.getElementById('slTooltip'), isFinite(sl)?compute(sl):null);
+}
+/* Recompute when volume or live prices change */
+document.addEventListener('input',function(e){
+  if(e.target && e.target.id==='volumeInput') calcTpslPnl();
+});
 function setSide(side){
   const btn=document.getElementById('orderBtn');
   const sellEl=document.querySelector('.rp-sell');
@@ -2276,7 +2661,73 @@ function syncObLotsToVolume(el){
 function decreaseVolume(){var el=document.getElementById('volumeInput');el.value=Math.max(0,(parseFloat(el.value)||0)-0.01).toFixed(2);el.dispatchEvent(new Event('input',{bubbles:true}));}
 function increaseVolume(){var el=document.getElementById('volumeInput');el.value=((parseFloat(el.value)||0)+0.01).toFixed(2);el.dispatchEvent(new Event('input',{bubbles:true}));}
 function toggleUnitDropdown(){var d=document.getElementById('unitDropdown');d.style.display=d.style.display==='none'?'block':'none';}
-function selectUnit(u){document.querySelector('.rp-unit-drop').childNodes[0].textContent=u+' ';document.getElementById('unitDropdown').style.display='none';}
+var RP_ACCT={
+  usd:{label:'123134 - $ - Hedge STP', currency:'USD', symbol:'$',  flag:'flag-us', maxLots:100,    rate:1},
+  jpy:{label:'456789 - ¥ - Hedge STP', currency:'JPY', symbol:'¥',  flag:'flag-jp', maxLots:100,    rate:155.5}
+};
+var RP_CURRENT_ACCT='usd';
+function selectUnit(u){
+  var acct=RP_ACCT[RP_CURRENT_ACCT];
+  var displayUnit = (u==='Lots') ? 'Lots' : acct.currency;
+  document.querySelector('.rp-unit-drop').childNodes[0].textContent=displayUnit+' ';
+  document.getElementById('unitDropdown').style.display='none';
+  updateMaxOpenLabel();
+}
+function currentRpUnit(){
+  var t=document.querySelector('.rp-unit-drop');
+  if(!t)return 'Lots';
+  return (t.childNodes[0].textContent||'').trim();
+}
+function updateMaxOpenLabel(){
+  var el=document.querySelector('.rp-rl-max');if(!el)return;
+  var acct=RP_ACCT[RP_CURRENT_ACCT];
+  var unit=currentRpUnit();
+  if(unit==='Lots'){
+    el.textContent='Max open '+acct.maxLots.toFixed(2)+' Lots';
+  }else{
+    /* approximate value: 100 lots × $100k notional */
+    var usdVal=acct.maxLots*100000;
+    var localVal=usdVal*acct.rate;
+    el.textContent='Max open '+acct.symbol+localVal.toLocaleString('en-US',{maximumFractionDigits:0})+' '+acct.currency;
+  }
+}
+function toggleAcctMenu(e){
+  e.stopPropagation();
+  var menu=document.getElementById('tnAcctMenu');
+  var btn=document.getElementById('tnAcctBtn');
+  if(!menu||!btn)return;
+  if(menu.classList.contains('open')){menu.classList.remove('open');return;}
+  menu.classList.add('open');
+  var br=btn.getBoundingClientRect();
+  var mw=menu.offsetWidth;
+  var left=Math.min(window.innerWidth-mw-8, Math.max(8, br.right-mw));
+  menu.style.left=left+'px';
+  menu.style.top=(br.bottom+6)+'px';
+}
+function selectAcct(e,key){
+  e.stopPropagation();
+  RP_CURRENT_ACCT=key;
+  var acct=RP_ACCT[key];
+  document.getElementById('tnAcctTxt').textContent=acct.label;
+  var flag=document.getElementById('tnAcctFlag');
+  flag.classList.remove('flag-us','flag-jp');flag.classList.add(acct.flag);
+  document.querySelectorAll('.tn-acct-item').forEach(function(x){x.classList.toggle('active',x.dataset.acct===key);});
+  document.getElementById('tnAcctMenu').classList.remove('open');
+  /* Update unit dropdown's currency option */
+  var curItem=document.getElementById('rpUnitCurrencyItem');
+  if(curItem){curItem.textContent=acct.currency;curItem.setAttribute('onclick',"selectUnit('"+acct.currency+"')");}
+  /* If currently displaying a currency unit, swap the label too */
+  var unit=currentRpUnit();
+  if(unit!=='Lots'){
+    document.querySelector('.rp-unit-drop').childNodes[0].textContent=acct.currency+' ';
+  }
+  updateMaxOpenLabel();
+}
+document.addEventListener('click',function(e){
+  var m=document.getElementById('tnAcctMenu');
+  if(m && !e.target.closest('#tnAcctBtn')) m.classList.remove('open');
+});
+document.addEventListener('DOMContentLoaded',updateMaxOpenLabel);
 (function initRangeSlider(){
   var track=document.getElementById('rangeTrack');
   var fill=document.getElementById('rangeFill');
@@ -2580,6 +3031,80 @@ document.addEventListener('click',function(e){
   </div>
 </div>
 
+<!-- Support Chatbot -->
+<div class="sc-chat" id="scChat">
+  <div class="sc-hdr">
+    <div class="sc-avatar"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.5 9.5a6.5 6.5 0 0113 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="2.5" y="9.5" width="3" height="5" rx="1" fill="currentColor"/><rect x="14.5" y="9.5" width="3" height="5" rx="1" fill="currentColor"/><path d="M14.5 14.5a3 3 0 01-3 3h-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div class="sc-hdr-info">
+      <span class="sc-hdr-name">VT Support</span>
+      <span class="sc-hdr-status">Online · Avg reply 1m</span>
+    </div>
+    <div class="sc-hdr-close" onclick="toggleSupportChat()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+  </div>
+  <div class="sc-body" id="scBody">
+    <div class="sc-msg bot">Hi 👋 Welcome to VT Markets. How can I help you today?</div>
+    <span class="sc-msg-time bot">Just now</span>
+  </div>
+  <div class="sc-quick">
+    <button class="sc-quick-btn" onclick="scSend('How do I deposit?')">How do I deposit?</button>
+    <button class="sc-quick-btn" onclick="scSend('Withdrawal issue')">Withdrawal issue</button>
+    <button class="sc-quick-btn" onclick="scSend('Talk to a human')">Talk to a human</button>
+  </div>
+  <div class="sc-input-row">
+    <input class="sc-input" id="scInput" type="text" placeholder="Type a message…" onkeydown="if(event.key==='Enter'){scSend(this.value);this.value='';}"/>
+    <button class="sc-send" onclick="var i=document.getElementById('scInput');scSend(i.value);i.value='';"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 7l11-5.5L7 12.5l-1.5-4.5L1.5 7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/></svg></button>
+  </div>
+</div>
+
+<!-- Language dropdown (reuses topbar-lang-* classes) -->
+<div class="topbar-lang-dropdown" id="topbar-lang-dropdown">
+  <div class="topbar-lang-item active" data-lang="en" onclick="selectLang(this)"><span class="topbar-lang-flag">🇬🇧</span><span class="topbar-lang-name">English</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="zh-cn" onclick="selectLang(this)"><span class="topbar-lang-flag">🇨🇳</span><span class="topbar-lang-name">简体中文</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="zh-tw" onclick="selectLang(this)"><span class="topbar-lang-flag">🇭🇰</span><span class="topbar-lang-name">繁體中文</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="fr" onclick="selectLang(this)"><span class="topbar-lang-flag">🇫🇷</span><span class="topbar-lang-name">Français</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="ko" onclick="selectLang(this)"><span class="topbar-lang-flag">🇰🇷</span><span class="topbar-lang-name">한국어</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="ja" onclick="selectLang(this)"><span class="topbar-lang-flag">🇯🇵</span><span class="topbar-lang-name">日本語</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="th" onclick="selectLang(this)"><span class="topbar-lang-flag">🇹🇭</span><span class="topbar-lang-name">ภาษาไทย</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="vi" onclick="selectLang(this)"><span class="topbar-lang-flag">🇻🇳</span><span class="topbar-lang-name">Tiếng Việt</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="es" onclick="selectLang(this)"><span class="topbar-lang-flag">🇪🇸</span><span class="topbar-lang-name">Español (Intl.)</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="pt" onclick="selectLang(this)"><span class="topbar-lang-flag">🇵🇹</span><span class="topbar-lang-name">Português (Intl.)</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="de" onclick="selectLang(this)"><span class="topbar-lang-flag">🇩🇪</span><span class="topbar-lang-name">Deutsch</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="id" onclick="selectLang(this)"><span class="topbar-lang-flag">🇮🇩</span><span class="topbar-lang-name">Bahasa Indonesia</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="ar" onclick="selectLang(this)"><span class="topbar-lang-flag">🇦🇪</span><span class="topbar-lang-name">عربي</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="ru" onclick="selectLang(this)"><span class="topbar-lang-flag">🇷🇺</span><span class="topbar-lang-name">Русский</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="mn" onclick="selectLang(this)"><span class="topbar-lang-flag">🇲🇳</span><span class="topbar-lang-name">Монгол</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="km" onclick="selectLang(this)"><span class="topbar-lang-flag">🇰🇭</span><span class="topbar-lang-name">ខ្មែរ</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="nl" onclick="selectLang(this)"><span class="topbar-lang-flag">🇳🇱</span><span class="topbar-lang-name">Nederlands</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="it" onclick="selectLang(this)"><span class="topbar-lang-flag">🇮🇹</span><span class="topbar-lang-name">Italian</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="ms" onclick="selectLang(this)"><span class="topbar-lang-flag">🇲🇾</span><span class="topbar-lang-name">Malaysia</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+  <div class="topbar-lang-item" data-lang="tl" onclick="selectLang(this)"><span class="topbar-lang-flag">🇵🇭</span><span class="topbar-lang-name">Tagalog</span><svg class="topbar-lang-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg></div>
+</div>
+
+<!-- Trade Settings Modal -->
+<div class="ts-overlay" id="tsOverlay">
+  <div class="ts-modal">
+    <div class="ts-hdr">
+      <span class="ts-title">Trade Settings</span>
+      <div class="ts-close" onclick="closeTradeSettings()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="ts-row">
+      <span class="ts-row-lbl">Leverage Setting</span>
+      <span class="ts-row-val">500:1 <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="ts-divider"></div>
+    <div class="ts-section-hdr">Trade Settings <span class="ts-info-ic"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v.5M7 6.5v3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></div>
+    <div class="ts-toggle-row no-click">
+      <span class="ts-toggle-lbl">Order Confirmation</span>
+      <div class="ts-toggle" id="tsOrderConfirm" onclick="toggleTs(this)"></div>
+    </div>
+    <div class="ts-toggle-row no-click">
+      <span class="ts-toggle-lbl">Close Confirmation</span>
+      <div class="ts-toggle" id="tsCloseConfirm" onclick="toggleTs(this)"></div>
+    </div>
+    <div class="ts-bottom"></div>
+  </div>
+</div>
+
 <!-- Indicators Modal -->
 <div class="ind-overlay" id="indOverlay">
   <div class="ind-modal">
@@ -2647,6 +3172,20 @@ document.addEventListener('click',function(e){
       <button class="tpm-btn cancel" onclick="closeTpslModal()">Cancel</button>
       <button class="tpm-btn confirm" onclick="closeTpslModal()">Confirm</button>
     </div>
+  </div>
+</div>
+
+<!-- Account selector menu -->
+<div class="tn-acct-menu" id="tnAcctMenu">
+  <div class="tn-acct-item active" data-acct="usd" onclick="selectAcct(event,'usd')">
+    <div class="tn-acct-mini-flag flag-us"></div>
+    <span>123134 - $ - Hedge STP</span>
+    <svg class="tn-acct-check" width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3 3 7-7" stroke="#0a36c7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="tn-acct-item" data-acct="jpy" onclick="selectAcct(event,'jpy')">
+    <div class="tn-acct-mini-flag flag-jp"></div>
+    <span>456789 - ¥ - Hedge STP</span>
+    <svg class="tn-acct-check" width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3 3 7-7" stroke="#0a36c7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
 </div>
 
