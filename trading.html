@@ -275,9 +275,10 @@ body.dark-mode .wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;
 .rp-track{width:100%;height:3px;display:flex;gap:2px;}
 .rp-track-green{height:3px;background:#00b565;border-radius:1px;width:50%;transition:width .25s ease;}
 .rp-track-red{height:3px;background:#ff2c40;border-radius:1px;width:50%;transition:width .25s ease;}
-.rp-countdown.up{color:#00b565;}
-.rp-countdown.down{color:#ff2c40;}
-.rp-countdown{font-size:12px;font-weight:400;color:#c2c7d0;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.rp-countdown{font-size:12px;font-weight:500;color:#7a8699;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;line-height:1;}
+.rp-countdown::before{content:'';display:block;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:5px solid #c2c7d0;}
+.rp-countdown.up::before{border-bottom:5px solid #00b565;border-top:none;}
+.rp-countdown.down::before{border-top:5px solid #ff2c40;border-bottom:none;}
 .rp-otabs{margin:8px 16px 0;width:288px;height:28px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #e8e9ea;}
 .rotab{font-size:14px;font-weight:500;color:#7a8699;cursor:pointer;padding-bottom:6px;border-bottom:2px solid transparent;white-space:nowrap;}
 .rotab.active{color:#0a36c7;font-weight:600;border-bottom-color:#0a36c7;}
@@ -1903,6 +1904,7 @@ window.addEventListener('resize',scale);
     }
   }
 
+  var wsTick = null;
   function connectWS(iv){
     if(ws){ try{ws.close();}catch(e){} }
     ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_'+iv);
@@ -1914,7 +1916,19 @@ window.addEventListener('resize',scale);
         kData[kData.length-1]=bar;
       else kData.push(bar);
       draw();
-      updateLivePrices(bar.close);
+    };
+    /* Faster live bid/ask feed for rp prices, slider, obBar */
+    if(wsTick){ try{wsTick.close();}catch(e){} }
+    wsTick = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@bookTicker');
+    wsTick.onmessage = function(e){
+      var d = JSON.parse(e.data);
+      var bid = +d.b, ask = +d.a;
+      if(!isFinite(bid)||!isFinite(ask))return;
+      var mid = (bid+ask)/2;
+      /* sync last kline bar's close + high/low so rp/co stay in sync between full bar pushes */
+      var last = kData[kData.length-1];
+      if(last){ last.close = mid; last.high = Math.max(last.high, mid); last.low = Math.min(last.low, mid); }
+      updateLivePrices(mid);
     };
   }
   /* Spread in price units; integer-pip display uses spread*10 */
@@ -1976,23 +1990,26 @@ window.addEventListener('resize',scale);
       var v = parseFloat(vol.value);
       obLots.textContent = isNaN(v)?'0.00':v.toFixed(2);
     }
-    /* Slider — position in current bar's [low, high] range */
-    var last = kData[kData.length-1];
-    if(last){
-      var rng = last.high - last.low;
-      var pct = rng>0 ? Math.max(0,Math.min(100,((mid-last.low)/rng)*100)) : 50;
-      var g = document.getElementById('rpTrackGreen');
-      var r = document.getElementById('rpTrackRed');
-      if(g) g.style.width = pct + '%';
-      if(r) r.style.width = (100 - pct) + '%';
-      /* Countdown — pips change vs current bar's open */
-      var diff = mid - last.open;
-      var pips = Math.round(diff * 10);
-      var cd = document.getElementById('rpCountdown');
-      if(cd){
-        cd.textContent = (pips>=0?'+':'') + pips;
-        cd.classList.toggle('up', pips>0);
-        cd.classList.toggle('down', pips<0);
+    /* Slider + countdown — throttled to 100ms */
+    var now = Date.now();
+    if(now - (window._rpSliderLastTs||0) >= 100){
+      window._rpSliderLastTs = now;
+      var last = kData[kData.length-1];
+      if(last){
+        var rng = last.high - last.low;
+        var pct = rng>0 ? Math.max(0,Math.min(100,((mid-last.low)/rng)*100)) : 50;
+        var g = document.getElementById('rpTrackGreen');
+        var r = document.getElementById('rpTrackRed');
+        if(g) g.style.width = pct + '%';
+        if(r) r.style.width = (100 - pct) + '%';
+        var diff = mid - last.open;
+        var pips = Math.round(diff * 10);
+        var cd = document.getElementById('rpCountdown');
+        if(cd){
+          cd.textContent = (pips>=0?'+':'') + pips;
+          cd.classList.toggle('up', pips>0);
+          cd.classList.toggle('down', pips<0);
+        }
       }
     }
     updateCoMain();
@@ -2025,6 +2042,7 @@ window.addEventListener('resize',scale);
 
   window.refreshChart = function(btn){
     if(ws){ try{ws.close();}catch(e){} ws=null; }
+    if(wsTick){ try{wsTick.close();}catch(e){} wsTick=null; }
     kData=[];
     offset=0;
     barW=9;
