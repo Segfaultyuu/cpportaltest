@@ -86,7 +86,7 @@ body.dark-mode .tn-ic-theme .tn-ic-sun{display:block;}
 .mrow-l>div{min-width:0;flex:1;}
 /* Figma: symbol name fs=12 fw=500 #282d34, sub fs=12 fw=500 #7a8699 */
 .sym-n{font-size:12px;font-weight:500;color:#282d34;display:block;}
-.sym-s{font-size:12px;font-weight:500;color:#7a8699;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
+.sym-s{font-size:12px;font-weight:500;color:#7a8699;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
 /* Figma: sell/buy prices fs=12 fw=500 #282d34 */
 .mrow-sell,.mrow-buy{width:66px;text-align:right;font-size:12px;font-weight:500;color:#282d34;}
 /* Figma: %change fs=12 fw=500 #14b273 / #ff2c40 */
@@ -261,13 +261,16 @@ body.dark-mode .wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;
 .rp-prices{margin:16px 16px 0;width:288px;height:42px;display:flex;align-items:stretch;position:relative;gap:18px;}
 .rp-sell{flex:1;background:#ff2c40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;clip-path:path('M 0 8 Q 0 0 8 0 L 127 0 Q 135 0 133 8 L 125 34 Q 123 42 115 42 L 8 42 Q 0 42 0 34 Z');padding-right:8px;}
 .rp-buy{flex:1;background:#f4f5f6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;clip-path:path('M 20 0 Q 12 0 10 8 L 2 34 Q 0 42 8 42 L 127 42 Q 135 42 135 34 L 135 8 Q 135 0 127 0 Z');padding-left:8px;}
+.rp-sell:not(.active){background:#f4f5f6;}
+.rp-sell:not(.active) .rp-sv,.rp-sell:not(.active) .rp-sl{color:#7a8699;}
 .rp-sell.active{background:#ff2c40;}.rp-buy.active{background:#00b565;}
-.rp-buy.active .rp-sv{color:#fff;}.rp-buy.active .rp-sl{color:#fff;}
+.rp-sell.active .rp-sv,.rp-sell.active .rp-sl{color:#fff;}
+.rp-buy.active .rp-sv,.rp-buy.active .rp-sl{color:#fff;}
 .rp-spread{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:400;color:#7a8699;z-index:2;white-space:nowrap;}
 .rp-sv{font-size:14px;font-weight:600;color:#fff;line-height:16px;}
 .rp-sl{font-size:12px;font-weight:500;color:#fff;line-height:14px;}
-.rp-buy .rp-sv{color:#7a8699;}
-.rp-buy .rp-sl{color:#7a8699;}
+.rp-buy:not(.active){background:#f4f5f6;}
+.rp-buy:not(.active) .rp-sv,.rp-buy:not(.active) .rp-sl{color:#7a8699;}
 .rp-slider-wrap{padding:16px 16px 0;display:flex;align-items:center;gap:8px;}
 .rp-track-wrap{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
 .rp-track{width:100%;height:3px;display:flex;gap:2px;}
@@ -282,6 +285,16 @@ body.dark-mode .wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;
 .rotab.active{color:#0a36c7;font-weight:600;border-bottom-color:#0a36c7;}
 .rp-field{margin:12px 16px 0;width:288px;}
 .rp-input-box{width:288px;height:48px;border:1px solid #e8e9ea;border-radius:8px;display:flex;align-items:stretch;position:relative;}
+/* Lighten inline divider borders inside the input boxes (light mode → near-white) */
+.rp-input-box [style*="border-right: 1px solid #e8e9ea"],
+.rp-input-box [style*="border-right:1px solid #e8e9ea"],
+.rp-input-box [style*="border-left: 1px solid #e8e9ea"],
+.rp-input-box [style*="border-left:1px solid #e8e9ea"]{border-color:#f8f9fa !important;}
+.rp-tpsl-inputs [style*="border-right: 1px solid #e8e9ea"],
+.rp-tpsl-inputs [style*="border-right:1px solid #e8e9ea"],
+.rp-tpsl-inputs [style*="border-left: 1px solid #e8e9ea"],
+.rp-tpsl-inputs [style*="border-left:1px solid #e8e9ea"]{border-color:#f8f9fa !important;}
+.rp-input-box .rp-unit-drop{border-left-color:#f8f9fa;}
 .rp-input-box:focus-within{border-color:#0a36c7;}
 .rp-input-box.error{border-color:#ff2c40;}
 .rp-input-box.filled{background:#f4f5f6;border-color:#f4f5f6;}
@@ -1371,10 +1384,7 @@ body.dark-mode .order-toast-close:hover{color:#C2C7D0;}
         </svg>
       </div>
       <div class="pb-tool" id="pbSettingsBtn" title="Settings" onclick="togglePbSettings(event)">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M9 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.4"/>
-          <path d="M14.5 9c0-.4 0-.8-.1-1.2l1.4-1.1-1.4-2.4-1.7.5c-.6-.5-1.3-.9-2-1.1L10.4 2h-2.8l-.3 1.7c-.7.2-1.4.6-2 1.1l-1.7-.5L2.2 6.7l1.4 1.1c-.1.4-.1.8-.1 1.2s0 .8.1 1.2l-1.4 1.1 1.4 2.4 1.7-.5c.6.5 1.3.9 2 1.1l.3 1.7h2.8l.3-1.7c.7-.2 1.4-.6 2-1.1l1.7.5 1.4-2.4-1.4-1.1c.1-.4.1-.8.1-1.2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
-        </svg>
+        <img src="images/k线/Settings.svg" width="18" height="18" alt=""/>
       </div>
       <div style="position:relative;">
         <button class="pb-closeall" id="pbCloseAllBtn" onclick="togglePbCloseMenu(event)">Close All <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
@@ -2495,7 +2505,8 @@ function toggleChk(el){
   el.classList.toggle('checked',!isChecked);
   const img=el.querySelector('.cc-chk-box');
   img.src=!isChecked?'images/Square Check Selected.svg':'images/Square Not selected.svg';
-  el.querySelector('.cc-chk-txt').style.color=!isChecked?'#0a36c7':'#282d34';
+  /* Let CSS handle text color via .cc-chk-item.checked .cc-chk-txt */
+  el.querySelector('.cc-chk-txt').style.color='';
   if(typeof window.tvRedraw==='function') window.tvRedraw();
 }
 function selectChartType(el,e){
@@ -2649,16 +2660,15 @@ function setSide(side){
   if(side==='sell'){
     btn.textContent='Sell';btn.style.background='#ff2c40';
     sellEl.classList.add('active');buyEl.classList.remove('active');
-    sellEl.style.background='';buyEl.style.background='#f4f5f6';
-    sellEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='';});
-    buyEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='#7a8699';});
   }else{
     btn.textContent='Buy';btn.style.background='#00b565';
     buyEl.classList.add('active');sellEl.classList.remove('active');
-    buyEl.style.background='';sellEl.style.background='#f4f5f6';
-    buyEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='';});
-    sellEl.querySelectorAll('.rp-sv,.rp-sl').forEach(el=>{el.style.color='#7a8699';});
   }
+  /* clear any stale inline styles so CSS (incl. dark-mode) can drive colors */
+  [sellEl,buyEl].forEach(el=>{
+    el.style.background='';
+    el.querySelectorAll('.rp-sv,.rp-sl').forEach(x=>{x.style.color='';});
+  });
 }
 function toggleTpsl(){
   const cb=document.getElementById('tpslCb');

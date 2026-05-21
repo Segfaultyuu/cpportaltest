@@ -110,6 +110,7 @@ body.dark-mode .cc-toolbar { background: #1D1D21; }
 body.dark-mode .tf3-btn { color: #7A8699; }
 body.dark-mode .tf3-btn:hover:not(.active) { background: rgba(0,240,255,0.08); color: #00F0FF; }
 body.dark-mode .tf3-btn.active { background: rgba(0,240,255,0.08); color: #00F0FF; }
+body.dark-mode .tf3-btn.active svg path { stroke: #00F0FF; }
 
 body.dark-mode .cc-ind-ic:hover,
 body.dark-mode .cc-ind-ic.active { background: rgba(0,240,255,0.08); }
@@ -158,9 +159,35 @@ body.dark-mode .cc-ind-item-txt { color: #C2C7D0; }
 body.dark-mode .cc-ind-item.sel .cc-ind-item-txt { color: #00F0FF; }
 body.dark-mode .cc-chk-txt { color: #C2C7D0; }
 body.dark-mode .cc-chk-item.checked .cc-chk-txt { color: #00F0FF; }
-/* Dark mode: replace brand-blue checkbox image with green via CSS filter */
-body.dark-mode .cc-chk-item.checked .cc-chk-box {
-  filter: brightness(0) saturate(100%) invert(58%) sepia(96%) saturate(414%) hue-rotate(102deg) brightness(96%) contrast(102%);
+/* Dark mode: hide the PNG checkbox and draw a CSS box on the parent (pseudos don't work on <img>) */
+body.dark-mode .cc-chk-item { position: relative; }
+body.dark-mode .cc-chk-item .cc-chk-box { visibility: hidden; }
+body.dark-mode .cc-chk-item::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1.5px solid #515867;
+  background: transparent;
+  box-sizing: border-box;
+}
+body.dark-mode .cc-chk-item.checked::before {
+  border-color: #00b565;
+  background: #00b565;
+}
+body.dark-mode .cc-chk-item.checked::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 8px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'><path d='M1 4l3 3 5-6' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
 }
 body.dark-mode .cc-chk-divider { background: #2D3033; }
 
@@ -198,9 +225,12 @@ body.dark-mode .rp-spread {
   border-color: #2D3033;
   color: #7A8699;
 }
-body.dark-mode .rp-buy { background: #26262B; }
-body.dark-mode .rp-buy .rp-sv,
-body.dark-mode .rp-buy .rp-sl { color: #C2C7D0; }
+body.dark-mode .rp-buy:not(.active) { background: #34343B; }
+body.dark-mode .rp-buy:not(.active) .rp-sv,
+body.dark-mode .rp-buy:not(.active) .rp-sl { color: #C2C7D0; }
+body.dark-mode .rp-sell:not(.active) { background: #34343B; }
+body.dark-mode .rp-sell:not(.active) .rp-sv,
+body.dark-mode .rp-sell:not(.active) .rp-sl { color: #C2C7D0; }
 
 body.dark-mode .rp-countdown { color: #515867; }
 body.dark-mode .rp-slider {
@@ -272,13 +302,25 @@ body.dark-mode .rp-info { border-top-color: #2D3033; }
 body.dark-mode .rp-ilbl { color: #7A8699; }
 body.dark-mode .rp-ival { color: #C2C7D0; }
 
-/* Inline border overrides inside .rp inputs */
+/* Inline border overrides inside .rp inputs (dark mode → matches field bg) */
 body.dark-mode .rp-input-box [style*="border-right: 1px solid #e8e9ea"],
 body.dark-mode .rp-input-box [style*="border-right:1px solid #e8e9ea"],
 body.dark-mode .rp-input-box [style*="border-left: 1px solid #e8e9ea"],
-body.dark-mode .rp-input-box [style*="border-left:1px solid #e8e9ea"] {
-  border-color: #2D3033 !important;
+body.dark-mode .rp-input-box [style*="border-left:1px solid #e8e9ea"],
+body.dark-mode .rp-tpsl-inputs [style*="border-right: 1px solid #e8e9ea"],
+body.dark-mode .rp-tpsl-inputs [style*="border-right:1px solid #e8e9ea"],
+body.dark-mode .rp-tpsl-inputs [style*="border-left: 1px solid #e8e9ea"],
+body.dark-mode .rp-tpsl-inputs [style*="border-left:1px solid #e8e9ea"] {
+  border-color: #26262B !important;
 }
+body.dark-mode .rp-input-box.filled [style*="border-right: 1px solid #e8e9ea"],
+body.dark-mode .rp-input-box.filled [style*="border-right:1px solid #e8e9ea"],
+body.dark-mode .rp-input-box.filled [style*="border-left: 1px solid #e8e9ea"],
+body.dark-mode .rp-input-box.filled [style*="border-left:1px solid #e8e9ea"] {
+  border-color: #34343B !important;
+}
+body.dark-mode .rp-input-box .rp-unit-drop { border-left-color: #26262B; }
+body.dark-mode .rp-input-box.filled .rp-unit-drop { border-left-color: #34343B; }
 
 /* ── Assets panel ───────────────────────────────────────── */
 body.dark-mode .ap {
