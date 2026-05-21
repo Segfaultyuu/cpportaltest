@@ -258,11 +258,9 @@ body.dark-mode .wls-row.checked .wls-cb{background:#00b565;border-color:#00b565;
 
 /* ── RIGHT ORDER PANEL  1600,80 320×677 ─────────── */
 .rp{position:absolute;left:1600px;top:80px;width:320px;height:673px;background:#fff;overflow:hidden;}
-.rp-prices{margin:16px 16px 0;width:288px;height:42px;display:flex;align-items:stretch;position:relative;gap:28px;}
-.rp-sell{flex:1;background:#ff2c40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border-radius:8px;transform:skewX(-8deg);}
-.rp-sell>*{transform:skewX(8deg);}
-.rp-buy{flex:1;background:#f4f5f6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border-radius:8px;transform:skewX(-8deg);}
-.rp-buy>*{transform:skewX(8deg);}
+.rp-prices{margin:16px 16px 0;width:288px;height:42px;display:flex;align-items:stretch;position:relative;gap:18px;}
+.rp-sell{flex:1;background:#ff2c40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;clip-path:path('M 0 8 Q 0 0 8 0 L 127 0 Q 135 0 133 8 L 125 34 Q 123 42 115 42 L 8 42 Q 0 42 0 34 Z');padding-right:8px;}
+.rp-buy{flex:1;background:#f4f5f6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;clip-path:path('M 20 0 Q 12 0 10 8 L 2 34 Q 0 42 8 42 L 127 42 Q 135 42 135 34 L 135 8 Q 135 0 127 0 Z');padding-left:8px;}
 .rp-sell.active{background:#ff2c40;}.rp-buy.active{background:#00b565;}
 .rp-buy.active .rp-sv{color:#fff;}.rp-buy.active .rp-sl{color:#fff;}
 .rp-spread{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:400;color:#7a8699;z-index:2;white-space:nowrap;}
