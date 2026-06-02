@@ -22,6 +22,9 @@
     }
     .sidebar.collapsed .logo-wrap { width: 34px; }
     .logo-wrap img { height: 24px; width: auto; display: block; }
+    .logo-wrap .logo-dark { display: none; }
+    body.dark-mode .logo-wrap .logo-light { display: none; }
+    body.dark-mode .logo-wrap .logo-dark { display: block; }
     .sidebar-nav {
       flex: 1; padding: 8px; display: flex; flex-direction: column;
       gap: 2px; overflow-y: auto; overflow-x: hidden;
@@ -243,6 +246,58 @@
     .flyout-item:hover { background: #f9f9f9; }
     .flyout-item.active { background: #e8f1ff; color: #0a36c7; font-weight: 600; }
     .sidebar-bottom { padding: 8px; border-top: 1px solid var(--border); flex-shrink: 0; }
+
+    /* ── Dark theme (toggled via topbar) ───────────────────── */
+    body.dark-mode .sidebar { background: #1D1D21; border-right-color: #2D3033; }
+    body.dark-mode .sidebar-logo { border-bottom-color: #2D3033; }
+    body.dark-mode .sidebar-bottom { border-top-color: #2D3033; }
+    body.dark-mode .nav-item { background: transparent; color: #FFFFFF; }
+    body.dark-mode .nav-item:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .nav-item:active { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .nav-item.active,
+    body.dark-mode .nav-item.active:active {
+      background: rgba(0,240,255,0.10); color: #00F0FF;
+    }
+    body.dark-mode .ib-nav { --stroke-0: #C2C7D0; --fill-0: #C2C7D0; --icon-on: #03081a; }
+    body.dark-mode .ib-nav .nav-item.active { --stroke-0: #00F0FF; --fill-0: #00F0FF; --icon-on: #03081a; }
+    body.dark-mode .nav-divider { background: #2D3033; }
+    body.dark-mode .submenu-arrow { color: #515867; }
+    body.dark-mode .submenu-item { color: #C2C7D0; }
+    body.dark-mode .submenu-item:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .submenu-item.active { color: #00F0FF; }
+    body.dark-mode .nav-flyout {
+      background: #1D1D21; border-color: #2D3033;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    body.dark-mode .flyout-title { color: #FFFFFF; border-bottom-color: #2D3033; }
+    body.dark-mode .flyout-item { color: #C2C7D0; }
+    body.dark-mode .flyout-item:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .flyout-item.active { background: rgba(0,240,255,0.10); color: #00F0FF; }
+    body.dark-mode #sidebar-tooltip {
+      background: #26262B; color: #FFFFFF;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    /* Mobile */
+    body.dark-mode .mobile-menu-header { background: #1D1D21; }
+    body.dark-mode .mobile-close-btn { color: #FFFFFF; }
+    body.dark-mode .mobile-user-name { color: #FFFFFF; }
+    body.dark-mode .mobile-user-nick,
+    body.dark-mode .mobile-user-id { color: #C2C7D0; }
+    body.dark-mode .mobile-toggle-wrap { background: #26262B; }
+    body.dark-mode .mobile-toggle-btn { color: #C2C7D0; }
+    body.dark-mode .mobile-toggle-btn.active { background: rgba(0,240,255,0.10); color: #00F0FF; }
+    body.dark-mode .mobile-lang-row,
+    body.dark-mode .mobile-logout-row { color: #FFFFFF; border-top-color: #2D3033; }
+    body.dark-mode .mobile-tabbar { background: #1D1D21; border-top-color: #2D3033; }
+    body.dark-mode .tabbar-item { color: #7A8699; }
+    body.dark-mode .tabbar-item.active { color: #00F0FF; }
+    /* Invert sidebar nav PNG icons (default ones are dark on light) */
+    body.dark-mode .sidebar .nav-icon img.icon-def,
+    body.dark-mode .sidebar .tabbar-icon img,
+    body.dark-mode .sidebar .mobile-lang-flag {
+      filter: invert(0.85) hue-rotate(180deg);
+    }
+    body.dark-mode .sidebar .nav-item.active .nav-icon img.icon-sel { filter: none; }
   `;
   document.head.appendChild(style);
 
@@ -349,7 +404,10 @@
         </div>
       </div>
       <div class="sidebar-logo">
-        <div class="logo-wrap"><img src="images/logo.png" alt="Logo" /></div>
+        <div class="logo-wrap">
+          <img class="logo-light" src="images/logo.png" alt="Logo" />
+          <img class="logo-dark" src="images/logo_dark.png" alt="Logo" />
+        </div>
       </div>
       <nav class="sidebar-nav client-nav" id="client-sidebar-nav">
         ${navItem('index.html',   'Home.png',           'Home-selected.png',           'Home',         'Home')}
@@ -417,16 +475,16 @@
         <a class="nav-item${page === 'ib-dashboard.html' ? ' active' : ''}" href="ib-dashboard.html">
           <span class="nav-icon">
             <svg class="icon-def" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3.5" width="5.321" height="5.321" rx="1.077" stroke="#282d34" stroke-width="1.3"/>
-              <rect x="11.68" y="3.5" width="5.321" height="5.321" rx="1.077" stroke="#282d34" stroke-width="1.3"/>
-              <rect x="3" y="12.18" width="5.321" height="5.321" rx="1.077" stroke="#282d34" stroke-width="1.3"/>
-              <rect x="11.68" y="12.18" width="5.321" height="5.321" rx="1.077" stroke="#282d34" stroke-width="1.3"/>
+              <rect x="3" y="3.5" width="5.321" height="5.321" rx="1.077" stroke="var(--stroke-0,#282d34)" stroke-width="1.3"/>
+              <rect x="11.68" y="3.5" width="5.321" height="5.321" rx="1.077" stroke="var(--stroke-0,#282d34)" stroke-width="1.3"/>
+              <rect x="3" y="12.18" width="5.321" height="5.321" rx="1.077" stroke="var(--stroke-0,#282d34)" stroke-width="1.3"/>
+              <rect x="11.68" y="12.18" width="5.321" height="5.321" rx="1.077" stroke="var(--stroke-0,#282d34)" stroke-width="1.3"/>
             </svg>
             <svg class="icon-sel" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3.5" width="5.321" height="5.321" rx="1.077" fill="#0a36c7" stroke="#0a36c7" stroke-width="1.3"/>
-              <rect x="11.68" y="3.5" width="5.321" height="5.321" rx="1.077" fill="#0a36c7" stroke="#0a36c7" stroke-width="1.3"/>
-              <rect x="3" y="12.18" width="5.321" height="5.321" rx="1.077" fill="#0a36c7" stroke="#0a36c7" stroke-width="1.3"/>
-              <rect x="11.68" y="12.18" width="5.321" height="5.321" rx="1.077" fill="#0a36c7" stroke="#0a36c7" stroke-width="1.3"/>
+              <rect x="3" y="3.5" width="5.321" height="5.321" rx="1.077" fill="var(--fill-0,#0a36c7)" stroke="var(--stroke-0,#0a36c7)" stroke-width="1.3"/>
+              <rect x="11.68" y="3.5" width="5.321" height="5.321" rx="1.077" fill="var(--fill-0,#0a36c7)" stroke="var(--stroke-0,#0a36c7)" stroke-width="1.3"/>
+              <rect x="3" y="12.18" width="5.321" height="5.321" rx="1.077" fill="var(--fill-0,#0a36c7)" stroke="var(--stroke-0,#0a36c7)" stroke-width="1.3"/>
+              <rect x="11.68" y="12.18" width="5.321" height="5.321" rx="1.077" fill="var(--fill-0,#0a36c7)" stroke="var(--stroke-0,#0a36c7)" stroke-width="1.3"/>
             </svg>
           </span>
           <span class="nav-label">Dashboard</span>
@@ -435,14 +493,14 @@
         <a class="nav-item${page === 'ib-report.html' ? ' active' : ''}" href="ib-report.html">
           <span class="nav-icon">
             <svg class="icon-def" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.5 2.59961H15.5C16.2732 2.59961 16.9004 3.2268 16.9004 4V16C16.9004 16.7732 16.2732 17.4004 15.5 17.4004H4.5C3.7268 17.4004 3.09961 16.7732 3.09961 16V4C3.09961 3.2268 3.7268 2.59961 4.5 2.59961Z" stroke="#282D34" stroke-width="1.2"/>
-              <path d="M7 7H13" stroke="#282D34" stroke-width="1.4" stroke-linecap="round"/>
-              <path d="M7 10.3334H10.3333" stroke="#282D34" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M4.5 2.59961H15.5C16.2732 2.59961 16.9004 3.2268 16.9004 4V16C16.9004 16.7732 16.2732 17.4004 15.5 17.4004H4.5C3.7268 17.4004 3.09961 16.7732 3.09961 16V4C3.09961 3.2268 3.7268 2.59961 4.5 2.59961Z" stroke="var(--stroke-0,#282D34)" stroke-width="1.2"/>
+              <path d="M7 7H13" stroke="var(--stroke-0,#282D34)" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M7 10.3334H10.3333" stroke="var(--stroke-0,#282D34)" stroke-width="1.4" stroke-linecap="round"/>
             </svg>
             <svg class="icon-sel" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2.5 4C2.5 2.89543 3.39543 2 4.5 2H15.5C16.6046 2 17.5 2.89543 17.5 4V16C17.5 17.1046 16.6046 18 15.5 18H4.5C3.39543 18 2.5 17.1046 2.5 16V4Z" fill="#0a36c7"/>
-              <path d="M7 7H13" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-              <path d="M7 10.3334H10.3333" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M2.5 4C2.5 2.89543 3.39543 2 4.5 2H15.5C16.6046 2 17.5 2.89543 17.5 4V16C17.5 17.1046 16.6046 18 15.5 18H4.5C3.39543 18 2.5 17.1046 2.5 16V4Z" fill="var(--fill-0,#0a36c7)"/>
+              <path d="M7 7H13" stroke="var(--icon-on,white)" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M7 10.3334H10.3333" stroke="var(--icon-on,white)" stroke-width="1.4" stroke-linecap="round"/>
             </svg>
           </span>
           <span class="nav-label">IB Report</span>
