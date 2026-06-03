@@ -273,9 +273,15 @@
       box-shadow: var(--shadow-card);
     }
     .ce-card-icon {
-      width: 36px; height: 36px;
+      width: 48px; height: 48px;
       border-radius: 50%;
-      background: var(--blue-light);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(145deg, #f5f8ff 0%, #dbe6f8 45%, #b8c6df 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.9),
+        inset 0 -1px 2px rgba(80,100,140,0.25),
+        0 1px 2px rgba(20,40,90,0.12);
       display: flex; align-items: center; justify-content: center;
       color: var(--blue);
       margin-bottom: 8px;
@@ -366,15 +372,30 @@
     .ce-stop-icon {
       width: 48px; height: 48px;
       border-radius: 50%;
-      background: var(--bg-3);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 50%),
+        linear-gradient(145deg, #f0f3f8 0%, #d4dae4 50%, #a8b2c2 100%);
       border: 2px solid #fff;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.9),
+        inset 0 -1px 2px rgba(60,80,110,0.3),
+        0 2px 4px rgba(20,40,90,0.15);
       display: flex; align-items: center; justify-content: center;
       color: var(--text-secondary);
       position: relative;
       z-index: 1;
     }
     .ce-stop-icon svg { width: 20px; height: 20px; }
-    .ce-stop.reached .ce-stop-icon { background: var(--blue); color: #fff; }
+    .ce-stop.reached .ce-stop-icon {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 50%),
+        linear-gradient(145deg, #3d70f0 0%, #0a36c7 55%, #062497 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.4),
+        inset 0 -1px 2px rgba(0,0,0,0.25),
+        0 2px 6px rgba(10,54,199,0.4);
+      color: #fff;
+    }
     .ce-stop-prize { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-top: 4px; }
     .ce-stop-pts { font-size: 12px; color: var(--text-secondary); }
 
@@ -406,7 +427,13 @@
     .ce-how-icon {
       width: 48px; height: 48px;
       border-radius: 50%;
-      background: var(--blue-light);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(145deg, #f5f8ff 0%, #dbe6f8 45%, #b8c6df 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.9),
+        inset 0 -1px 2px rgba(80,100,140,0.25),
+        0 2px 4px rgba(20,40,90,0.12);
       display: flex; align-items: center; justify-content: center;
       color: var(--blue);
       margin-bottom: 16px;
@@ -1346,7 +1373,16 @@
       border-color: #2D3033;
       box-shadow: none;
     }
-    body.dark-mode .ce-card-icon { background: rgba(0,240,255,0.10); color: var(--cyan); }
+    body.dark-mode .ce-card-icon {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(145deg, #3a4452 0%, #2a323d 50%, #1a1f27 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.12),
+        inset 0 -1px 2px rgba(0,0,0,0.4),
+        0 1px 2px rgba(0,0,0,0.4);
+      color: var(--cyan);
+    }
     body.dark-mode .ce-card-tag {
       color: var(--cyan);
       background: rgba(0,240,255,0.12);
@@ -1377,14 +1413,42 @@
     body.dark-mode .ce-milestone-sub { color: #C2C7D0; }
     body.dark-mode .ce-milestone-sub b { color: var(--cyan); }
     body.dark-mode .ce-milestone-track { background: #2D3033; }
-    body.dark-mode .ce-stop-icon { background: #26262B; border-color: #1D1D21; color: #7A8699; }
-    body.dark-mode .ce-stop.reached .ce-stop-icon { background: var(--cyan); color: #03081a; }
+    body.dark-mode .ce-stop-icon {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(145deg, #3a4452 0%, #2a323d 50%, #1a1f27 100%);
+      border-color: #1D1D21;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.12),
+        inset 0 -1px 2px rgba(0,0,0,0.4),
+        0 2px 4px rgba(0,0,0,0.4);
+      color: #7A8699;
+    }
+    body.dark-mode .ce-stop.reached .ce-stop-icon {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 50%),
+        linear-gradient(145deg, #4ff7ff 0%, #00f0ff 55%, #00b4c4 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.5),
+        inset 0 -1px 2px rgba(0,0,0,0.2),
+        0 2px 6px rgba(0,240,255,0.4);
+      color: #03081a;
+    }
     body.dark-mode .ce-stop-prize { color: #FFFFFF; }
     body.dark-mode .ce-stop-pts { color: #7A8699; }
 
     /* How it works */
     body.dark-mode .ce-how::before { background: #2D3033; }
-    body.dark-mode .ce-how-icon { background: rgba(0,240,255,0.10); color: var(--cyan); }
+    body.dark-mode .ce-how-icon {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 45%),
+        linear-gradient(145deg, #3a4452 0%, #2a323d 50%, #1a1f27 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.12),
+        inset 0 -1px 2px rgba(0,0,0,0.4),
+        0 2px 4px rgba(0,0,0,0.4);
+      color: var(--cyan);
+    }
     body.dark-mode .ce-how-title { color: #FFFFFF; }
     body.dark-mode .ce-how-desc { color: #7A8699; }
 
@@ -1567,31 +1631,142 @@
       .ce-grid { grid-template-columns: repeat(2, 1fr); }
       .ce-stats { grid-template-columns: 1fr 1fr; }
       .ce-stats > .ce-stat:last-child { grid-column: span 2; }
+      .ce-progress-track { flex: 1 1 200px; min-width: 160px; }
     }
 
     /* ─── Phone ────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
       .content { padding: 20px 16px 40px; gap: 20px; }
+
+      /* Hero */
       .ce-hero { padding: 28px 0 24px; }
       .ce-hero-inner { padding: 0 16px; }
       .ce-hero-level { font-size: 48px; line-height: 56px; margin-bottom: 12px; }
-      .ce-hero-greeting { font-size: 14px; }
+      .ce-hero-greeting { font-size: 14px; margin-bottom: 12px; }
       .ce-hero-art { display: none; }
-      .ce-stats { margin-top: 28px; grid-template-columns: 1fr; }
+      .ce-hero-progress {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        column-gap: 12px;
+        row-gap: 8px;
+        margin-bottom: 20px;
+        flex-wrap: initial;
+      }
+      .ce-progress-days {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .ce-progress-pts {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 13px;
+        white-space: nowrap;
+        text-align: right;
+      }
+      .ce-progress-track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        flex: initial;
+        width: 100%;
+        height: 6px;
+      }
+      .ce-earn-btn { width: 100%; justify-content: center; height: 44px; }
+
+      /* Stat cards */
+      .ce-stats { margin-top: 24px; grid-template-columns: 1fr; gap: 12px; }
       .ce-stats > .ce-stat:last-child { grid-column: auto; }
-      .ce-stat { padding: 14px 16px; }
-      .ce-stat-val { font-size: 20px; }
+      .ce-stat { padding: 14px 16px; border-radius: 10px; }
+      .ce-stat-lbl { font-size: 13px; }
+      .ce-stat-val { font-size: 20px; line-height: 28px; }
+      .ce-stat-val .unit { font-size: 12px; }
+      .ce-stat-r { font-size: 12px; }
+
+      /* Section / tabs */
       .ce-section-title { font-size: 20px; line-height: 28px; }
-      .ce-level-tabs { gap: 18px; padding-bottom: 0; }
+      .ce-section-link { margin-bottom: 20px; font-size: 13px; }
+      .ce-level-tabs {
+        gap: 20px;
+        padding-bottom: 0;
+        margin-bottom: 20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .ce-level-tabs::-webkit-scrollbar { display: none; }
+      .ce-level-tab { font-size: 13px; padding: 6px 2px; }
+
+      /* Benefit cards */
       .ce-grid { grid-template-columns: 1fr; gap: 12px; }
-      .ce-card { padding: 18px 18px 16px; min-height: 120px; }
-      .ce-milestone { padding: 24px 18px 28px; border-radius: 12px; }
-      .ce-milestone-hdr { flex-direction: column; align-items: flex-start; gap: 6px; }
-      .ce-how { grid-template-columns: 1fr; gap: 32px; }
-      .ce-how-step:not(:last-child)::after { display: none; }
-      .ce-how-desc { max-width: 100%; }
-      .ce-faq-q { font-size: 14px; }
+      .ce-card { padding: 18px 18px 16px; min-height: 0; border-radius: 10px; }
+      .ce-card-icon { width: 40px; height: 40px; margin-bottom: 6px; }
+      .ce-card-title { font-size: 15px; line-height: 22px; }
+      .ce-card-desc { font-size: 12px; }
+      .ce-card-cta { height: 32px; font-size: 12px; padding: 0 12px; margin-top: 12px; }
+
+      /* Tier milestone — stack stops vertically for clarity */
+      .ce-milestone { padding: 22px 16px 24px; border-radius: 12px; }
+      .ce-milestone-hdr { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 16px; }
+      .ce-milestone-title { font-size: 18px; line-height: 24px; }
+      .ce-milestone-track {
+        margin: 24px 24px 0;
+      }
+      .ce-milestone-stops {
+        margin-top: -22px;
+      }
+      .ce-stop { gap: 4px; }
+      .ce-stop-icon { width: 40px; height: 40px; }
+      .ce-stop-icon svg { width: 16px; height: 16px; }
+      .ce-stop-prize { font-size: 12px; line-height: 16px; }
+      .ce-stop-pts { font-size: 11px; line-height: 14px; }
+
+      /* How it works — stack vertically, hide horizontal connector */
+      .ce-how {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 4px 8px;
+      }
+      .ce-how::before { display: none; }
+      .ce-how-step,
+      .ce-how-step:nth-child(2),
+      .ce-how-step:last-child {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+        gap: 14px;
+      }
+      .ce-how-icon {
+        flex: 0 0 40px;
+        width: 40px; height: 40px;
+        margin-bottom: 0;
+      }
+      .ce-how-icon svg { width: 18px; height: 18px; }
+      .ce-how-step > div:last-child { flex: 1; }
+      .ce-how-title { font-size: 15px; margin-bottom: 4px; }
+      .ce-how-desc { max-width: 100%; font-size: 13px; line-height: 20px; }
+
+      /* FAQ */
+      .ce-faq-item { padding: 16px 0; }
+      .ce-faq-q { font-size: 14px; line-height: 20px; gap: 12px; }
+      .ce-faq-toggle { flex: 0 0 20px; width: 20px; height: 20px; }
+      .ce-faq-a { font-size: 13px; line-height: 20px; }
+
+      /* Modals — full width on mobile */
+      .li-modal-card,
+      .rh-modal-card,
+      .sra-modal-card { max-width: calc(100vw - 24px); border-radius: 12px; }
+    }
+
+    /* ─── Small phone ──────────────────────────────────────── */
+    @media (max-width: 380px) {
+      .ce-hero-level { font-size: 40px; line-height: 48px; }
+      .ce-stop-prize { font-size: 11px; }
+      .ce-stop-pts { display: none; }
+      .ce-stop-icon { width: 36px; height: 36px; }
+      .ce-milestone-track { margin: 20px 18px 0; }
+      .ce-milestone-stops { margin-top: -20px; }
     }
   </style>
 </head>
