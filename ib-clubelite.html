@@ -144,7 +144,7 @@
       gap: 6px;
       height: 40px;
       padding: 0 16px;
-      background: var(--blue);
+      background: linear-gradient(-74deg, #0a36c7 4%, #1e68f6 105%);
       border: 0;
       border-radius: 8px;
       color: #fff;
@@ -152,9 +152,9 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: background .15s;
+      transition: filter .15s, box-shadow .15s;
     }
-    .ce-earn-btn:hover { background: #2f5ad2; }
+    .ce-earn-btn:hover { filter: brightness(1.08); box-shadow: 0 4px 12px rgba(10,54,199,0.30); }
 
     .ce-hero-art {
       position: absolute;
@@ -282,10 +282,14 @@
     }
     .ce-card-tag {
       position: absolute;
-      top: 16px; right: 18px;
+      top: 0; right: 0;
       font-size: 12px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--blue);
+      background: var(--blue-light);
+      padding: 4px 10px;
+      border-radius: 0 12px 0 8px;
+      line-height: 18px;
     }
     .ce-card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); line-height: 24px; }
     .ce-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 18px; }
@@ -445,6 +449,883 @@
     }
     .ce-faq-item.open .ce-faq-a { max-height: 200px; padding-top: 12px; }
 
+    /* ─── Level Introduction Modal ─────────────────────────── */
+    .li-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.45);
+    }
+    .li-modal.open { display: flex; }
+    .li-modal-card {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      max-height: calc(100vh - 48px);
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .li-modal-header {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .li-modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--text-primary);
+    }
+    .li-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .li-tnc {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--blue);
+      cursor: pointer;
+    }
+    .li-tnc:hover { opacity: 0.75; }
+    .li-close {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .li-close:hover { background: var(--bg-3); color: var(--text-primary); }
+
+    .li-modal-body {
+      flex: 1 1 auto;
+      overflow: auto;
+      padding: 0;
+    }
+    .li-table {
+      width: 100%;
+      min-width: 1140px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      font-family: 'Roboto', sans-serif;
+    }
+    .li-table col.li-col-benefit { width: 280px; }
+    .li-table col.li-col-lv { width: 80px; }
+    .li-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--bg-3);
+      padding: 14px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .li-table thead th.li-th-benefit {
+      text-align: left;
+      padding-left: 28px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+    .li-lv-name {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 18px;
+    }
+    .li-lv-pts {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 16px;
+      margin-top: 2px;
+    }
+    .li-table tbody td {
+      padding: 14px 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      text-align: center;
+      border-bottom: 1px solid var(--divider);
+      line-height: 20px;
+      vertical-align: middle;
+    }
+    .li-table tbody tr:last-child td { border-bottom: 0; }
+    .li-table tbody td.li-cell-benefit {
+      text-align: left;
+      padding-left: 28px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .li-cell-benefit .li-bnft-icon {
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--blue-light);
+      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .li-cell-benefit .li-bnft-icon svg { width: 14px; height: 14px; }
+    .li-table tbody tr:hover td { background: #FAFBFC; }
+    .li-cell-dash { color: var(--text-tertiary); }
+    .li-cell-check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+    .li-cell-check svg { width: 12px; height: 12px; }
+    .li-cell-amount { font-weight: 600; color: var(--text-primary); }
+    .li-cell-mult { font-weight: 600; color: var(--blue); }
+
+    /* ─── Select Reward Account Modal ──────────────────────── */
+    .sra-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.45);
+    }
+    .sra-modal.open { display: flex; }
+    .sra-card {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    }
+    .sra-head {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      height: 48px;
+      padding: 0 12px;
+    }
+    .sra-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .sra-close:hover { background: var(--bg-3); color: var(--text-primary); }
+    .sra-body {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 0 24px 32px;
+    }
+    .sra-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--text-primary);
+    }
+    .sra-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--blue-light);
+      border-radius: 10px;
+    }
+    .sra-tip-icon {
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--blue);
+      margin-top: 2px;
+    }
+    .sra-tip-text {
+      flex: 1;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--text-secondary);
+    }
+    .sra-field-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: -16px;
+    }
+    .sra-select {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 48px;
+      padding: 0 14px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .sra-select:hover { border-color: var(--blue); }
+    .sra-select.open { border-color: var(--blue); }
+    .sra-select-flag {
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: linear-gradient(180deg, #b22234 0%, #b22234 33%, #ffffff 33%, #ffffff 66%, #3c3b6e 66%, #3c3b6e 100%);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .sra-select-flag::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+    .sra-select-text {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .sra-select-chevron {
+      flex: 0 0 16px;
+      color: var(--text-secondary);
+      transition: transform .2s;
+    }
+    .sra-select.open .sra-select-chevron { transform: rotate(180deg); }
+    .sra-options {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+      padding: 6px;
+      display: none;
+      z-index: 5;
+    }
+    .sra-select.open .sra-options { display: block; }
+    .sra-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .sra-option:hover { background: var(--bg-3); }
+    .sra-option.active { background: var(--blue-light); color: var(--blue); }
+    .sra-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .sra-btn {
+      flex: 1;
+      height: 48px;
+      border-radius: 8px;
+      border: 0;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .sra-btn-cancel {
+      background: var(--bg-3);
+      color: var(--text-primary);
+    }
+    .sra-btn-cancel:hover { background: #E5E7EB; }
+    .sra-btn-confirm {
+      background: var(--blue);
+      color: #ffffff;
+    }
+    .sra-btn-confirm:hover { background: #2f5ad2; }
+
+    .ce-stat { -webkit-tap-highlight-color: transparent; }
+
+    /* ─── Reward History Modal ─────────────────────────────── */
+    .rh-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.45);
+    }
+    .rh-modal.open { display: flex; }
+    .rh-card {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      max-height: calc(100vh - 48px);
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .rh-head {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      height: 48px;
+      padding: 0 12px;
+    }
+    .rh-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .rh-close:hover { background: var(--bg-3); color: var(--text-primary); }
+    .rh-body {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0 24px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .rh-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--text-primary);
+    }
+    .rh-timeline {
+      display: flex;
+      flex-direction: column;
+    }
+    .rh-tier {
+      position: relative;
+      display: flex;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .rh-tier-track {
+      flex: 0 0 12px;
+      width: 12px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .rh-tier-dot {
+      flex: 0 0 12px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .rh-tier.current .rh-tier-dot {
+      background: var(--blue);
+      box-shadow: 0 0 0 4px var(--blue-light);
+    }
+    .rh-tier-line {
+      flex: 1 1 auto;
+      width: 1px;
+      background: var(--border);
+      margin-top: 4px;
+      margin-bottom: -2px;
+    }
+    .rh-tier:last-child .rh-tier-line { display: none; }
+    .rh-tier-content {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rh-tier-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      height: 40px;
+    }
+    .rh-tier-hdr-l {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .rh-lv {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--text-primary);
+    }
+    .rh-current-tag {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+    }
+    .rh-tier-hdr-r {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .rh-chev {
+      width: 18px;
+      height: 18px;
+      transition: transform .2s;
+      color: var(--text-secondary);
+    }
+    .rh-tier.open .rh-chev { transform: rotate(180deg); }
+    .rh-tier-rewards {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+    }
+    .rh-tier.open .rh-tier-rewards { max-height: 1000px; }
+    .rh-rewards-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .rh-reward {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .rh-reward-icon {
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rh-reward-icon svg { width: 16px; height: 16px; }
+    .rh-reward-text {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .rh-reward-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .rh-reward-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 20px;
+    }
+    .rh-reward-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 18px;
+    }
+    .rh-status {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 11px;
+      background: rgba(0,181,101,0.12);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ─── Points Exchange Modal ────────────────────────────── */
+    .pe-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.45);
+    }
+    .pe-modal.open { display: flex; }
+    .pe-card {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+      max-height: calc(100vh - 48px);
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .pe-head {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      height: 48px;
+      padding: 0 12px;
+    }
+    .pe-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .pe-close:hover { background: var(--bg-3); color: var(--text-primary); }
+    .pe-body {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0 24px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pe-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--text-primary);
+    }
+    .pe-intro { display: flex; flex-direction: column; gap: 6px; }
+    .pe-intro-h {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 22px;
+      color: var(--text-primary);
+    }
+    .pe-intro-p {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--text-secondary);
+    }
+    .pe-rules { display: flex; flex-direction: column; }
+    .pe-rule {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      gap: 12px;
+    }
+    .pe-rule-l {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pe-rule-icon {
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pe-rule-icon svg { width: 18px; height: 18px; }
+    .pe-rule-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .pe-rule-info {
+      width: 14px;
+      height: 14px;
+      color: var(--text-tertiary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+    }
+    .pe-rule-r {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .pe-rule-r .pe-num { font-weight: 600; }
+    .pe-rule-r .pe-unit { color: var(--text-secondary); font-size: 13px; font-weight: 400; }
+    .pe-rule-r .pe-eq { color: var(--text-secondary); padding: 0 2px; }
+
+    .pe-collapse {
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .pe-collapse-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .pe-collapse-hdr-l {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pe-collapse-text { display: flex; flex-direction: column; gap: 2px; }
+    .pe-collapse-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 20px;
+    }
+    .pe-collapse-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 18px;
+    }
+    .pe-collapse-chev {
+      width: 20px;
+      height: 20px;
+      color: var(--text-secondary);
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+    .pe-collapse.open .pe-collapse-chev { transform: rotate(180deg); }
+    .pe-collapse-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+    }
+    .pe-collapse.open .pe-collapse-body { max-height: 720px; }
+
+    .pe-table {
+      display: flex;
+      flex-direction: column;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .pe-tr {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      gap: 12px;
+      height: 44px;
+      padding: 0 16px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+    .pe-tr.pe-th {
+      background: var(--bg-3);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .pe-tr:not(.pe-th):nth-of-type(odd) { background: var(--bg-2); }
+    .pe-tr > .pe-c-r { text-align: right; }
+    .pe-tr > .pe-c-l-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    .pe-lv-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0a36c7 0%, #1e68f6 100%);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .pe-lv-badge.t1 { background: linear-gradient(135deg, #5b6bff 0%, #7e8aff 100%); }
+    .pe-lv-badge.t2 { background: linear-gradient(135deg, #ff5757 0%, #ff7a44 100%); }
+    .pe-lv-badge.t3 { background: linear-gradient(135deg, #fad000 0%, #ffb845 100%); color: #4a3700; }
+    .pe-lv-badge.t4 { background: linear-gradient(135deg, #00f0ff 0%, #6effd0 100%); color: #013a40; }
+
+    .pe-divider {
+      height: 1px;
+      background: var(--divider);
+    }
+
+    /* ─── Request Forwarded (Success) Modal ────────────────── */
+    .rf-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.45);
+    }
+    .rf-modal.open { display: flex; }
+    .rf-card {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    }
+    .rf-head {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      height: 48px;
+      padding: 0 12px;
+    }
+    .rf-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .rf-close:hover { background: var(--bg-3); color: var(--text-primary); }
+    .rf-body {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding: 8px 24px 32px;
+      align-items: center;
+    }
+    .rf-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+    }
+    .rf-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 8px rgba(0,181,101,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+    .rf-icon svg { width: 36px; height: 36px; }
+    .rf-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--text-primary);
+      text-align: center;
+    }
+    .rf-desc {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 380px;
+    }
+    .rf-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 8px;
+      border: 0;
+      background: var(--blue);
+      color: #ffffff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .rf-btn:hover { background: #2f5ad2; }
+
     /* ─── Dark theme (toggled by topbar) ───────────────────── */
     body.dark-mode {
       background: #121212;
@@ -466,7 +1347,10 @@
       box-shadow: none;
     }
     body.dark-mode .ce-card-icon { background: rgba(0,240,255,0.10); color: var(--cyan); }
-    body.dark-mode .ce-card-tag { color: #C2C7D0; }
+    body.dark-mode .ce-card-tag {
+      color: var(--cyan);
+      background: rgba(0,240,255,0.12);
+    }
     body.dark-mode .ce-card-title { color: #FFFFFF; }
     body.dark-mode .ce-card-desc { color: #7A8699; }
     body.dark-mode .ce-card-cta {
@@ -511,6 +1395,167 @@
     body.dark-mode .ce-faq-item.open .ce-faq-q,
     body.dark-mode .ce-faq-item.open .ce-faq-toggle { color: var(--cyan); }
     body.dark-mode .ce-faq-a { color: #C2C7D0; }
+
+    /* Level Introduction Modal — dark */
+    body.dark-mode .li-modal-card {
+      background: #1D1D21;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    body.dark-mode .li-modal-header { border-bottom-color: #2D3033; }
+    body.dark-mode .li-modal-title { color: #FFFFFF; }
+    body.dark-mode .li-tnc { color: var(--cyan); }
+    body.dark-mode .li-close { color: #C2C7D0; }
+    body.dark-mode .li-close:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .li-table thead th {
+      background: #26262B;
+      color: #C2C7D0;
+      border-bottom-color: #2D3033;
+    }
+    body.dark-mode .li-table thead th.li-th-benefit { color: #FFFFFF; }
+    body.dark-mode .li-lv-name { color: #FFFFFF; }
+    body.dark-mode .li-lv-pts { color: #7A8699; }
+    body.dark-mode .li-table tbody td {
+      color: #FFFFFF;
+      border-bottom-color: #2D3033;
+    }
+    body.dark-mode .li-table tbody td.li-cell-benefit { color: #FFFFFF; }
+    body.dark-mode .li-cell-benefit .li-bnft-icon {
+      background: rgba(0,240,255,0.10);
+      color: var(--cyan);
+    }
+    body.dark-mode .li-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+    body.dark-mode .li-cell-dash { color: #515867; }
+    body.dark-mode .li-cell-check {
+      background: rgba(0,240,255,0.12);
+      color: var(--cyan);
+    }
+    body.dark-mode .li-cell-amount { color: #FFFFFF; }
+    body.dark-mode .li-cell-mult { color: var(--cyan); }
+
+    /* Select Reward Account Modal — dark */
+    body.dark-mode .sra-card {
+      background: #1D1D21;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    body.dark-mode .sra-close { color: #C2C7D0; }
+    body.dark-mode .sra-close:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .sra-title { color: #FFFFFF; }
+    body.dark-mode .sra-tip {
+      background: rgba(0,240,255,0.08);
+    }
+    body.dark-mode .sra-tip-icon { color: var(--cyan); }
+    body.dark-mode .sra-tip-text { color: #C2C7D0; }
+    body.dark-mode .sra-field-label { color: #C2C7D0; }
+    body.dark-mode .sra-select {
+      background: #26262B;
+      border-color: #2D3033;
+    }
+    body.dark-mode .sra-select:hover,
+    body.dark-mode .sra-select.open { border-color: var(--cyan); }
+    body.dark-mode .sra-select-text { color: #FFFFFF; }
+    body.dark-mode .sra-select-chevron { color: #C2C7D0; }
+    body.dark-mode .sra-options {
+      background: #26262B;
+      border-color: #2D3033;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    body.dark-mode .sra-option { color: #FFFFFF; }
+    body.dark-mode .sra-option:hover { background: #2D3033; }
+    body.dark-mode .sra-option.active {
+      background: rgba(0,240,255,0.10);
+      color: var(--cyan);
+    }
+    body.dark-mode .sra-btn-cancel {
+      background: rgba(255,255,255,0.08);
+      color: #FFFFFF;
+    }
+    body.dark-mode .sra-btn-cancel:hover { background: rgba(255,255,255,0.14); }
+    body.dark-mode .sra-btn-confirm {
+      background: var(--cyan);
+      color: #03081a;
+    }
+    body.dark-mode .sra-btn-confirm:hover { background: #33f4ff; }
+
+    /* Request Forwarded Modal — dark */
+    body.dark-mode .rf-card {
+      background: #1D1D21;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    body.dark-mode .rf-close { color: #C2C7D0; }
+    body.dark-mode .rf-close:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .rf-icon {
+      background: var(--green);
+      box-shadow: 0 0 0 8px rgba(0,181,101,0.18);
+      color: #ffffff;
+    }
+    body.dark-mode .rf-title { color: #FFFFFF; }
+    body.dark-mode .rf-desc { color: #C2C7D0; }
+    body.dark-mode .rf-btn {
+      background: var(--cyan);
+      color: #03081a;
+    }
+    body.dark-mode .rf-btn:hover { background: #33f4ff; }
+
+    /* Points Exchange Modal — dark */
+    body.dark-mode .pe-card {
+      background: #1D1D21;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    body.dark-mode .pe-close { color: #C2C7D0; }
+    body.dark-mode .pe-close:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .pe-title { color: #FFFFFF; }
+    body.dark-mode .pe-intro-h { color: #FFFFFF; }
+    body.dark-mode .pe-intro-p { color: #C2C7D0; }
+    body.dark-mode .pe-rule-icon {
+      background: rgba(255,255,255,0.08);
+      color: var(--cyan);
+    }
+    body.dark-mode .pe-rule-label { color: #FFFFFF; }
+    body.dark-mode .pe-rule-info { color: #515867; }
+    body.dark-mode .pe-rule-r { color: #FFFFFF; }
+    body.dark-mode .pe-rule-r .pe-unit,
+    body.dark-mode .pe-rule-r .pe-eq { color: #7A8699; }
+    body.dark-mode .pe-collapse-title { color: #FFFFFF; }
+    body.dark-mode .pe-collapse-sub { color: #7A8699; }
+    body.dark-mode .pe-collapse-chev { color: #C2C7D0; }
+    body.dark-mode .pe-table { border-color: #2D3033; }
+    body.dark-mode .pe-tr { color: #FFFFFF; }
+    body.dark-mode .pe-tr.pe-th { background: #26262B; color: #C2C7D0; }
+    body.dark-mode .pe-tr:not(.pe-th):nth-of-type(odd) { background: rgba(255,255,255,0.02); }
+    body.dark-mode .pe-divider { background: #2D3033; }
+
+    /* Reward History Modal — dark */
+    body.dark-mode .rh-card {
+      background: #1D1D21;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    body.dark-mode .rh-close { color: #C2C7D0; }
+    body.dark-mode .rh-close:hover { background: #26262B; color: #FFFFFF; }
+    body.dark-mode .rh-title { color: #FFFFFF; }
+    body.dark-mode .rh-tier-dot { background: #515867; }
+    body.dark-mode .rh-tier.current .rh-tier-dot {
+      background: var(--cyan);
+      box-shadow: 0 0 0 4px rgba(0,240,255,0.18);
+    }
+    body.dark-mode .rh-tier-line { background: #2D3033; }
+    body.dark-mode .rh-lv { color: #FFFFFF; }
+    body.dark-mode .rh-current-tag { color: var(--cyan); }
+    body.dark-mode .rh-tier-hdr-r { color: #C2C7D0; }
+    body.dark-mode .rh-chev { color: #C2C7D0; }
+    body.dark-mode .rh-rewards-card {
+      background: rgba(255,255,255,0.03);
+      border-color: #2D3033;
+    }
+    body.dark-mode .rh-reward-icon {
+      background: rgba(0,240,255,0.10);
+      color: var(--cyan);
+    }
+    body.dark-mode .rh-reward-title { color: #FFFFFF; }
+    body.dark-mode .rh-reward-desc { color: #7A8699; }
+    body.dark-mode .rh-status {
+      background: rgba(0,181,101,0.18);
+      color: #00C79C;
+    }
 
     /* ─── Tablet ───────────────────────────────────────────── */
     @media (max-width: 1100px) {
@@ -580,7 +1625,7 @@
 
         <!-- Stat cards -->
         <div class="ce-stats">
-          <div class="ce-stat">
+          <div class="ce-stat" data-stat="cash">
             <div class="ce-stat-l">
               <div class="ce-stat-lbl">Available Cash Rewards</div>
               <div class="ce-stat-val">600.00<span class="unit">USD</span></div>
@@ -589,7 +1634,7 @@
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5h6M3 5l2-2M3 5l2 2M11 9H5M11 9L9 7M11 9l-2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
-          <div class="ce-stat">
+          <div class="ce-stat" data-stat="benefits">
             <div class="ce-stat-l">
               <div class="ce-stat-lbl">Available Benefits</div>
               <div class="ce-stat-val">5<span class="unit">Benefits</span></div>
@@ -598,7 +1643,7 @@
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 3l4 3-4 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
-          <div class="ce-stat">
+          <div class="ce-stat" data-stat="points">
             <div class="ce-stat-l">
               <div class="ce-stat-lbl">Earned Points Today</div>
               <div class="ce-stat-val">−56,600<span class="unit">Points</span></div>
@@ -827,6 +1872,581 @@
     </div>
   </main>
 
+  <!-- ─── LEVEL INTRODUCTION MODAL ─────────────────────────── -->
+  <div class="li-modal" id="li-modal" role="dialog" aria-modal="true" aria-labelledby="li-modal-title">
+    <div class="li-modal-card">
+      <div class="li-modal-header">
+        <div class="li-modal-title" id="li-modal-title">Level Introduction</div>
+        <div class="li-modal-actions">
+          <span class="li-tnc">TnC</span>
+          <button class="li-close" type="button" aria-label="Close" onclick="liCloseModal()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="li-modal-body">
+        <table class="li-table">
+          <colgroup>
+            <col class="li-col-benefit" />
+            <col class="li-col-lv" /><col class="li-col-lv" /><col class="li-col-lv" />
+            <col class="li-col-lv" /><col class="li-col-lv" /><col class="li-col-lv" />
+            <col class="li-col-lv" /><col class="li-col-lv" /><col class="li-col-lv" />
+            <col class="li-col-lv" /><col class="li-col-lv" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="li-th-benefit">Benefit</th>
+              <th><span class="li-lv-name">LV0</span><span class="li-lv-pts">0 pts</span></th>
+              <th><span class="li-lv-name">LV1</span><span class="li-lv-pts">500 pts</span></th>
+              <th><span class="li-lv-name">LV2</span><span class="li-lv-pts">1,000 pts</span></th>
+              <th><span class="li-lv-name">LV3</span><span class="li-lv-pts">2,000 pts</span></th>
+              <th><span class="li-lv-name">LV4</span><span class="li-lv-pts">10,000 pts</span></th>
+              <th><span class="li-lv-name">LV5</span><span class="li-lv-pts">20,000 pts</span></th>
+              <th><span class="li-lv-name">LV6</span><span class="li-lv-pts">50,000 pts</span></th>
+              <th><span class="li-lv-name">LV7</span><span class="li-lv-pts">60,000 pts</span></th>
+              <th><span class="li-lv-name">LV8</span><span class="li-lv-pts">70,000 pts</span></th>
+              <th><span class="li-lv-name">LV9</span><span class="li-lv-pts">90,000 pts</span></th>
+              <th><span class="li-lv-name">LV10</span><span class="li-lv-pts">100,000 pts</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 4V2.5a1 1 0 011-1h4a1 1 0 011 1V4" stroke="currentColor" stroke-width="1.4"/></svg></span>
+                Christmas Premium Brand Box
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><text x="8" y="11" text-anchor="middle" fill="currentColor" font-family="Roboto" font-weight="700" font-size="9">$</text></svg></span>
+                Annual Sponsorship Credit
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-amount">$800</td>
+              <td class="li-cell-amount">$1k</td>
+              <td class="li-cell-amount">$2k</td>
+              <td class="li-cell-amount">$5k</td>
+              <td class="li-cell-amount">$10k</td>
+              <td class="li-cell-amount">$20k</td>
+              <td class="li-cell-amount">$30k</td>
+              <td class="li-cell-amount">$50k</td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 6.5C3 5 4 4 5.5 4S8 5 8 6.5 9 9 10.5 9 13 8 13 6.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M2 11h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                VIP Gift
+              </td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M4 4l4 6 4-6M3 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                Access to Annual Premium Events
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M5 3h6v3a3 3 0 01-6 0V3z" stroke="currentColor" stroke-width="1.4"/><path d="M7 9v3M5 13h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                Access to Exclusive Promotions
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg></span>
+                F1 Paddock Tickets
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-mult">x2</td>
+              <td class="li-cell-mult">x2</td>
+              <td class="li-cell-mult">x2</td>
+              <td class="li-cell-mult">x4</td>
+              <td class="li-cell-mult">x4</td>
+              <td class="li-cell-mult">x5</td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                Annual Travel Credit
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td class="li-cell-amount">$10k</td>
+              <td class="li-cell-amount">$15k</td>
+              <td class="li-cell-amount">$20k</td>
+              <td class="li-cell-amount">$30k</td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 12 L6 6 L9 9 L14 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                Ferrari Merchandise
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="3" y="3" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6h4M6 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                Tailored Landing Page
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 9l5-1 4-5 3 3-5 4-1 5-3-3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+                Private Jet Hire Experience
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="5" cy="11" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M3 11V7l3-3h6l1 3v4" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+                Rolls-Royce Car Hire Experience
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td class="li-cell-mult">x2</td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 14c0-3 2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                Exclusive Premium Account Manager
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+            <tr>
+              <td class="li-cell-benefit">
+                <span class="li-bnft-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M2 8h12M8 2c2 2 2 10 0 12M8 2c-2 2-2 10 0 12" stroke="currentColor" stroke-width="1.2"/></svg></span>
+                Internal Team Support
+              </td>
+              <td class="li-cell-dash">–</td><td class="li-cell-dash">–</td><td class="li-cell-dash">–</td>
+              <td class="li-cell-dash">–</td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+              <td><span class="li-cell-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SELECT REWARD ACCOUNT MODAL ──────────────────────── -->
+  <div class="sra-modal" id="sra-modal" role="dialog" aria-modal="true" aria-labelledby="sra-title">
+    <div class="sra-card">
+      <div class="sra-head">
+        <button class="sra-close" type="button" aria-label="Close" onclick="sraCloseModal()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="sra-body">
+        <div class="sra-title" id="sra-title">Select Reward Account</div>
+        <div class="sra-tip">
+          <span class="sra-tip-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.2" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5v4M9 12.2v.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span class="sra-tip-text">The reward will be automatically credited to your account within 10 working days next month.</span>
+        </div>
+        <div class="sra-select" id="sra-select" onclick="sraToggleSelect(event)">
+          <span class="sra-select-flag" aria-hidden="true"></span>
+          <span class="sra-select-text" id="sra-select-text">80256589</span>
+          <span class="sra-select-chevron">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div class="sra-options" id="sra-options">
+            <div class="sra-option active" onclick="sraSelectOption(event, '80256589')">
+              <span class="sra-select-flag" aria-hidden="true"></span>
+              <span>80256589</span>
+            </div>
+            <div class="sra-option" onclick="sraSelectOption(event, '80256590')">
+              <span class="sra-select-flag" aria-hidden="true"></span>
+              <span>80256590</span>
+            </div>
+            <div class="sra-option" onclick="sraSelectOption(event, '80256591')">
+              <span class="sra-select-flag" aria-hidden="true"></span>
+              <span>80256591</span>
+            </div>
+          </div>
+        </div>
+        <div class="sra-actions">
+          <button class="sra-btn sra-btn-cancel" type="button" onclick="sraCloseModal()">Cancel</button>
+          <button class="sra-btn sra-btn-confirm" type="button" onclick="sraCloseModal()">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── REQUEST FORWARDED (REDEEM SUCCESS) MODAL ─────────── -->
+  <div class="rf-modal" id="rf-modal" role="dialog" aria-modal="true" aria-labelledby="rf-title">
+    <div class="rf-card">
+      <div class="rf-head">
+        <button class="rf-close" type="button" aria-label="Close" onclick="rfCloseModal()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="rf-body">
+        <div class="rf-content">
+          <div class="rf-icon">
+            <svg viewBox="0 0 36 36" fill="none"><path d="M11 18.5l5 5 10-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="rf-title" id="rf-title">Request Forwarded</div>
+          <div class="rf-desc">Your request has been forwarded to our sales representative, who will contact you shortly.</div>
+        </div>
+        <button class="rf-btn" type="button" onclick="rfCloseModal()">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── POINTS EXCHANGE MODAL ────────────────────────────── -->
+  <div class="pe-modal" id="pe-modal" role="dialog" aria-modal="true" aria-labelledby="pe-title">
+    <div class="pe-card">
+      <div class="pe-head">
+        <button class="pe-close" type="button" aria-label="Close" onclick="peCloseModal()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="pe-body">
+        <div class="pe-title" id="pe-title">Points Exchange</div>
+        <div class="pe-intro">
+          <div class="pe-intro-h">Your Performance &amp; The Performance Of Your Affiliated Users</div>
+          <div class="pe-intro-p">Points are calculated from your metrics and those of your referred clients. Earn more points to unlock higher VIP tiers and exclusive tier rewards.</div>
+        </div>
+
+        <div class="pe-rules">
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="5" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 8h14" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="11.5" r="1" fill="currentColor"/></svg></span>
+              <span class="pe-rule-label">Gross Deposit</span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">1,000</span><span class="pe-unit">USD</span><span class="pe-eq">=</span><span class="pe-num">1</span><span class="pe-unit">Point</span></div>
+          </div>
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><text x="9" y="12" text-anchor="middle" fill="currentColor" font-family="Roboto" font-weight="700" font-size="9">$</text></svg></span>
+              <span class="pe-rule-label">Net Deposit</span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">1,000</span><span class="pe-unit">USD</span><span class="pe-eq">=</span><span class="pe-num">1</span><span class="pe-unit">Point</span></div>
+          </div>
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="5" rx="6" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M3 5v8c0 1.2 2.7 2.2 6 2.2s6-1 6-2.2V5" stroke="currentColor" stroke-width="1.4"/><path d="M3 9c0 1.2 2.7 2.2 6 2.2s6-1 6-2.2" stroke="currentColor" stroke-width="1.4"/></svg></span>
+              <span class="pe-rule-label">FTD <span class="pe-rule-info"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 5.4v3M6 4v0.6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span></span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">1</span><span class="pe-unit">User</span><span class="pe-eq">=</span><span class="pe-num">250</span><span class="pe-unit">Points</span></div>
+          </div>
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="4" width="11" height="9" rx="1.4" stroke="currentColor" stroke-width="1.4"/><rect x="5" y="6" width="11" height="9" rx="1.4" stroke="currentColor" stroke-width="1.4"/></svg></span>
+              <span class="pe-rule-label">FTT <span class="pe-rule-info"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 5.4v3M6 4v0.6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span></span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">1</span><span class="pe-unit">User</span><span class="pe-eq">=</span><span class="pe-num">250</span><span class="pe-unit">Points</span></div>
+          </div>
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><circle cx="6" cy="7" r="2.4" stroke="currentColor" stroke-width="1.4"/><circle cx="13" cy="7" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-2.5 1.7-4 4-4s4 1.5 4 4M9 14c0-1.8 1.3-3 3-3s3 1.2 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+              <span class="pe-rule-label">Number Of Depositors</span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">1</span><span class="pe-unit">User</span><span class="pe-eq">=</span><span class="pe-num">5</span><span class="pe-unit">Points</span></div>
+          </div>
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M2 12V6l7-3 7 3v6" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 9v3.5c1.5 1 3 1.5 4 1.5s2.5-.5 4-1.5V9" stroke="currentColor" stroke-width="1.4"/></svg></span>
+              <span class="pe-rule-label">Number Of Traders</span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">2</span><span class="pe-unit">User(s)</span><span class="pe-eq">=</span><span class="pe-num">10</span><span class="pe-unit">Points</span></div>
+          </div>
+          <div class="pe-rule">
+            <div class="pe-rule-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><rect x="4" y="3" width="10" height="12" rx="1.4" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 6.5h5M6.5 9h5M6.5 11.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+              <span class="pe-rule-label">QFTD <span class="pe-rule-info"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 5.4v3M6 4v0.6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span></span>
+            </div>
+            <div class="pe-rule-r"><span class="pe-num">1</span><span class="pe-unit">User</span><span class="pe-eq">=</span><span class="pe-num">250</span><span class="pe-unit">Points</span></div>
+          </div>
+        </div>
+
+        <!-- Notional Volume — collapsed by default -->
+        <div class="pe-collapse" id="pe-c-vol">
+          <div class="pe-collapse-hdr" onclick="peToggle('pe-c-vol')">
+            <div class="pe-collapse-hdr-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M3 14V8M7 14V4M11 14V10M15 14V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              <div class="pe-collapse-text">
+                <div class="pe-collapse-title">Notional Volume</div>
+                <div class="pe-collapse-sub">Exchange By Product Category</div>
+              </div>
+            </div>
+            <span class="pe-collapse-chev"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+          <div class="pe-collapse-body">
+            <div class="pe-table">
+              <div class="pe-tr pe-th"><span>Product Type</span><span class="pe-c-r">Volume</span><span class="pe-c-r">Point(s)</span></div>
+              <div class="pe-tr"><span>Forex</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+              <div class="pe-tr"><span>Commodities</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+              <div class="pe-tr"><span>Indices</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+              <div class="pe-tr"><span>Crypto</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+              <div class="pe-tr"><span>Share CFD</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+              <div class="pe-tr"><span>Bond</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+              <div class="pe-tr"><span>Synthetic Indices</span><span class="pe-c-r">1,000,000 USD</span><span class="pe-c-r">1</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pe-divider"></div>
+
+        <!-- Sub-IB Upgrade — collapsed by default -->
+        <div class="pe-collapse" id="pe-c-sub">
+          <div class="pe-collapse-hdr" onclick="peToggle('pe-c-sub')">
+            <div class="pe-collapse-hdr-l">
+              <span class="pe-rule-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2l5 4-5 4-5-4 5-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4 10l5 4 5-4" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+              <div class="pe-collapse-text">
+                <div class="pe-collapse-title">Sub-IB Upgrade</div>
+                <div class="pe-collapse-sub">Earn Points When Your Sub-IB Upgrade</div>
+              </div>
+            </div>
+            <span class="pe-collapse-chev"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+          <div class="pe-collapse-body">
+            <div class="pe-table">
+              <div class="pe-tr pe-th"><span>Level</span><span class="pe-c-r" style="grid-column: 2 / span 2;">Earned Points</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge">LV</span>LV0</span><span class="pe-c-r" style="grid-column: 2 / span 2;">5</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge">LV</span>LV1</span><span class="pe-c-r" style="grid-column: 2 / span 2;">10</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge">LV</span>LV2</span><span class="pe-c-r" style="grid-column: 2 / span 2;">15</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t1">LV</span>LV3</span><span class="pe-c-r" style="grid-column: 2 / span 2;">20</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t2">LV</span>LV4</span><span class="pe-c-r" style="grid-column: 2 / span 2;">25</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t2">LV</span>LV5</span><span class="pe-c-r" style="grid-column: 2 / span 2;">30</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t2">LV</span>LV6</span><span class="pe-c-r" style="grid-column: 2 / span 2;">35</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t2">LV</span>LV7</span><span class="pe-c-r" style="grid-column: 2 / span 2;">40</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t3">LV</span>LV8</span><span class="pe-c-r" style="grid-column: 2 / span 2;">45</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t4">LV</span>LV9</span><span class="pe-c-r" style="grid-column: 2 / span 2;">50</span></div>
+              <div class="pe-tr"><span class="pe-c-l-name"><span class="pe-lv-badge t4">LV</span>LV10</span><span class="pe-c-r" style="grid-column: 2 / span 2;">55</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── REWARD HISTORY MODAL ─────────────────────────────── -->
+  <div class="rh-modal" id="rh-modal" role="dialog" aria-modal="true" aria-labelledby="rh-title">
+    <div class="rh-card">
+      <div class="rh-head">
+        <button class="rh-close" type="button" aria-label="Close" onclick="rhCloseModal()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="rh-body">
+        <div class="rh-title" id="rh-title">Reward History</div>
+
+        <div class="rh-timeline">
+          <!-- LV3 — current, expanded by default -->
+          <div class="rh-tier current open" id="rh-lv3">
+            <div class="rh-tier-track">
+              <span class="rh-tier-dot"></span>
+              <span class="rh-tier-line"></span>
+            </div>
+            <div class="rh-tier-content">
+              <div class="rh-tier-hdr" onclick="rhToggle('rh-lv3')">
+                <div class="rh-tier-hdr-l">
+                  <span class="rh-lv">LV3</span>
+                  <span class="rh-current-tag">Current Level</span>
+                </div>
+                <div class="rh-tier-hdr-r">
+                  <span>2026/03/05</span>
+                  <span class="rh-chev"><svg viewBox="0 0 18 18" fill="none"><path d="M5 7l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </div>
+              </div>
+              <div class="rh-tier-rewards">
+                <div class="rh-rewards-card">
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 4V2.5a1 1 0 011-1h4a1 1 0 011 1V4" stroke="currentColor" stroke-width="1.4"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">Christmas Premium Brand Box</span>
+                        <span class="rh-status">Received</span>
+                      </div>
+                      <span class="rh-reward-desc">Curated Premium Holiday Gift Box</span>
+                    </div>
+                  </div>
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><text x="8" y="11" text-anchor="middle" fill="currentColor" font-family="Roboto" font-weight="700" font-size="9">$</text></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">Annual Sponsorship Credit</span>
+                      </div>
+                      <span class="rh-reward-desc">Annual Sponsorship Credit 30k USD</span>
+                    </div>
+                  </div>
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 6.5C3 5 4 4 5.5 4S8 5 8 6.5 9 9 10.5 9 13 8 13 6.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M2 11h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">VIP Gift</span>
+                        <span class="rh-status">Received</span>
+                      </div>
+                      <span class="rh-reward-desc">Exclusive VIP Gift</span>
+                    </div>
+                  </div>
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">Rebate Booster</span>
+                      </div>
+                      <span class="rh-reward-desc">Boost Your Rebate Earnings</span>
+                    </div>
+                  </div>
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="5" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="9" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">Cash Reward</span>
+                      </div>
+                      <span class="rh-reward-desc">Level-Up Cash Rewards</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LV2 — collapsed -->
+          <div class="rh-tier" id="rh-lv2">
+            <div class="rh-tier-track">
+              <span class="rh-tier-dot"></span>
+              <span class="rh-tier-line"></span>
+            </div>
+            <div class="rh-tier-content">
+              <div class="rh-tier-hdr" onclick="rhToggle('rh-lv2')">
+                <div class="rh-tier-hdr-l">
+                  <span class="rh-lv">LV2</span>
+                </div>
+                <div class="rh-tier-hdr-r">
+                  <span>2026/02/25</span>
+                  <span class="rh-chev"><svg viewBox="0 0 18 18" fill="none"><path d="M5 7l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </div>
+              </div>
+              <div class="rh-tier-rewards">
+                <div class="rh-rewards-card">
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 6.5C3 5 4 4 5.5 4S8 5 8 6.5 9 9 10.5 9 13 8 13 6.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M2 11h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">VIP Gift</span>
+                        <span class="rh-status">Received</span>
+                      </div>
+                      <span class="rh-reward-desc">Exclusive VIP Gift</span>
+                    </div>
+                  </div>
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="5" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="9" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">Cash Reward</span>
+                      </div>
+                      <span class="rh-reward-desc">Level-Up Cash Rewards</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LV1 — collapsed -->
+          <div class="rh-tier" id="rh-lv1">
+            <div class="rh-tier-track">
+              <span class="rh-tier-dot"></span>
+            </div>
+            <div class="rh-tier-content">
+              <div class="rh-tier-hdr" onclick="rhToggle('rh-lv1')">
+                <div class="rh-tier-hdr-l">
+                  <span class="rh-lv">LV1</span>
+                </div>
+                <div class="rh-tier-hdr-r">
+                  <span>2026/02/15</span>
+                  <span class="rh-chev"><svg viewBox="0 0 18 18" fill="none"><path d="M5 7l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </div>
+              </div>
+              <div class="rh-tier-rewards">
+                <div class="rh-rewards-card">
+                  <div class="rh-reward">
+                    <span class="rh-reward-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 6.5C3 5 4 4 5.5 4S8 5 8 6.5 9 9 10.5 9 13 8 13 6.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M2 11h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                    <div class="rh-reward-text">
+                      <div class="rh-reward-row">
+                        <span class="rh-reward-title">VIP Gift</span>
+                        <span class="rh-status">Received</span>
+                      </div>
+                      <span class="rh-reward-desc">Exclusive VIP Gift</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="sidebar.js"></script>
   <script src="topbar.js"></script>
   <script>
@@ -837,6 +2457,160 @@
     function ceFaqToggle(el) {
       el.classList.toggle('open');
     }
+
+    // ─── Level Introduction modal ───
+    function liOpenModal() {
+      const m = document.getElementById('li-modal');
+      if (!m) return;
+      m.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function liCloseModal() {
+      const m = document.getElementById('li-modal');
+      if (!m) return;
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.ce-section-link').forEach(el => {
+      el.addEventListener('click', liOpenModal);
+    });
+    document.getElementById('li-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) liCloseModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') liCloseModal();
+    });
+
+    // ─── Select Reward Account modal ───
+    function sraOpenModal() {
+      const m = document.getElementById('sra-modal');
+      if (!m) return;
+      m.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function sraCloseModal() {
+      const m = document.getElementById('sra-modal');
+      if (!m) return;
+      m.classList.remove('open');
+      document.getElementById('sra-select')?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function sraToggleSelect(e) {
+      e.stopPropagation();
+      document.getElementById('sra-select')?.classList.toggle('open');
+    }
+    function sraSelectOption(e, value) {
+      e.stopPropagation();
+      const txt = document.getElementById('sra-select-text');
+      if (txt) txt.textContent = value;
+      document.querySelectorAll('#sra-options .sra-option').forEach(o => o.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      document.getElementById('sra-select')?.classList.remove('open');
+    }
+    // .ce-stat now opens the Reward History modal (see rhOpenModal below)
+    document.getElementById('sra-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) sraCloseModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') sraCloseModal();
+    });
+    document.addEventListener('click', (e) => {
+      const sel = document.getElementById('sra-select');
+      if (sel && sel.classList.contains('open') && !sel.contains(e.target)) {
+        sel.classList.remove('open');
+      }
+    });
+
+    // ─── Request Forwarded modal (Redeem button) ───
+    function rfOpenModal() {
+      const m = document.getElementById('rf-modal');
+      if (!m) return;
+      m.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function rfCloseModal() {
+      const m = document.getElementById('rf-modal');
+      if (!m) return;
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.ce-card-cta:not(.locked)').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        rfOpenModal();
+      });
+    });
+
+    // ─── Points Exchange modal ───
+    function peOpenModal() {
+      const m = document.getElementById('pe-modal');
+      if (!m) return;
+      // ensure all collapsibles are closed by default each time it opens
+      m.querySelectorAll('.pe-collapse').forEach(c => c.classList.remove('open'));
+      m.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function peCloseModal() {
+      const m = document.getElementById('pe-modal');
+      if (!m) return;
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function peToggle(id) {
+      document.getElementById(id)?.classList.toggle('open');
+    }
+    document.querySelectorAll('.ce-earn-btn').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        peOpenModal();
+      });
+    });
+    document.getElementById('pe-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) peCloseModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') peCloseModal();
+    });
+
+    // ─── Reward History modal (ce-stat) ───
+    function rhOpenModal() {
+      const m = document.getElementById('rh-modal');
+      if (!m) return;
+      m.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function rhCloseModal() {
+      const m = document.getElementById('rh-modal');
+      if (!m) return;
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function rhToggle(id) {
+      document.getElementById(id)?.classList.toggle('open');
+    }
+    document.querySelectorAll('.ce-stat').forEach(el => {
+      el.addEventListener('click', () => {
+        if (el.dataset.stat === 'cash') {
+          sraOpenModal();
+        } else if (el.dataset.stat === 'points') {
+          window.location.href = 'points-history.html';
+        } else {
+          rhOpenModal();
+        }
+      });
+    });
+    document.getElementById('rh-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) rhCloseModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') rhCloseModal();
+    });
+    document.getElementById('rf-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) rfCloseModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') rfCloseModal();
+    });
   </script>
 </body>
 </html>

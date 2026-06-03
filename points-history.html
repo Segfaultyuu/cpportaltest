@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Portal – Points History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0a36c7;
+      --blue-light: #e8f1ff;
+      --cyan: #00f0ff;
+      --green: #15b374;
+      --red: #f44040;
+      --text-primary: #282d34;
+      --text-secondary: #7a8699;
+      --text-tertiary: #c2c7d0;
+      --border: #e8e9ea;
+      --bg-2: #f9f9f9;
+      --bg-field: #f4f5f6;
+      --shadow-card: 0 4px 12px 0 rgba(168, 195, 206, 0.20);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(0deg, #FFF 0%, #F0F6FF 100%);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ──────────────────────────────────────────── */
+    .main {
+      margin-left: 240px;
+      padding-top: 60px;
+      min-height: 100vh;
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sidebar-collapsed .main { margin-left: 64px; }
+
+    .content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ─── Back link ──────────────────────────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      width: fit-content;
+      transition: color .15s;
+    }
+    .back-link:hover { color: var(--blue); }
+
+    /* ─── Page title ─────────────────────────────────────── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* ─── Summary Card ───────────────────────────────────── */
+    .summary-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .summary-head {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .summary-label-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .summary-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .info-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Tooltip */
+    .info-tip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .info-tip-bubble {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 320px;
+      padding: 10px 14px;
+      background: #282d34;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s, visibility 0.15s;
+      z-index: 50;
+      white-space: normal;
+      text-align: left;
+    }
+    .info-tip-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #282d34;
+    }
+    .info-tip.open .info-tip-bubble {
+      opacity: 1;
+      visibility: visible;
+    }
+    .info-tip.open .info-icon {
+      background: var(--text-secondary);
+      color: #fff;
+    }
+
+    .summary-total {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .summary-total .num {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .summary-total .unit {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Gray inner breakdown */
+    .breakdown {
+      background: var(--bg-field);
+      border-radius: 10px;
+      padding: 16px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .bk-divider { width: 1px; height: 40px; background: var(--border); }
+    .bk-cell { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .bk-lbl {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 16px;
+    }
+    .bk-val {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .bk-val .pts {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .bk-val .pts-unit {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .bk-val .slash {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .bk-val .basis {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    /* ─── Tabs ───────────────────────────────────────────── */
+    .tabs-bar {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding-bottom: 6px;
+      margin-bottom: -1px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+    .tab:hover { color: var(--blue); }
+
+    /* ─── Filter Row ─────────────────────────────────────── */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-selects {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-select {
+      height: 40px;
+      min-width: 160px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 16px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    .filter-select:focus { outline: none; border-color: var(--blue); }
+
+    .date-range-btn {
+      height: 40px;
+      min-width: 230px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 40px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      text-align: left;
+      background-image:
+        url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='3' width='12' height='11' rx='2' stroke='%237a8699' stroke-width='1.3'/%3E%3Cpath d='M2 7h12' stroke='%237a8699' stroke-width='1.3'/%3E%3Cpath d='M5 2v2M11 2v2' stroke='%237a8699' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat, no-repeat;
+      background-position: right 12px center, left 14px center;
+      background-size: 16px 16px, 16px 16px;
+    }
+    .date-range-btn:focus { outline: none; border-color: var(--blue); }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .btn-update {
+      height: 40px;
+      padding: 0 24px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-update:hover { opacity: 0.88; }
+
+    /* ─── Table Card ─────────────────────────────────────── */
+    .table-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-wrap::-webkit-scrollbar { height: 4px; }
+    .table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .data-table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+    }
+    .data-table thead tr {
+      background: var(--bg-field);
+      border-bottom: 1px solid var(--bg-field);
+    }
+    .data-table thead th {
+      padding: 0 24px;
+      height: 52px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--bg-field);
+      transition: background 0.12s;
+    }
+    .data-table tbody tr:last-child { border-bottom: none; }
+    .data-table tbody tr:not(.sub-row):hover { background: #fafbff; }
+    .data-table tbody td {
+      padding: 0 24px;
+      height: 60px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .row-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .row-caret {
+      color: var(--text-secondary);
+      display: inline-flex;
+      transition: transform .2s;
+    }
+    tr.expanded .row-caret { transform: rotate(180deg); }
+
+    .pos { color: var(--green); font-weight: 500; }
+    .neg { color: var(--red); font-weight: 500; }
+
+    .sub-row { background: var(--bg-field); display: none; }
+    tr.expanded + .sub-row,
+    tr.expanded + .sub-row + .sub-row,
+    tr.expanded + .sub-row + .sub-row + .sub-row { display: table-row; }
+    .sub-row td {
+      height: 44px !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      color: var(--text-secondary) !important;
+    }
+    .sub-row td:first-child { padding-left: 48px !important; }
+
+    /* ─── Pagination ─────────────────────────────────────── */
+    .pagination-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      padding: 14px 24px;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      flex-wrap: wrap;
+    }
+    .pag-info {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+      padding: 0 12px;
+    }
+    .pag-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pag-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+    }
+    .pag-btn:hover { color: var(--blue); }
+    .pag-btn.active {
+      background: var(--bg-field);
+      color: var(--text-primary);
+    }
+    .pag-btn.nav { color: var(--text-primary); }
+    .pag-btn.nav:hover { color: var(--blue); }
+    .pag-btn.nav.disabled { color: var(--text-tertiary); cursor: default; }
+
+    /* ─── Notional Volume modal ──────────────────────────── */
+    .nv-modal {
+      position: fixed; inset: 0; z-index: 200;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.45);
+      padding: 24px;
+    }
+    .nv-modal.open { display: flex; }
+    .nv-modal-card {
+      width: 100%;
+      max-width: 1000px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.32);
+      display: flex;
+      flex-direction: column;
+    }
+    .nv-modal-head {
+      height: 48px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+    .nv-close {
+      width: 28px; height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 0;
+      transition: background .15s, color .15s;
+    }
+    .nv-close:hover { background: var(--bg-field); color: var(--text-primary); }
+    .nv-modal-body {
+      padding: 0 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .nv-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--text-primary);
+    }
+    .nv-total {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .nv-total .num {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 38px;
+      color: var(--text-primary);
+    }
+    .nv-total .unit {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .nv-grid {
+      background: var(--bg-field);
+      border-radius: 12px;
+      padding: 8px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .nv-item {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      min-width: 0;
+    }
+    .nv-item:not(:nth-child(3n))::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+    }
+    .nv-item-lbl {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 16px;
+    }
+    .nv-item-val {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .nv-item-val .pts {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .nv-item-val .pts-unit {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .nv-item-val .slash {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .nv-item-val .basis {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    /* ─── Dark theme ─────────────────────────────────────── */
+    body.dark-mode {
+      background: #121212;
+      color: #FFFFFF;
+    }
+    body.dark-mode .back-link { color: rgba(255,255,255,0.6); }
+    body.dark-mode .back-link:hover { color: var(--cyan); }
+    body.dark-mode .page-title { color: rgba(255,255,255,0.92); }
+
+    body.dark-mode .summary-card {
+      background: #1D1D21;
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    body.dark-mode .summary-label { color: rgba(255,255,255,0.92); }
+    body.dark-mode .info-icon { border-color: rgba(255,255,255,0.6); color: rgba(255,255,255,0.6); }
+    body.dark-mode .info-tip.open .info-icon { background: rgba(255,255,255,0.92); color: #1D1D21; border-color: rgba(255,255,255,0.92); }
+    body.dark-mode .info-tip-bubble {
+      background: #34343B;
+      color: rgba(255,255,255,0.92);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    body.dark-mode .info-tip-bubble::after { border-top-color: #34343B; }
+    body.dark-mode .summary-total .num,
+    body.dark-mode .summary-total .unit { color: rgba(255,255,255,0.92); }
+
+    body.dark-mode .breakdown { background: rgba(255,255,255,0.04); }
+    body.dark-mode .bk-divider { background: rgba(255,255,255,0.12); }
+    body.dark-mode .bk-lbl { color: rgba(255,255,255,0.6); }
+    body.dark-mode .bk-val .pts,
+    body.dark-mode .bk-val .pts-unit,
+    body.dark-mode .bk-val .slash,
+    body.dark-mode .bk-val .basis { color: rgba(255,255,255,0.92); }
+
+    body.dark-mode .tabs-bar { border-bottom-color: rgba(255,255,255,0.12); }
+    body.dark-mode .tab { color: rgba(255,255,255,0.6); }
+    body.dark-mode .tab:hover { color: var(--cyan); }
+    body.dark-mode .tab.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+    }
+
+    body.dark-mode .filter-select,
+    body.dark-mode .date-range-btn {
+      background-color: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.92);
+    }
+    body.dark-mode .filter-select:focus,
+    body.dark-mode .date-range-btn:focus { border-color: var(--cyan); }
+    body.dark-mode .btn-update {
+      background: var(--blue);
+      color: #fff;
+    }
+    body.dark-mode .btn-update:hover { opacity: 0.88; }
+
+    body.dark-mode .table-card {
+      background: #1D1D21;
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    body.dark-mode .data-table thead tr {
+      background: rgba(255,255,255,0.04);
+      border-bottom-color: rgba(255,255,255,0.04);
+    }
+    body.dark-mode .data-table thead th { color: rgba(255,255,255,0.6); }
+    body.dark-mode .data-table tbody tr {
+      border-bottom-color: rgba(255,255,255,0.06);
+    }
+    body.dark-mode .data-table tbody tr:not(.sub-row):hover { background: rgba(255,255,255,0.04); }
+    body.dark-mode .data-table tbody td { color: rgba(255,255,255,0.92); }
+    body.dark-mode .row-caret { color: rgba(255,255,255,0.6); }
+    body.dark-mode .sub-row { background: rgba(255,255,255,0.04); }
+    body.dark-mode .sub-row td { color: rgba(255,255,255,0.6) !important; }
+
+    body.dark-mode .pagination-row { border-top-color: rgba(255,255,255,0.12); }
+    body.dark-mode .pag-info { color: rgba(255,255,255,0.92); }
+    body.dark-mode .pag-btn { color: rgba(255,255,255,0.38); }
+    body.dark-mode .pag-btn:hover { color: var(--cyan); }
+    body.dark-mode .pag-btn.active {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.92);
+    }
+    body.dark-mode .pag-btn.nav { color: rgba(255,255,255,0.92); }
+    body.dark-mode .pag-btn.nav:hover { color: var(--cyan); }
+    body.dark-mode .pag-btn.nav.disabled { color: rgba(255,255,255,0.38); }
+
+    body.dark-mode .nv-modal-card {
+      background: #1D1D21;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    body.dark-mode .nv-close { color: rgba(255,255,255,0.6); }
+    body.dark-mode .nv-close:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.92); }
+    body.dark-mode .nv-title { color: rgba(255,255,255,0.92); }
+    body.dark-mode .nv-total .num,
+    body.dark-mode .nv-total .unit { color: rgba(255,255,255,0.92); }
+    body.dark-mode .nv-grid { background: rgba(255,255,255,0.04); }
+    body.dark-mode .nv-item:not(:nth-child(3n))::after { background: rgba(255,255,255,0.12); }
+    body.dark-mode .nv-item-lbl { color: rgba(255,255,255,0.6); }
+    body.dark-mode .nv-item-val .pts,
+    body.dark-mode .nv-item-val .pts-unit,
+    body.dark-mode .nv-item-val .slash,
+    body.dark-mode .nv-item-val .basis { color: rgba(255,255,255,0.92); }
+
+    /* ─── Mobile ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .content { padding: 28px 24px 48px; gap: 24px; }
+      .breakdown { grid-template-columns: 1fr; gap: 16px; }
+      .bk-divider { display: none; }
+    }
+    @media (max-width: 768px) {
+      .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
+      .content { padding: 20px 16px 40px; gap: 20px; }
+      .page-title { font-size: 24px; }
+      .summary-total .num { font-size: 28px; }
+      .filter-row { flex-direction: column; align-items: stretch; }
+      .filter-selects { flex-direction: column; }
+      .filter-select,
+      .date-range-btn { width: 100%; }
+      .filter-actions { margin-left: 0; justify-content: flex-end; }
+      .tabs-bar { gap: 16px; }
+      .pagination-row { gap: 8px; justify-content: center; }
+      .nv-grid { grid-template-columns: repeat(2, 1fr); }
+      .nv-item:not(:nth-child(3n))::after { display: none; }
+      .nv-item:nth-child(odd):not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 40px;
+        background: var(--border);
+        display: block;
+      }
+      body.dark-mode .nv-item:nth-child(odd):not(:last-child)::after { background: rgba(255,255,255,0.12); }
+    }
+    @media (max-width: 480px) {
+      .nv-grid { grid-template-columns: 1fr; }
+      .nv-item:nth-child(odd):not(:last-child)::after { display: none !important; }
+      .nv-modal-body { padding: 0 16px 24px; }
+    }
+    @media (max-width: 480px) {
+      .content { padding: 16px 12px 32px; }
+      .page-title { font-size: 20px; }
+      .summary-card { padding: 16px; }
+      .breakdown { padding: 16px; }
+    }
+  </style>
+</head>
+<body class="ib-mode">
+  <div id="sidebar-root"></div>
+  <div id="topbar-root"></div>
+
+  <main class="main" id="main-content">
+    <div class="content">
+
+      <a class="back-link" href="ib-clubelite.html">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 11L5 7L9 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back</span>
+      </a>
+
+      <h1 class="page-title">Points History</h1>
+
+      <!-- Summary Card -->
+      <div class="summary-card">
+        <div class="summary-head">
+          <div class="summary-label-wrap">
+            <span class="summary-label">Earned Points</span>
+            <span class="info-tip" id="ep-info-tip">
+              <span class="info-icon" id="ep-info-icon">i</span>
+              <span class="info-tip-bubble" role="tooltip">Earned Points = Total accumulated points − Deducted points；Points will expire at the end of each statistical period.</span>
+            </span>
+          </div>
+          <div class="summary-total">
+            <span class="num">100,000</span>
+            <span class="unit">Points</span>
+          </div>
+        </div>
+
+        <div class="breakdown">
+          <div class="bk-cell">
+            <div class="bk-lbl">Gross Deposit</div>
+            <div class="bk-val">
+              <span class="pts">50,000</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">500,000 USD</span>
+            </div>
+          </div>
+          <div class="bk-divider"></div>
+          <div class="bk-cell">
+            <div class="bk-lbl">
+              Notional Volume
+              <span class="info-icon" id="nv-info-icon" title="Notional Volume breakdown">i</span>
+            </div>
+            <div class="bk-val">
+              <span class="pts">40,000</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">1,000,000 USD</span>
+            </div>
+          </div>
+          <div class="bk-divider"></div>
+          <div class="bk-cell">
+            <div class="bk-lbl">FTD</div>
+            <div class="bk-val">
+              <span class="pts">10,000</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">4 user(s)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-bar" id="tabs-bar">
+        <div class="tab active" data-tab="all">All</div>
+        <div class="tab" data-tab="received">Received</div>
+        <div class="tab" data-tab="expired">Expired</div>
+      </div>
+
+      <!-- Filter row -->
+      <div class="filter-row">
+        <div class="filter-selects">
+          <select class="filter-select">
+            <option>All Type</option>
+            <option>Gross Deposit</option>
+            <option>Notional Volume</option>
+            <option>FTD</option>
+            <option>Points Expired</option>
+          </select>
+          <select class="filter-select">
+            <option>Week To Date</option>
+            <option>Today</option>
+            <option>Month To Date</option>
+            <option>Year To Date</option>
+            <option>Custom</option>
+          </select>
+          <button class="date-range-btn">01/07/2025 - 30/09/2025</button>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-update">Update</button>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="table-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Get Points</th>
+                <th>Current Points</th>
+                <th>Description</th>
+                <th>Date(UTC+3)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Gross Deposit</td>
+                <td><span class="pos">+5</span></td>
+                <td>1035</td>
+                <td>$5,000</td>
+                <td>10/05/2024</td>
+              </tr>
+
+              <tr class="has-children" data-row="notional">
+                <td>
+                  <span class="row-toggle">
+                    Notional Volume
+                    <span class="row-caret">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75 10.5 5.25" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </span>
+                </td>
+                <td><span class="pos">+15</span></td>
+                <td>1030</td>
+                <td>$3,000,000</td>
+                <td>10/05/2024</td>
+              </tr>
+              <tr class="sub-row">
+                <td>Crypto</td>
+                <td>+5</td>
+                <td>-</td>
+                <td>$1,000,000</td>
+                <td>-</td>
+              </tr>
+              <tr class="sub-row">
+                <td>Forex</td>
+                <td>+5</td>
+                <td>-</td>
+                <td>$500,000</td>
+                <td>-</td>
+              </tr>
+              <tr class="sub-row">
+                <td>Default</td>
+                <td>+5</td>
+                <td>-</td>
+                <td>$500,000</td>
+                <td>-</td>
+              </tr>
+
+              <tr>
+                <td>FTD</td>
+                <td><span class="pos">+15</span></td>
+                <td>1015</td>
+                <td>3 user(s)</td>
+                <td>10/05/2024</td>
+              </tr>
+              <tr>
+                <td>Points Expired</td>
+                <td><span class="neg">-10</span></td>
+                <td>1000</td>
+                <td>Points automatically deducted upon expiration.</td>
+                <td>10/05/2024</td>
+              </tr>
+              <tr>
+                <td>Gross Deposit</td>
+                <td><span class="pos">+5</span></td>
+                <td>1035</td>
+                <td>$5,000</td>
+                <td>10/05/2024</td>
+              </tr>
+              <tr>
+                <td>Gross Deposit</td>
+                <td><span class="pos">+5</span></td>
+                <td>1035</td>
+                <td>$5,000</td>
+                <td>10/05/2024</td>
+              </tr>
+              <tr>
+                <td>Gross Deposit</td>
+                <td><span class="pos">+5</span></td>
+                <td>1035</td>
+                <td>Gross Deposit: $5,000</td>
+                <td>10/05/2024</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-row">
+          <span class="pag-info">Total of 100 data</span>
+          <span class="pag-info">5 Pages</span>
+          <div class="pag-controls">
+            <button class="pag-btn nav disabled" data-pg="prev" type="button">
+              <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M6 1L1.5 6 6 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="pag-btn active" data-pg="1" type="button">1</button>
+            <button class="pag-btn" data-pg="2" type="button">2</button>
+            <button class="pag-btn" data-pg="3" type="button">3</button>
+            <button class="pag-btn" data-pg="4" type="button">4</button>
+            <button class="pag-btn" data-pg="5" type="button">5</button>
+            <button class="pag-btn nav" data-pg="next" type="button">
+              <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M2 1l4.5 5L2 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Notional Volume modal -->
+  <div class="nv-modal" id="nv-modal" role="dialog" aria-modal="true" aria-labelledby="nv-title">
+    <div class="nv-modal-card">
+      <div class="nv-modal-head">
+        <button type="button" class="nv-close" id="nv-close" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 2L12 12M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="nv-modal-body">
+        <h2 class="nv-title" id="nv-title">Notional Volume</h2>
+        <div class="nv-total">
+          <span class="num">1,000</span>
+          <span class="unit">Points</span>
+        </div>
+        <div class="nv-grid">
+          <div class="nv-item">
+            <div class="nv-item-lbl">Forex Commodities</div>
+            <div class="nv-item-val">
+              <span class="pts">200</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+          <div class="nv-item">
+            <div class="nv-item-lbl">Indices</div>
+            <div class="nv-item-val">
+              <span class="pts">100</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+          <div class="nv-item">
+            <div class="nv-item-lbl">Crypto</div>
+            <div class="nv-item-val">
+              <span class="pts">200</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+          <div class="nv-item">
+            <div class="nv-item-lbl">Share CFD</div>
+            <div class="nv-item-val">
+              <span class="pts">200</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+          <div class="nv-item">
+            <div class="nv-item-lbl">Bond</div>
+            <div class="nv-item-val">
+              <span class="pts">150</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+          <div class="nv-item">
+            <div class="nv-item-lbl">Synthetic Indices</div>
+            <div class="nv-item-val">
+              <span class="pts">100</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+          <div class="nv-item">
+            <div class="nv-item-lbl">Notional Volume(Default)</div>
+            <div class="nv-item-val">
+              <span class="pts">50</span>
+              <span class="pts-unit">Points</span>
+              <span class="slash">/</span>
+              <span class="basis">200,000 USD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidebar.js"></script>
+  <script src="topbar.js"></script>
+  <script>
+    /* Notional Volume modal */
+    (function () {
+      const modal = document.getElementById('nv-modal');
+      const icon = document.getElementById('nv-info-icon');
+      const closeBtn = document.getElementById('nv-close');
+      if (!modal || !icon) return;
+      function open() {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function close() {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        open();
+      });
+      closeBtn?.addEventListener('click', close);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) close();
+      });
+    })();
+
+    /* Earned Points info tooltip */
+    (function () {
+      const tip = document.getElementById('ep-info-tip');
+      if (!tip) return;
+      const icon = document.getElementById('ep-info-icon');
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tip.classList.toggle('open');
+      });
+      document.addEventListener('click', (e) => {
+        if (!tip.contains(e.target)) tip.classList.remove('open');
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') tip.classList.remove('open');
+      });
+    })();
+
+    /* Tabs */
+    document.querySelectorAll('#tabs-bar .tab').forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('#tabs-bar .tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+
+    /* Expandable Notional Volume row */
+    document.querySelectorAll('.data-table tbody tr.has-children').forEach(tr => {
+      tr.addEventListener('click', () => tr.classList.toggle('expanded'));
+    });
+
+    /* Pagination */
+    document.querySelectorAll('.pag-btn[data-pg]').forEach(btn => {
+      const pg = btn.dataset.pg;
+      if (pg === 'prev' || pg === 'next') return;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pag-btn[data-pg]').forEach(x => {
+          if (x.dataset.pg === 'prev' || x.dataset.pg === 'next') return;
+          x.classList.remove('active');
+        });
+        btn.classList.add('active');
+        const num = parseInt(pg, 10);
+        const prev = document.querySelector('.pag-btn[data-pg="prev"]');
+        const next = document.querySelector('.pag-btn[data-pg="next"]');
+        if (prev) prev.classList.toggle('disabled', num === 1);
+        if (next) next.classList.toggle('disabled', num === 5);
+      });
+    });
+  </script>
+</body>
+</html>

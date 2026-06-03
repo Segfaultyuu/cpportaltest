@@ -43,7 +43,7 @@
     .tc-banner { position: relative; height: 156px; border-radius: 12px; background: var(--blue-light); padding: 32px 36px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; margin-bottom: 24px; }
     .tc-banner-title { font-size: 28px; font-weight: 700; line-height: 36px; color: var(--text-primary); margin-bottom: 6px; }
     .tc-banner-sub { font-size: 14px; font-weight: 400; line-height: 22px; color: var(--text-secondary); }
-    .tc-banner-art { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); height: 140px; pointer-events: none; object-fit: contain; }
+    .tc-banner-art { position: absolute; right: 0; top: 0; bottom: 0; height: 100%; width: auto; pointer-events: none; object-fit: cover; object-position: right center; }
 
     /* Info card — Become a featured trader */
     .tc-info-card { background: #fff; border-radius: 12px; padding: 32px 36px; margin-bottom: 24px; display: flex; gap: 32px; align-items: flex-start; }
@@ -137,7 +137,10 @@
     .tc-rank-arrow.dn { color: var(--red); }
 
     /* Pagination */
-    .tc-pagination { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--divider); background: #fff; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+    .tc-pagination { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--divider); background: #fff; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; flex-wrap: wrap; }
+    .tc-pg-info { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .tc-pg-info-sep { color: var(--text-tertiary, #c2c7d0); }
+    .tc-pg-controls { display: inline-flex; align-items: center; gap: 8px; }
     .tc-pg-btn { width: 28px; height: 28px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
     .tc-pg-btn:hover { background: var(--bg-card-2); }
     .tc-pg-btn.active { background: var(--blue); color: #fff; }
@@ -147,7 +150,7 @@
     @media (max-width: 1100px) {
       .content { padding: 28px 24px 48px; }
       .tc-banner { padding: 28px 28px; height: auto; min-height: 140px; }
-      .tc-banner-art { height: 110px; right: 16px; }
+      .tc-banner-art { height: 100%; width: auto; right: 0; }
       .tc-banner-title { font-size: 24px; line-height: 32px; }
       .tc-info-card { padding: 24px 28px; gap: 24px; }
       .tc-info-left { width: 180px; }
@@ -222,9 +225,33 @@
       .tc-board-hdr { margin-top: 24px; }
       .tc-board-title { font-size: 15px; }
 
-      /* Pagination: wrap and shrink */
-      .tc-pagination { flex-wrap: wrap; gap: 8px; padding: 14px; font-size: 12px; }
-      .tc-pg-btn { width: 24px; height: 24px; }
+      /* Pagination: stack rows, hide overflow page numbers */
+      .tc-pagination {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px 16px;
+        font-size: 12px;
+      }
+      .tc-pg-info {
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+      }
+      .tc-pg-info-sep { display: none; }
+      .tc-pg-info > span:nth-child(3) { display: none; }
+      .tc-pg-select { height: 32px; font-size: 12px; flex-shrink: 0; }
+      .tc-pg-controls {
+        justify-content: center;
+        gap: 6px;
+      }
+      .tc-pg-btn { width: 28px; height: 28px; font-size: 12px; }
+      /* Show only first/last + active + adjacent on very narrow viewports */
+      .tc-pg-controls .tc-pg-btn:nth-child(5),
+      .tc-pg-controls .tc-pg-btn:nth-child(6) { display: none; }
+    }
+    @media (max-width: 380px) {
+      .tc-pg-controls .tc-pg-btn:nth-child(4) { display: none; }
     }
   </style>
 </head>
@@ -311,7 +338,7 @@
       </div>
       <div class="tc-prizepool">
         <div class="tc-prizepool-lbl">TOTAL PRIZE POOL</div>
-        <div class="tc-prizepool-val">105,074,668,000<span class="usd">USD</span></div>
+        <div class="tc-prizepool-val">105,074,668,000 <span class="usd">USD</span></div>
         <div class="tc-prizepool-divider"></div>
         <div class="tc-prizepool-rows">
           <div>
@@ -406,16 +433,21 @@
         </tbody>
       </table>
       <div class="tc-pagination">
-        <span>total of 100 data</span>
-        <span>5 pages</span>
-        <select class="tc-pg-select"><option>10/ pages</option><option>20/ pages</option><option>50/ pages</option></select>
-        <span class="tc-pg-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3l-4 4 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span class="tc-pg-btn active">1</span>
-        <span class="tc-pg-btn">2</span>
-        <span class="tc-pg-btn">3</span>
-        <span class="tc-pg-btn">4</span>
-        <span class="tc-pg-btn">5</span>
-        <span class="tc-pg-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="tc-pg-info">
+          <span>total of 100 data</span>
+          <span class="tc-pg-info-sep">·</span>
+          <span>5 pages</span>
+          <select class="tc-pg-select"><option>10/ pages</option><option>20/ pages</option><option>50/ pages</option></select>
+        </div>
+        <div class="tc-pg-controls">
+          <span class="tc-pg-btn tc-pg-nav" data-pg="prev"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3l-4 4 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="tc-pg-btn active">1</span>
+          <span class="tc-pg-btn">2</span>
+          <span class="tc-pg-btn">3</span>
+          <span class="tc-pg-btn">4</span>
+          <span class="tc-pg-btn">5</span>
+          <span class="tc-pg-btn tc-pg-nav" data-pg="next"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
       </div>
     </div>
   </main>
