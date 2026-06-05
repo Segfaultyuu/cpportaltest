@@ -828,6 +828,20 @@
     .ce-section-link::after { transform: rotate(180deg); }
     .ce-section-link:hover { color: rgb(var(--tier-ink-rgb)); }
 
+    /* Light-mode: darker, richer section-title gradient for contrast on white bg */
+    body:not(.dark-mode) .ce-section-title {
+      background: linear-gradient(
+        100deg,
+        color-mix(in srgb, var(--tier-c1) 100%, #000 60%) 0%,
+        color-mix(in srgb, var(--tier-c2) 100%, #000 50%) 30%,
+        color-mix(in srgb, var(--tier-c1) 100%, #000 42%) 50%,
+        color-mix(in srgb, var(--tier-c2) 100%, #000 50%) 70%,
+        color-mix(in srgb, var(--tier-c1) 100%, #000 60%) 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
     /* Level tabs — AuthKit light-switch style, centered */
     .ce-level-tabs {
       align-self: center;
