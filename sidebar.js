@@ -187,6 +187,7 @@
       .mobile-lang-row { display: flex; }
       .mobile-logout-row { display: flex; }
       .mobile-tabbar { display: flex; }
+      body.ib-mode .mobile-tabbar { display: none !important; }
       #sidebar-tooltip { display: none !important; }
     }
 
@@ -288,12 +289,19 @@
     body.dark-mode .mobile-toggle-btn.active { background: rgba(0,240,255,0.10); color: #00F0FF; }
     body.dark-mode .mobile-lang-row,
     body.dark-mode .mobile-logout-row { color: #FFFFFF; border-top-color: #2D3033; }
-    body.dark-mode .mobile-tabbar { background: #1D1D21; border-top-color: #2D3033; }
-    body.dark-mode .tabbar-item { color: #7A8699; }
+    body.dark-mode .mobile-tabbar {
+      background: rgba(29,29,33,0.92);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      border-top-color: rgba(255,255,255,0.08);
+    }
+    body.dark-mode .tabbar-item { color: #8E96A6; }
     body.dark-mode .tabbar-item.active { color: #00F0FF; }
+    body.dark-mode .tabbar-item.active .tabbar-icon svg {
+      filter: drop-shadow(0 0 6px rgba(0,240,255,0.45));
+    }
     /* Invert sidebar nav PNG icons (default ones are dark on light) */
     body.dark-mode .sidebar .nav-icon img.icon-def,
-    body.dark-mode .sidebar .tabbar-icon img,
     body.dark-mode .sidebar .mobile-lang-flag {
       filter: invert(0.85) hue-rotate(180deg);
     }
@@ -675,25 +683,54 @@
 
     <div class="mobile-tabbar" id="mobile-tabbar">
       <a class="tabbar-item${tabActive('index.html')}" href="index.html">
-        ${tabIcon('Home.png','Home-selected.png','index.html')}
+        <span class="tabbar-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 10.5L12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/>
+            <path d="M8 14.5l2.2-2.2 2 2L15.5 11"/>
+          </svg>
+        </span>
         <span>Home</span>
       </a>
       <a class="tabbar-item${tabActive('account.html')}" href="account.html">
-        ${tabIcon('Account.png','Account-selected.png','account.html')}
+        <span class="tabbar-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 3.5h9l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-11.5A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5z"/>
+            <path d="M14.5 4v3.5h4"/>
+            <path d="M8 12h6"/>
+            <path d="M8 15.5h4"/>
+          </svg>
+        </span>
         <span>Accounts</span>
       </a>
-      <a class="tabbar-item" href="#">
-        <img src="images/Coupons.png" alt="" />
+      <a class="tabbar-item${tabActive('promotion.html')}" href="promotion.html">
+        <span class="tabbar-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3.2c.7 0 1 .9 1.7 1.1.7.2 1.4-.4 2 0 .6.4.4 1.3.9 1.8.5.5 1.4.3 1.8.9.4.6-.2 1.3 0 2 .2.7 1.1 1 1.1 1.7s-.9 1-1.1 1.7c-.2.7.4 1.4 0 2-.4.6-1.3.4-1.8.9-.5.5-.3 1.4-.9 1.8-.6.4-1.3-.2-2 0-.7.2-1 1.1-1.7 1.1s-1-.9-1.7-1.1c-.7-.2-1.4.4-2 0-.6-.4-.4-1.3-.9-1.8-.5-.5-1.4-.3-1.8-.9-.4-.6.2-1.3 0-2-.2-.7-1.1-1-1.1-1.7s.9-1 1.1-1.7c.2-.7-.4-1.4 0-2 .4-.6 1.3-.4 1.8-.9.5-.5.3-1.4.9-1.8.6-.4 1.3.2 2 0 .7-.2 1-1.1 1.7-1.1z"/>
+            <circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/>
+            <circle cx="14" cy="14" r="0.9" fill="currentColor" stroke="none"/>
+            <path d="M14.5 9.5l-5 5"/>
+          </svg>
+        </span>
         <span>Promotions</span>
       </a>
       <a class="tabbar-item${tabActive('funds.html')}" href="funds.html">
-        ${tabIcon('Funds.png','Fund-selected.png','funds.html')}
+        <span class="tabbar-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <ellipse cx="9" cy="7" rx="5" ry="2.2"/>
+            <path d="M4 7v3.4c0 1.21 2.24 2.2 5 2.2s5-.99 5-2.2V7"/>
+            <path d="M4 10.4v3.4c0 1.21 2.24 2.2 5 2.2"/>
+            <ellipse cx="15" cy="15" rx="5" ry="2.2"/>
+            <path d="M10 15v3.4c0 1.21 2.24 2.2 5 2.2s5-.99 5-2.2V15"/>
+          </svg>
+        </span>
         <span>Funds</span>
       </a>
       <button class="tabbar-item" id="tabbar-more">
         <span class="tabbar-icon">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <line x1="4" y1="6" x2="18" y2="6"/><line x1="4" y1="11" x2="18" y2="11"/><line x1="4" y1="16" x2="18" y2="16"/>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="17" x2="20" y2="17"/>
           </svg>
         </span>
         <span>More</span>

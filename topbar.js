@@ -155,8 +155,10 @@
       display: none; align-items: center; justify-content: center;
       width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
       border: none; background: transparent;
+      color: var(--text-primary, #282d34);
     }
     .topbar-download:hover { background: var(--bg-2); }
+    .topbar-download svg { display: block; }
 
     .topbar-right-icons { display: flex; align-items: center; gap: 16px; }
 
@@ -222,11 +224,21 @@
       .topbar-brand { display: none !important; }
       .topbar-avatar { display: none !important; }
       .topbar-avatar-wrap { display: none !important; }
-      .topbar-right-icons { flex: 1; justify-content: flex-end; gap: 16px; }
+      .topbar-right-icons { flex: 1; justify-content: flex-end; gap: 12px; }
       .topbar-lang-wrap { display: none !important; }
       .topbar-webtrader-mobile { display: flex !important; }
       .topbar-download { display: flex !important; }
       .topbar-dropdown { display: none !important; }
+      body.ib-mode .topbar-acct-switcher {
+        height: 32px; padding: 0 10px; gap: 6px;
+        font-size: 12px; max-width: 180px;
+      }
+      body.ib-mode .topbar-acct-switcher #topbar-acct-label {
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+      }
+      body.ib-mode .topbar-acct-flag { width: 16px; height: 16px; }
+      body.ib-mode .topbar-icon-btn[title="Coupons"],
+      body.ib-mode .topbar-download { display: none !important; }
     }
 
     /* ── Dark theme (toggled via topbar-theme-toggle) ───────── */
@@ -240,6 +252,8 @@
     body.dark-mode .topbar-icon-btn:hover { background: #26262B; }
     body.dark-mode .topbar-icon-btn img,
     body.dark-mode .topbar-language img { filter: invert(0.85) hue-rotate(180deg); }
+    body.dark-mode .topbar-download { color: #C2C7D0; }
+    body.dark-mode .topbar-download:hover { background: #26262B; color: #FFFFFF; }
     body.dark-mode .topbar-acct-switcher {
       background: #26262B; border-color: #2D3033; color: #FFFFFF;
     }
@@ -350,7 +364,13 @@
           </div>
         </div>
         <div class="topbar-icon-btn" title="Price Alert"><img src="images/imgFrame.svg" width="20" height="20" alt="Price Alert" /></div>
-        <button class="topbar-download" title="Download"><img src="images/Download.png" width="24" height="24" alt="Download" /></button>
+        <button class="topbar-download" title="Download" onclick="window.location.href='downloads.html'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3.5v11.5"/>
+            <path d="M7 10.5l5 5 5-5"/>
+            <path d="M4 17.5v1.2A1.8 1.8 0 0 0 5.8 20.5h12.4a1.8 1.8 0 0 0 1.8-1.8v-1.2"/>
+          </svg>
+        </button>
         <button class="topbar-theme-toggle" id="topbar-theme-toggle" title="Theme">
           <svg class="sun" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.6" stroke="currentColor" stroke-width="1.6" fill="none"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.2"/><path d="M10 16.3v2.2"/><path d="M1.5 10h2.2"/><path d="M16.3 10h2.2"/><path d="M3.9 3.9l1.6 1.6"/><path d="M14.5 14.5l1.6 1.6"/><path d="M3.9 16.1l1.6-1.6"/><path d="M14.5 5.5l1.6-1.6"/></g></svg>
           <svg class="moon" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.5 11.8A6.8 6.8 0 018.2 3.5a.5.5 0 00-.62-.62A8 8 0 1017.12 12.42a.5.5 0 00-.62-.62z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
@@ -432,10 +452,10 @@
   const themeBtn = document.getElementById('topbar-theme-toggle');
   if (themeBtn) {
     /* restore saved theme */
-    if (localStorage.getItem('ib-theme') === 'dark') document.body.classList.add('dark-mode');
+    if (sessionStorage.getItem('ib-theme') === 'dark') document.body.classList.add('dark-mode');
     themeBtn.addEventListener('click', () => {
       const dark = document.body.classList.toggle('dark-mode');
-      localStorage.setItem('ib-theme', dark ? 'dark' : 'light');
+      sessionStorage.setItem('ib-theme', dark ? 'dark' : 'light');
     });
   }
 
@@ -540,7 +560,7 @@
         cleanup();
         if (action === 'confirm') {
           document.body.classList.remove('dark-mode');
-          localStorage.setItem('ib-theme', 'light');
+          sessionStorage.setItem('ib-theme', 'light');
           proceed();
         }
       };
