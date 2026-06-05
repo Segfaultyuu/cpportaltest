@@ -86,9 +86,9 @@
       border: none; background: transparent; transition: background 0.15s;
     }
     .topbar-theme-toggle:hover { background: var(--bg-2); }
-    .topbar-theme-toggle .moon { display: none; }
-    body.dark-mode .topbar-theme-toggle .sun { display: none; }
-    body.dark-mode .topbar-theme-toggle .moon { display: block; }
+    .topbar-theme-toggle .sun { display: none; }
+    body.dark-mode .topbar-theme-toggle .moon { display: none; }
+    body.dark-mode .topbar-theme-toggle .sun { display: block; }
 
     .topbar-icon-btn {
       width: 32px; height: 32px;
