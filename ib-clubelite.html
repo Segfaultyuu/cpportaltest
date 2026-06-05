@@ -41,8 +41,8 @@
     body[data-tier="premium"]   { --tier-c1: #b6a4ff; --tier-c2: #d6c8ff; --tier-c3: #f3edff; --tier-glow-rgb: 182,164,255; --tier-ink-rgb: 102,82,200; }
     body[data-tier="essence"]   { --tier-c1: #ffb6e6; --tier-c2: #ffd9ee; --tier-c3: #ffffff; --tier-glow-rgb: 255,182,230; --tier-ink-rgb: 200,72,150; }
     body[data-tier="prestige"]  { --tier-c1: #ffc18a; --tier-c2: #ffd9b3; --tier-c3: #fff1e0; --tier-glow-rgb: 255,193,138; --tier-ink-rgb: 200,118,40; }
-    body[data-tier="privilege"] { --tier-c1: #f0a35c; --tier-c2: #f7c992; --tier-c3: #ffe6cd; --tier-glow-rgb: 240,163,92;  --tier-ink-rgb: 184,104,28; }
-    body[data-tier="apex"]      { --tier-c1: #00d4e6; --tier-c2: #6ee9f1; --tier-c3: #d6f8fb; --tier-glow-rgb: 0,212,230;   --tier-ink-rgb: 0,150,170; }
+    body[data-tier="privilege"] { --tier-c1: #00d4e6; --tier-c2: #6ee9f1; --tier-c3: #d6f8fb; --tier-glow-rgb: 0,212,230;   --tier-ink-rgb: 0,150,170; }
+    body[data-tier="apex"]      { --tier-c1: #f0a35c; --tier-c2: #f7c992; --tier-c3: #ffe6cd; --tier-glow-rgb: 240,163,92;  --tier-ink-rgb: 184,104,28; }
     body[data-tier="honour"]    { --tier-c1: #f4d36b; --tier-c2: #fae29c; --tier-c3: #fff5cc; --tier-glow-rgb: 244,211,107; --tier-ink-rgb: 178,140,30; }
     /* Dark mode: ink should be the bright glow color for lines/icons */
     body.dark-mode { --tier-ink-rgb: var(--tier-glow-rgb); }
@@ -79,12 +79,12 @@
     .ce-hero {
       position: relative;
       width: 100%;
-      height: 540px;
-      min-height: 540px;
+      height: 620px;
+      min-height: 620px;
       overflow: hidden;
-      padding: 128px 0 32px;
+      padding: 96px 0 32px;
       color: var(--text-primary);
-      background: linear-gradient(0deg, #FFFFFF 0%, #F0F6FF 100%);
+      background: linear-gradient(0deg, #F0F6FF 0%, #FFFFFF 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -291,6 +291,185 @@
       color: var(--text-secondary);
       margin-bottom: 24px;
     }
+    /* Glassmorphism diamond above the level title */
+    .ce-hero-diamond {
+      width: 76px;
+      height: 76px;
+      margin-bottom: 30px;
+      position: relative;
+      animation: ceDiamondFloat 4.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .ce-hero-diamond-shape {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      transform: rotate(45deg);
+      background:
+        linear-gradient(135deg,
+          rgba(255,255,255,0.55) 0%,
+          rgba(var(--tier-glow-rgb), 0.28) 45%,
+          rgba(var(--tier-ink-rgb), 0.22) 100%);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1px solid rgba(255,255,255,0.75);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 -2px 6px rgba(var(--tier-ink-rgb), 0.22),
+        0 14px 32px rgba(var(--tier-ink-rgb), 0.28),
+        0 4px 14px rgba(255,255,255,0.5);
+      overflow: hidden;
+    }
+    /* Diagonal facet lines (drawn before rotation, so they appear as a + cross on the diamond) */
+    .ce-hero-diamond-shape::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(0deg, transparent 49.4%, rgba(255,255,255,0.45) 50%, transparent 50.6%),
+        linear-gradient(90deg, transparent 49.4%, rgba(255,255,255,0.35) 50%, transparent 50.6%);
+      mix-blend-mode: screen;
+      opacity: 0.85;
+    }
+    /* Animated shine sweep */
+    .ce-hero-diamond-shape::after {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: linear-gradient(115deg,
+        transparent 38%,
+        rgba(255,255,255,0.7) 50%,
+        transparent 62%);
+      animation: ceDiamondShine 3.4s linear infinite;
+      mix-blend-mode: overlay;
+    }
+    @keyframes ceDiamondFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%      { transform: translateY(-6px) rotate(3deg); }
+    }
+    @keyframes ceDiamondShine {
+      0%   { transform: translateX(-60%); opacity: 0; }
+      20%  { opacity: 1; }
+      80%  { opacity: 1; }
+      100% { transform: translateX(60%); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ce-hero-diamond { animation: none; }
+      .ce-hero-diamond-shape::after { animation: none; opacity: 0; }
+    }
+
+    /* ─── Light-mode hero overrides (glow, stars, diamond, progress bar) ────── */
+    body:not(.dark-mode) .ce-hero-glow {
+      /* Screen-blend renders invisible against white — swap to normal blend
+         with a gentle tier-glow gradient so the halo just reads */
+      background:
+        radial-gradient(circle at center,
+          rgba(var(--tier-glow-rgb), 0.22) 0%,
+          rgba(var(--tier-glow-rgb), 0.12) 30%,
+          rgba(var(--tier-glow-rgb), 0.04) 55%,
+          rgba(var(--tier-glow-rgb), 0) 78%);
+      mix-blend-mode: normal;
+    }
+    /* Warm tiers (apex/prestige/honour/essence) are perceptually heavier on white — soften further */
+    body:not(.dark-mode)[data-tier="apex"] .ce-hero-glow,
+    body:not(.dark-mode)[data-tier="prestige"] .ce-hero-glow,
+    body:not(.dark-mode)[data-tier="honour"] .ce-hero-glow,
+    body:not(.dark-mode)[data-tier="essence"] .ce-hero-glow {
+      background:
+        radial-gradient(circle at center,
+          rgba(var(--tier-glow-rgb), 0.14) 0%,
+          rgba(var(--tier-glow-rgb), 0.08) 30%,
+          rgba(var(--tier-glow-rgb), 0.025) 55%,
+          rgba(var(--tier-glow-rgb), 0) 78%);
+    }
+    body:not(.dark-mode) .ce-hero-stars-3 {
+      /* Bigger, fully-opaque tier-ink dust specks so they read clearly on the pale bg */
+      background:
+        radial-gradient(1.6px 1.6px at 1% 22%,  rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(2px 2px at 5% 6%,       rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 10% 84%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 15% 28%, rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(2px 2px at 20% 56%,     rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 23% 4%,  rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 26% 96%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 30% 44%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 34% 18%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 37% 72%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 40% 8%,      rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 43% 54%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 46% 86%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 49% 22%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 51% 64%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 55% 30%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 59% 76%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 62% 10%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 65% 92%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 69% 40%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 71% 68%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 75% 20%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 78% 50%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 82% 6%,  rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 85% 80%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 89% 34%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 92% 60%, rgba(var(--tier-ink-rgb), 0.85) 45%, transparent 100%),
+        radial-gradient(1.6px 1.6px at 96% 14%, rgba(var(--tier-ink-rgb), 0.9) 45%, transparent 100%),
+        radial-gradient(2px 2px at 99% 88%,     rgb(var(--tier-ink-rgb)) 45%, transparent 100%);
+      opacity: 1;
+    }
+    /* In light mode, override the twinkle keyframe so opacity stays high */
+    body:not(.dark-mode) .ce-hero-stars-3 {
+      animation: ceHeroTwinkleLight 6.5s ease-in-out infinite alternate;
+    }
+    @keyframes ceHeroTwinkleLight {
+      0%   { opacity: 0.65; }
+      100% { opacity: 1; }
+    }
+    /* Hide the secondary star layer in light mode — one ink-tinted layer is enough */
+    body:not(.dark-mode) .ce-hero::after { display: none; }
+    body:not(.dark-mode) .ce-hero-diamond-shape {
+      /* Brighter, tier-tinted glassmorphism that holds up against white bg */
+      background:
+        linear-gradient(135deg,
+          rgba(255,255,255,0.85) 0%,
+          rgba(var(--tier-glow-rgb), 0.42) 45%,
+          rgba(var(--tier-ink-rgb), 0.55) 100%);
+      border: 1px solid rgba(255,255,255,0.95);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,1),
+        inset 0 -2px 8px rgba(var(--tier-ink-rgb), 0.35),
+        0 18px 36px rgba(var(--tier-ink-rgb), 0.32),
+        0 6px 16px rgba(var(--tier-ink-rgb), 0.18),
+        0 2px 6px rgba(255,255,255,0.7);
+    }
+    body:not(.dark-mode) .ce-hero-diamond-shape::before {
+      /* Switch facet lines to tier-ink so they're visible on the lighter fill */
+      background:
+        linear-gradient(0deg, transparent 49.4%, rgba(var(--tier-ink-rgb), 0.45) 50%, transparent 50.6%),
+        linear-gradient(90deg, transparent 49.4%, rgba(var(--tier-ink-rgb), 0.35) 50%, transparent 50.6%);
+      mix-blend-mode: normal;
+      opacity: 0.65;
+    }
+    body:not(.dark-mode) .ce-hero-diamond-shape::after {
+      /* Shine sweep — stronger and screen-blended for a true highlight on light bg */
+      background: linear-gradient(115deg,
+        transparent 38%,
+        rgba(255,255,255,0.95) 50%,
+        transparent 62%);
+      mix-blend-mode: screen;
+    }
+    body:not(.dark-mode) .ce-progress-track {
+      background: rgba(20, 40, 90, 0.10);
+      box-shadow: inset 0 1px 1px rgba(20, 40, 90, 0.05);
+    }
+    body:not(.dark-mode) .ce-progress-fill {
+      /* Use tier-ink end-stop so the fill has real contrast against the page */
+      background: linear-gradient(90deg,
+        rgb(var(--tier-ink-rgb)) 0%,
+        color-mix(in srgb, rgb(var(--tier-ink-rgb)) 65%, var(--tier-c2)) 60%,
+        rgb(var(--tier-ink-rgb)) 100%);
+      box-shadow: 0 0 8px rgba(var(--tier-ink-rgb), 0.45);
+    }
+
     .ce-hero-level {
       display: inline-flex;
       align-items: center;
@@ -301,19 +480,32 @@
       line-height: 88px;
       letter-spacing: -2px;
       margin-bottom: 20px;
+    }
+    .ce-hero-level-name {
       background: linear-gradient(
         100deg,
         color-mix(in srgb, var(--tier-c1) 100%, #000 35%) 0%,
-        color-mix(in srgb, var(--tier-c2) 100%, #000 25%) 30%,
-        color-mix(in srgb, var(--tier-c1) 100%, #000 15%) 50%,
-        color-mix(in srgb, var(--tier-c2) 100%, #000 25%) 70%,
+        color-mix(in srgb, var(--tier-c2) 100%, #000 25%) 18%,
+        rgb(var(--tier-ink-rgb)) 30%,
+        #ffffff 50%,
+        rgb(var(--tier-ink-rgb)) 70%,
+        color-mix(in srgb, var(--tier-c2) 100%, #000 25%) 82%,
         color-mix(in srgb, var(--tier-c1) 100%, #000 35%) 100%
       );
+      background-size: 250% 100%;
       -webkit-background-clip: text;
               background-clip: text;
       -webkit-text-fill-color: transparent;
               color: transparent;
+      animation: ceLevelShimmer 5.5s linear infinite;
       transition: background 0.5s ease;
+    }
+    @keyframes ceLevelShimmer {
+      0%   { background-position: 200% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ce-hero-level-name { animation: none; background-size: 100% 100%; }
     }
     .ce-hero-level-tag {
       font-size: 12px;
@@ -381,6 +573,9 @@
       white-space: nowrap;
     }
     .ce-earn-btn {
+      --eb-line-width: 1.5px;
+      --eb-duration: 4s;
+      position: relative;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -396,7 +591,71 @@
       cursor: pointer;
       transition: filter .15s, box-shadow .15s;
     }
-    .ce-earn-btn:hover { filter: brightness(1.05); box-shadow: 0 4px 12px rgba(162,244,253,0.35); }
+    .ce-earn-btn::before,
+    .ce-earn-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: var(--eb-line-width);
+      background: conic-gradient(
+        from var(--eb-angle, 0deg),
+        transparent 0%,
+        rgb(var(--tier-ink-rgb)) 35%,
+        #ffffff 50%,
+        rgb(var(--tier-ink-rgb)) 65%,
+        transparent 100%
+      );
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      animation: ceEarnBtnSpin var(--eb-duration) linear infinite;
+      pointer-events: none;
+    }
+    .ce-earn-btn::before {
+      filter: blur(6px);
+      -webkit-mask: none;
+              mask: none;
+      opacity: 0.55;
+    }
+    @property --eb-angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @keyframes ceEarnBtnSpin {
+      to { --eb-angle: 360deg; }
+    }
+    .ce-earn-btn-inner {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ce-earn-btn:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 4px 16px rgba(var(--tier-ink-rgb), 0.45);
+    }
+    .ce-earn-btn:hover::before { opacity: 0.85; }
+    /* Light-mode: soften the animated border line so it reads gentler on the pale gradient fill */
+    body:not(.dark-mode) .ce-earn-btn::before,
+    body:not(.dark-mode) .ce-earn-btn::after {
+      background: conic-gradient(
+        from var(--eb-angle, 0deg),
+        transparent 0%,
+        rgba(var(--tier-ink-rgb), 0.45) 35%,
+        #ffffff 50%,
+        rgba(var(--tier-ink-rgb), 0.45) 65%,
+        transparent 100%
+      );
+    }
+    body:not(.dark-mode) .ce-earn-btn::before { opacity: 0.4; }
+    body:not(.dark-mode) .ce-earn-btn:hover::before { opacity: 0.65; }
+    @media (prefers-reduced-motion: reduce) {
+      .ce-earn-btn::before, .ce-earn-btn::after { animation: none; }
+    }
 
     .ce-hero-art-wrap {
       position: absolute;
@@ -548,9 +807,9 @@
       justify-content: center;
       align-items: center;
       gap: 24px;
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 400;
-      line-height: 20px;
+      line-height: 24px;
       color: rgba(var(--tier-ink-rgb), 0.85);
       margin-top: 16px;
       margin-bottom: 32px;
@@ -582,7 +841,7 @@
       overflow-x: auto;
       border: 0;
       border-radius: 16px;
-      background: rgba(var(--tier-ink-rgb), 0.08);
+      background: rgba(20, 40, 90, 0.06);
       color: var(--text-primary);
       scrollbar-width: none;
       transition: background 0.5s ease;
@@ -609,21 +868,22 @@
     }
     .ce-level-tab:hover:not(.active) { color: var(--text-primary); }
     .ce-level-tab.active {
-      color: rgb(var(--tier-ink-rgb));
+      color: var(--text-primary);
       font-weight: 600;
       background: #fff;
       box-shadow:
-        0 0 0 1px rgba(var(--tier-ink-rgb), 0.18),
-        0 1px 2px rgba(20,40,90,0.06),
-        0 3px 6px rgba(var(--tier-ink-rgb), 0.12);
+        0 0 0 1px rgba(20, 40, 90, 0.08),
+        0 1px 2px rgba(20, 40, 90, 0.06),
+        0 3px 6px rgba(20, 40, 90, 0.08);
     }
 
     /* Benefit grid */
     .ce-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 24px;
     }
+    .ce-grid > .ce-card { min-width: 0; }
     .ce-card {
       --start-angle: 0deg;
       position: relative;
@@ -745,15 +1005,15 @@
       color: #b4862a;
       background: #fff4d6;
     }
-    .ce-card-title { font-size: 24px; font-weight: 600; color: var(--text-primary); line-height: 32px; max-width: 32ch; }
-    .ce-card-desc { font-size: 13px; color: var(--text-secondary); line-height: 20px; max-width: 36ch; }
+    .ce-card-title { font-size: 22px; font-weight: 600; color: var(--text-primary); line-height: 30px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+    .ce-card-desc { font-size: 13px; color: var(--text-secondary); line-height: 20px; max-width: 36ch; margin-bottom: 16px; }
     .ce-card-cta {
       --gb-line-width: 1px;
       --gb-line-color: rgb(var(--tier-ink-rgb));
       --gb-line-opacity: 0.6;
       --gb-duration: 6s;
       align-self: center;
-      margin-top: 16px;
+      margin-top: auto;
       position: relative;
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       font-size: 13px; font-weight: 500;
@@ -901,7 +1161,7 @@
     .ce-milestone-fill {
       position: absolute;
       left: 0; top: 0;
-      width: 50%;
+      width: 75%;
       height: 100%;
       background: linear-gradient(90deg,
         rgb(var(--tier-ink-rgb)) 0%,
@@ -955,7 +1215,15 @@
     }
     .ce-stop-prize { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-top: 4px; }
     .ce-stop.reached .ce-stop-prize { color: rgb(var(--tier-ink-rgb)); }
+    .ce-stop.locked .ce-stop-icon { color: var(--text-tertiary); box-shadow: none; }
+    .ce-stop.locked .ce-stop-icon::before {
+      background:
+        linear-gradient(rgba(122,134,153,0.45) 0%, rgba(122,134,153,0.18) 100%),
+        rgba(122,134,153,0.25);
+    }
+    .ce-stop.locked .ce-stop-prize { color: var(--text-tertiary); }
     .ce-stop-pts { font-size: 12px; color: var(--text-secondary); }
+    .ce-stop.locked .ce-stop-pts { color: var(--text-tertiary); }
 
     /* ─── How it works ─────────────────────────────────────── */
     .ce-how-card {
@@ -1006,7 +1274,7 @@
       padding: 0;
       position: relative;
     }
-    /* Single continuous connector line from step1 icon → step3 icon */
+    /* Single continuous connector line from step1 icon → step3 icon (dashed) */
     .ce-how::before {
       content: '';
       position: absolute;
@@ -1014,10 +1282,22 @@
       left: 24px;
       right: 24px;
       height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(var(--tier-ink-rgb), 0.45) 50%, transparent 100%);
+      background-image: repeating-linear-gradient(
+        90deg,
+        rgba(var(--tier-ink-rgb), 0.7) 0 6px,
+        transparent 6px 12px
+      );
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+              mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
       z-index: 0;
     }
-    body.dark-mode .ce-how::before { background: linear-gradient(90deg, transparent 0%, rgba(var(--tier-glow-rgb), 0.4) 50%, transparent 100%); }
+    body.dark-mode .ce-how::before {
+      background-image: repeating-linear-gradient(
+        90deg,
+        rgba(var(--tier-glow-rgb), 0.6) 0 6px,
+        transparent 6px 12px
+      );
+    }
     .ce-how-step { flex: 1; display: flex; flex-direction: column; align-items: flex-start; text-align: left; position: relative; z-index: 1; }
     .ce-how-step:nth-child(2) { align-items: center; text-align: center; }
     .ce-how-step:last-child { align-items: flex-end; text-align: right; }
@@ -1072,10 +1352,10 @@
       width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
       color: var(--text-secondary);
-      transition: transform .2s;
     }
-    .ce-faq-item.open .ce-faq-toggle { transform: rotate(45deg); color: rgb(var(--tier-ink-rgb)); }
-    .ce-faq-item.open .ce-faq-q { color: rgb(var(--tier-ink-rgb)); }
+    .ce-faq-toggle-v { transform-origin: center; transition: transform .2s ease; }
+    .ce-faq-item.open .ce-faq-toggle { color: rgb(var(--tier-ink-rgb)); }
+    .ce-faq-item.open .ce-faq-toggle-v { transform: scaleY(0); }
     .ce-faq-a {
       max-height: 0;
       overflow: hidden;
@@ -1970,8 +2250,18 @@
     }
     body.dark-mode .ce-hero { background: #121212; color: #ffffff; }
     body.dark-mode .ce-hero-greeting-top { color: rgba(255,255,255,0.55); }
-    body.dark-mode .ce-hero-level {
-      background: linear-gradient(90deg, var(--tier-c1) 0%, var(--tier-c2) 50%, var(--tier-c3) 100%);
+    body.dark-mode .ce-hero-level-name {
+      background: linear-gradient(
+        100deg,
+        var(--tier-c1) 0%,
+        var(--tier-c2) 18%,
+        rgb(var(--tier-glow-rgb)) 30%,
+        #ffffff 50%,
+        rgb(var(--tier-glow-rgb)) 70%,
+        var(--tier-c2) 82%,
+        var(--tier-c1) 100%
+      );
+      background-size: 250% 100%;
       -webkit-background-clip: text;
               background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -2127,14 +2417,14 @@
     body.dark-mode .ce-milestone-sub b { color: rgb(var(--tier-glow-rgb)); }
     body.dark-mode .ce-milestone-track { background: rgba(var(--tier-glow-rgb), 0.18); }
     body.dark-mode .ce-stop-icon {
-      background: rgba(15,18,28,0.65);
+      background: #121212;
       color: rgba(var(--tier-glow-rgb), 0.6);
       box-shadow: none;
     }
     body.dark-mode .ce-stop.reached .ce-stop-icon {
       background:
         linear-gradient(180deg, rgba(var(--tier-glow-rgb), 0.22) 0%, rgba(var(--tier-glow-rgb), 0.06) 100%),
-        rgba(15,18,28,0.7);
+        #121212;
       color: rgb(var(--tier-glow-rgb));
       box-shadow: 0 0 22px rgba(var(--tier-glow-rgb), 0.45);
     }
@@ -2158,8 +2448,7 @@
     body.dark-mode .ce-faq-item { border-bottom-color: #2D3033; }
     body.dark-mode .ce-faq-q { color: #FFFFFF; }
     body.dark-mode .ce-faq-toggle { color: #C2C7D0; }
-    body.dark-mode .ce-faq-item.open .ce-faq-q,
-    body.dark-mode .ce-faq-item.open .ce-faq-toggle { color: var(--cyan); }
+    body.dark-mode .ce-faq-item.open .ce-faq-toggle { color: rgb(var(--tier-glow-rgb)); }
     body.dark-mode .ce-faq-a { color: #C2C7D0; }
 
     /* Level Introduction Modal — dark */
@@ -2237,10 +2526,10 @@
     }
     body.dark-mode .sra-btn-cancel:hover { background: rgba(255,255,255,0.14); }
     body.dark-mode .sra-btn-confirm {
-      background: var(--cyan);
-      color: #03081a;
+      background: var(--blue);
+      color: #FFFFFF;
     }
-    body.dark-mode .sra-btn-confirm:hover { background: #33f4ff; }
+    body.dark-mode .sra-btn-confirm:hover { background: #2f5ad2; }
 
     /* Request Forwarded Modal — dark */
     body.dark-mode .rf-card {
@@ -2257,10 +2546,10 @@
     body.dark-mode .rf-title { color: #FFFFFF; }
     body.dark-mode .rf-desc { color: #C2C7D0; }
     body.dark-mode .rf-btn {
-      background: var(--cyan);
-      color: #03081a;
+      background: var(--blue);
+      color: #FFFFFF;
     }
-    body.dark-mode .rf-btn:hover { background: #33f4ff; }
+    body.dark-mode .rf-btn:hover { background: #2f5ad2; }
 
     /* Points Exchange Modal — dark */
     body.dark-mode .pe-card {
@@ -2326,7 +2615,7 @@
     /* ─── Tablet ───────────────────────────────────────────── */
     @media (max-width: 1100px) {
       .content { padding: 28px 24px 48px; gap: 24px; }
-      .ce-hero { height: 500px; min-height: 500px; padding-top: 100px; }
+      .ce-hero { height: 580px; min-height: 580px; padding-top: 80px; }
       .ce-hero-inner { padding: 0 24px; }
       .ce-hero-level { font-size: 64px; line-height: 72px; letter-spacing: -1.5px; }
       .ce-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2338,13 +2627,15 @@
     /* ─── Phone ────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
-      .content { padding: 20px 16px 40px; gap: 20px; }
+      .content { padding: 20px 16px 40px; gap: 40px; }
 
-      /* Hero */
-      .ce-hero { height: 460px; min-height: 460px; padding: 72px 0 24px; }
+      /* Hero — fluid height so stacked stats can sit below content without overlap */
+      .ce-hero { height: auto; min-height: 0; padding: 64px 0 24px; }
       .ce-hero-inner { padding: 0 16px; }
       .ce-hero-greeting-top { font-size: 12px; margin-bottom: 16px; }
-      .ce-hero-level { font-size: 48px; line-height: 56px; letter-spacing: -1px; margin-bottom: 16px; }
+      .ce-hero-diamond { width: 56px; height: 56px; margin-bottom: 26px; }
+      .ce-hero-level { font-size: 48px; line-height: 56px; letter-spacing: -1px; margin-bottom: 16px; gap: 10px; flex-wrap: wrap; }
+      .ce-hero-level-tag { font-size: 11px; padding: 3px 8px; }
       .ce-hero-greeting { font-size: 15px; line-height: 22px; margin-bottom: 24px; }
       .ce-hero-progress {
         display: grid;
@@ -2377,26 +2668,37 @@
       }
       .ce-earn-btn { width: 100%; justify-content: center; height: 44px; }
 
-      /* Stat cards */
-      .ce-stats { bottom: 24px; width: calc(100% - 32px); grid-template-columns: 1fr; gap: 12px; }
+      /* Stat cards — flow inline below the hero content on phones */
+      .ce-stats {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        width: calc(100% - 32px);
+        margin: 24px auto 0;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
       .ce-stats > .ce-stat:last-child { grid-column: auto; }
-      .ce-stat { padding: 14px 16px; border-radius: 10px; }
+      .ce-stat { padding: 14px 16px; border-radius: 12px; }
       .ce-stat-lbl { font-size: 13px; }
       .ce-stat-val { font-size: 20px; line-height: 28px; }
       .ce-stat-val .unit { font-size: 12px; }
       .ce-stat-r { font-size: 12px; }
 
       /* Section / tabs */
-      .ce-section-title { font-size: 26px; line-height: 32px; padding: 10px 22px; margin-bottom: 24px; }
-      .ce-section-link { margin-top: 12px; margin-bottom: 20px; font-size: 13px; gap: 16px; }
+      .ce-section-title { font-size: 24px; line-height: 32px; padding: 10px 22px; margin-bottom: 16px; }
+      .ce-section-link { margin-top: 8px; margin-bottom: 20px; font-size: 14px; line-height: 20px; gap: 12px; }
       .ce-section-link::before,
-      .ce-section-link::after { width: 56px; }
+      .ce-section-link::after { width: 48px; }
       .ce-level-tabs {
+        align-self: stretch;
+        justify-content: flex-start;
         gap: 4px;
         padding: 4px;
         margin-bottom: 20px;
         -webkit-overflow-scrolling: touch;
-        max-width: calc(100vw - 32px);
+        max-width: 100%;
       }
       .ce-level-tab { font-size: 12px; padding: 6px 12px; height: 28px; border-radius: 10px; }
 
@@ -2405,31 +2707,34 @@
       .ce-card { padding: 28px 20px 24px; min-height: 0; border-radius: 18px; }
       .ce-card-icon { width: 48px; height: 48px; margin-bottom: 6px; }
       .ce-card-icon svg { width: 48px; height: 48px; }
-      .ce-card-title { font-size: 15px; line-height: 22px; }
-      .ce-card-desc { font-size: 12px; }
-      .ce-card-cta { height: 32px; font-size: 12px; padding: 0 12px; margin-top: 12px; }
+      .ce-card-title { font-size: 16px; line-height: 22px; max-width: 100%; white-space: normal; }
+      .ce-card-desc { font-size: 13px; line-height: 20px; max-width: 100%; }
+      .ce-card-cta { height: 32px; font-size: 12px; padding: 0 12px; }
 
-      /* Tier milestone — stack stops vertically for clarity */
-      .ce-milestone { padding: 22px 16px 24px; border-radius: 12px; }
-      .ce-milestone-hdr { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 16px; }
+      /* Tier milestone */
+      .ce-milestone { padding: 22px 16px 24px; border-radius: 16px; }
+      .ce-milestone-hdr { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px; }
       .ce-milestone-title { font-size: 18px; line-height: 24px; }
+      .ce-milestone-sub { font-size: 13px; }
       .ce-milestone-track {
-        margin: 24px 24px 0;
+        margin: 28px 20px 0;
       }
       .ce-milestone-stops {
         margin-top: -22px;
+        padding-top: 16px;
       }
-      .ce-stop { gap: 4px; }
-      .ce-stop-icon { width: 40px; height: 40px; }
-      .ce-stop-icon svg { width: 16px; height: 16px; }
+      .ce-stop { gap: 4px; min-width: 0; }
+      .ce-stop-icon { width: 36px; height: 36px; }
+      .ce-stop-icon svg { width: 14px; height: 14px; }
       .ce-stop-prize { font-size: 12px; line-height: 16px; }
-      .ce-stop-pts { font-size: 11px; line-height: 14px; }
+      .ce-stop-pts { font-size: 10px; line-height: 14px; white-space: nowrap; }
 
       /* How it works — stack vertically, hide horizontal connector */
+      .ce-how-card { padding: 24px 20px; border-radius: 16px; }
       .ce-how {
         flex-direction: column;
-        gap: 24px;
-        padding: 0 4px 8px;
+        gap: 20px;
+        padding: 0;
       }
       .ce-how::before { display: none; }
       .ce-how-step,
@@ -2446,7 +2751,7 @@
         margin-bottom: 0;
       }
       .ce-how-icon svg { width: 18px; height: 18px; }
-      .ce-how-step > div:last-child { flex: 1; }
+      .ce-how-step > div:last-child { flex: 1; min-width: 0; }
       .ce-how-title { font-size: 15px; margin-bottom: 4px; }
       .ce-how-desc { max-width: 100%; font-size: 13px; line-height: 20px; }
 
@@ -2464,12 +2769,33 @@
 
     /* ─── Small phone ──────────────────────────────────────── */
     @media (max-width: 380px) {
+      .content { padding: 16px 12px 32px; gap: 32px; }
+      .ce-hero { padding: 56px 0 20px; }
+      .ce-hero-inner { padding: 0 12px; }
+      .ce-hero-diamond { width: 48px; height: 48px; margin-bottom: 24px; }
       .ce-hero-level { font-size: 40px; line-height: 48px; }
-      .ce-stop-prize { font-size: 11px; }
+      .ce-hero-level-tag { font-size: 10px; padding: 2px 7px; }
+      .ce-hero-greeting { font-size: 14px; line-height: 20px; margin-bottom: 20px; }
+      .ce-stats { width: calc(100% - 24px); }
+      .ce-stat { padding: 12px 14px; }
+      .ce-stat-val { font-size: 18px; line-height: 24px; }
+      .ce-section-title { font-size: 22px; line-height: 28px; }
+      .ce-section-link::before,
+      .ce-section-link::after { width: 32px; }
+      .ce-card { padding: 24px 18px 20px; }
+      .ce-milestone { padding: 20px 12px 22px; }
+      .ce-milestone-track { margin: 20px 14px 0; }
+      .ce-milestone-stops { margin-top: -20px; padding-top: 12px; }
+      .ce-stop { gap: 2px; }
+      .ce-stop-icon { width: 32px; height: 32px; }
+      .ce-stop-icon svg { width: 12px; height: 12px; }
+      .ce-stop-prize { font-size: 11px; line-height: 14px; }
       .ce-stop-pts { display: none; }
-      .ce-stop-icon { width: 36px; height: 36px; }
-      .ce-milestone-track { margin: 20px 18px 0; }
-      .ce-milestone-stops { margin-top: -20px; }
+      .ce-how-card { padding: 20px 16px; }
+      .ce-how-icon { flex: 0 0 36px; width: 36px; height: 36px; }
+      .ce-how-icon svg { width: 16px; height: 16px; }
+      .ce-faq-q { font-size: 13px; line-height: 18px; }
+      .ce-faq-a { font-size: 12px; line-height: 18px; }
     }
   </style>
 </head>
@@ -2486,6 +2812,7 @@
         <div class="ce-hero-stars-3" aria-hidden="true"></div>
         <div class="ce-hero-inner">
         <div class="ce-hero-content">
+          <div class="ce-hero-diamond" aria-hidden="true"><div class="ce-hero-diamond-shape"></div></div>
           <div class="ce-hero-level"><span class="ce-hero-level-name">SELECT</span><span class="ce-hero-level-tag" data-state="current">Current</span></div>
           <div class="ce-hero-greeting">Hi July, Welcome Back</div>
           <div class="ce-hero-progress">
@@ -2495,9 +2822,9 @@
             <div class="ce-progress-track"><div class="ce-progress-fill"></div></div>
             <span class="ce-progress-pts">95,000 / 100,000 Points</span>
           </div>
-          <button class="ce-earn-btn">Earn Points
+          <button class="ce-earn-btn"><span class="ce-earn-btn-inner">Earn Points
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
+          </span></button>
         </div>
         </div>
 
@@ -2566,7 +2893,7 @@
 
           <!-- 2. Birthday Greetings -->
           <div class="ce-card">
-            <div class="ce-card-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12v6H4z" stroke="currentColor" stroke-width="1.4"/><path d="M3 10v-1a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.4"/><path d="M10 7V4M10 4c-1 0-1.5-.8-1.5-1.5S9.5 1 10 2c.5-1 1.5-1.5 1.5-.5S11 4 10 4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="ce-card-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12v4.5a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 14.5V10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 10v-1a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.4"/><path d="M10 7V4M10 4c-1 0-1.5-.8-1.5-1.5S9.5 1 10 2c.5-1 1.5-1.5 1.5-.5S11 4 10 4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <span class="ce-card-tag upcoming">Upcoming</span>
             <div class="ce-card-title">Birthday Greetings</div>
             <div class="ce-card-desc">Personalised birthday greetings and special perks</div>
@@ -2593,7 +2920,7 @@
 
           <!-- 5. Campaign & Incentives -->
           <div class="ce-card">
-            <div class="ce-card-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 12V8l10-4v12L4 12z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 12v3a1 1 0 002 0v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+            <div class="ce-card-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 8v4h3l8 4V4L6 8H3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M16 7c1.2 1.2 1.2 4.8 0 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
             <span class="ce-card-tag upcoming">Upcoming</span>
             <div class="ce-card-title">Campaign & Incentives</div>
             <div class="ce-card-desc">Exclusive campaign access and bonus incentives</div>
@@ -2685,17 +3012,17 @@
           <div class="ce-milestone-track"><div class="ce-milestone-fill"></div></div>
           <div class="ce-milestone-stops">
             <div class="ce-stop reached">
-              <div class="ce-stop-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5C5.24 1.5 3 3.74 3 6.5c0 3.5 5 8 5 8s5-4.5 5-8c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="8" cy="6.5" r="1.6" stroke="currentColor" stroke-width="1.3"/></svg></div>
+              <div class="ce-stop-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.5 9h13v8h-13z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10 9v8" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5l1.5 3.5h13L18 5.5 10 7 2 5.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10 7c-.7-1.6-2.5-2.6-3.4-1.6-.9 1 .4 2.4 3.4 1.6zm0 0c.7-1.6 2.5-2.6 3.4-1.6.9 1-.4 2.4-3.4 1.6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
               <div class="ce-stop-prize">+$200</div>
               <div class="ce-stop-pts">20,000 / 20,000 Points</div>
             </div>
             <div class="ce-stop reached">
-              <div class="ce-stop-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5C5.24 1.5 3 3.74 3 6.5c0 3.5 5 8 5 8s5-4.5 5-8c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="8" cy="6.5" r="1.6" stroke="currentColor" stroke-width="1.3"/></svg></div>
+              <div class="ce-stop-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.5 9h13v8h-13z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10 9v8" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5l1.5 3.5h13L18 5.5 10 7 2 5.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10 7c-.7-1.6-2.5-2.6-3.4-1.6-.9 1 .4 2.4 3.4 1.6zm0 0c.7-1.6 2.5-2.6 3.4-1.6.9 1-.4 2.4-3.4 1.6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
               <div class="ce-stop-prize">+$200</div>
               <div class="ce-stop-pts">40,000 / 40,000 Points</div>
             </div>
-            <div class="ce-stop">
-              <div class="ce-stop-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5C5.24 1.5 3 3.74 3 6.5c0 3.5 5 8 5 8s5-4.5 5-8c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="8" cy="6.5" r="1.6" stroke="currentColor" stroke-width="1.3"/></svg></div>
+            <div class="ce-stop locked">
+              <div class="ce-stop-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 6V4.5a3 3 0 016 0V6M3 6h8v6H3V6z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="ce-stop-prize">+$200</div>
               <div class="ce-stop-pts">50,000 / 60,000 Points</div>
             </div>
@@ -2734,27 +3061,27 @@
         <div style="height:24px;"></div>
         <div class="ce-faq">
           <div class="ce-faq-item" onclick="ceFaqToggle(this)">
-            <div class="ce-faq-q">General <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
+            <div class="ce-faq-q">General <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="ce-faq-toggle-v" d="M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
             <div class="ce-faq-a">General information about ClubElite membership, eligibility, and benefits.</div>
           </div>
           <div class="ce-faq-item" onclick="ceFaqToggle(this)">
-            <div class="ce-faq-q">Membership <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
+            <div class="ce-faq-q">Membership <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="ce-faq-toggle-v" d="M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
             <div class="ce-faq-a">Details on how to become a member, membership terms, and renewal.</div>
           </div>
           <div class="ce-faq-item" onclick="ceFaqToggle(this)">
-            <div class="ce-faq-q">Points And Rewards <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
+            <div class="ce-faq-q">Points And Rewards <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="ce-faq-toggle-v" d="M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
             <div class="ce-faq-a">How to earn points, redeem rewards, and check your points balance.</div>
           </div>
           <div class="ce-faq-item" onclick="ceFaqToggle(this)">
-            <div class="ce-faq-q">Tiers And Benefits <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
+            <div class="ce-faq-q">Tiers And Benefits <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="ce-faq-toggle-v" d="M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
             <div class="ce-faq-a">Information on each tier (LV0 – LV10) and the exclusive benefits unlocked at each level.</div>
           </div>
           <div class="ce-faq-item" onclick="ceFaqToggle(this)">
-            <div class="ce-faq-q">Account Management <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
+            <div class="ce-faq-q">Account Management <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="ce-faq-toggle-v" d="M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
             <div class="ce-faq-a">More on membership policies, account management, and support.</div>
           </div>
           <div class="ce-faq-item" onclick="ceFaqToggle(this)">
-            <div class="ce-faq-q">Support <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
+            <div class="ce-faq-q">Support <span class="ce-faq-toggle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="ce-faq-toggle-v" d="M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div>
             <div class="ce-faq-a">Additional membership-related information and frequently asked questions.</div>
           </div>
         </div>
