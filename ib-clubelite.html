@@ -67,7 +67,7 @@
     .content {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 40px 40px 60px;
+      padding: 40px 40px 0;
       display: flex;
       flex-direction: column;
       gap: 80px;
@@ -75,12 +75,46 @@
     /* Full-bleed wrapper sits above .content so hero spans the full main column */
     .ce-hero-wrap { width: 100%; }
 
+    /* ─── Galaxy band (bottom of page) — same 3D star field as hero ─ */
+    .ce-galaxy {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      overflow: hidden;
+      background: transparent;
+      perspective: 100vmin;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .ce-galaxy-origin,
+    .ce-galaxy-control,
+    .ce-galaxy-rotor {
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+    .ce-galaxy-control {
+      transform: scale3d(0, 0, 0);
+      animation: ceGalaxyAppear 15s linear forwards;
+    }
+    .ce-galaxy-rotor {
+      animation: ceGalaxyRotate 22s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ce-galaxy { display: none; }
+    }
+    @media (max-width: 768px) {
+      .ce-galaxy { height: 280px; opacity: 0.45; }
+    }
+
     /* ─── Hero (full-width dark band, flush with topbar) ─── */
     .ce-hero {
       position: relative;
       width: 100%;
-      height: 620px;
-      min-height: 620px;
+      height: 720px;
+      min-height: 720px;
       overflow: hidden;
       padding: 96px 0 32px;
       color: var(--text-primary);
@@ -177,7 +211,9 @@
         radial-gradient(1.4px 1.4px at 97% 76%, #ffffff 50%, transparent 100%),
         radial-gradient(1.2px 1.2px at 99% 8%, #ffffff 50%, transparent 100%);
       pointer-events: none;
-      animation: ceHeroTwinkle 4s ease-in-out infinite alternate;
+      will-change: opacity, transform;
+      animation: ceHeroTwinkle 4s ease-in-out infinite alternate,
+                 ceHeroDriftA 28s linear infinite;
     }
     .ce-hero-stars-3 {
       position: absolute;
@@ -214,7 +250,9 @@
         radial-gradient(0.8px 0.8px at 92% 60%, rgba(255,255,255,0.85) 50%, transparent 100%),
         radial-gradient(1px 1px at 96% 14%, #ffffff 50%, transparent 100%),
         radial-gradient(1.2px 1.2px at 99% 88%, #ffffff 50%, transparent 100%);
-      animation: ceHeroTwinkle 6.5s ease-in-out infinite alternate;
+      will-change: opacity, transform;
+      animation: ceHeroTwinkle 6.5s ease-in-out infinite alternate,
+                 ceHeroDriftB 42s linear infinite;
     }
     .ce-hero::after {
       content: '';
@@ -263,16 +301,92 @@
         radial-gradient(0.6px 0.6px at 97% 6%, rgba(255,255,255,0.55) 50%, transparent 100%),
         radial-gradient(0.6px 0.6px at 99% 22%, rgba(255,255,255,0.55) 50%, transparent 100%);
       pointer-events: none;
-      animation: ceHeroTwinkle 5.5s ease-in-out infinite alternate-reverse;
+      will-change: opacity, transform;
+      animation: ceHeroTwinkle 5.5s ease-in-out infinite alternate-reverse,
+                 ceHeroDriftC 36s linear infinite;
     }
     @keyframes ceHeroTwinkle {
       0%   { opacity: 0.45; }
       100% { opacity: 1; }
     }
+    /* Slow drifts so the dot field feels alive without distracting motion.
+       Each layer drifts at a different speed/direction for parallax. */
+    @keyframes ceHeroDriftA {
+      0%   { transform: translate3d(0, 0, 0); }
+      50%  { transform: translate3d(14px, -6px, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+    @keyframes ceHeroDriftB {
+      0%   { transform: translate3d(0, 0, 0); }
+      50%  { transform: translate3d(-18px, 8px, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+    @keyframes ceHeroDriftC {
+      0%   { transform: translate3d(0, 0, 0); }
+      50%  { transform: translate3d(10px, 10px, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
     @media (prefers-reduced-motion: reduce) {
       .ce-hero::before, .ce-hero::after,
       .ce-hero-glow { animation: none; }
     }
+
+    /* ─── 3D galaxy of stars (sits behind hero content) ──── */
+    .ce-hero-galaxy {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      perspective: 100vmin;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.45;
+    }
+    .ce-hero-galaxy-origin,
+    .ce-hero-galaxy-control,
+    .ce-hero-galaxy-rotor,
+    .ce-hero-star {
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+    .ce-hero-galaxy-control {
+      transform: scale3d(0, 0, 0);
+      animation: ceGalaxyAppear 15s linear forwards;
+    }
+    .ce-hero-galaxy-rotor {
+      animation: ceGalaxyRotate 15s linear infinite;
+    }
+    .ce-hero-star,
+    .ce-hero-star::before,
+    .ce-hero-star::after {
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+    .ce-hero-star::before,
+    .ce-hero-star::after {
+      content: '';
+      background: var(--bg);
+      border-radius: 50%;
+      box-shadow: var(--shadow);
+      height: var(--size);
+      width: var(--size);
+    }
+    .ce-hero-star::before { transform: var(--xform); }
+    .ce-hero-star::after  { transform: scale3d(-1, -1, -1) var(--xform); }
+    @keyframes ceGalaxyAppear {
+      100% { transform: scale3d(1, 1, 1); }
+    }
+    @keyframes ceGalaxyRotate {
+      100% { transform: rotate3d(1, 1, 1, 360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ce-hero-galaxy { display: none; }
+    }
+    @media (max-width: 768px) {
+      .ce-hero-galaxy { display: none; }
+    }
+
     .ce-hero-content {
       position: relative;
       z-index: 2;
@@ -292,56 +406,118 @@
       margin-bottom: 24px;
     }
     /* Glassmorphism diamond above the level title */
+    @property --ce-orb-a { syntax: "<angle>";  inherits: true; initial-value: 0deg; }
+    @property --ce-orb-l { syntax: "<number>"; inherits: true; initial-value: 0; }
+    @property --ce-orb-o { syntax: "<number>"; inherits: false; initial-value: 1; }
+
     .ce-hero-diamond {
-      width: 76px;
-      height: 76px;
+      --s: 160px;
+      --p: calc(var(--s) / 4);
+      width: var(--s);
+      height: var(--s);
       margin-bottom: 30px;
       position: relative;
       animation: ceDiamondFloat 4.6s ease-in-out infinite;
       pointer-events: none;
     }
+    /* Outer halo ring with the soft cross-radial gradient */
     .ce-hero-diamond-shape {
       position: absolute;
       inset: 0;
-      border-radius: 16px;
-      transform: rotate(45deg);
+      border-radius: 50%;
+      padding: var(--p);
+      box-sizing: border-box;
       background:
-        linear-gradient(135deg,
-          rgba(255,255,255,0.55) 0%,
-          rgba(var(--tier-glow-rgb), 0.28) 45%,
-          rgba(var(--tier-ink-rgb), 0.22) 100%);
-      backdrop-filter: blur(14px) saturate(150%);
-      -webkit-backdrop-filter: blur(14px) saturate(150%);
-      border: 1px solid rgba(255,255,255,0.75);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.9),
-        inset 0 -2px 6px rgba(var(--tier-ink-rgb), 0.22),
-        0 14px 32px rgba(var(--tier-ink-rgb), 0.28),
-        0 4px 14px rgba(255,255,255,0.5);
-      overflow: hidden;
+        radial-gradient(60% 75% at center, rgba(var(--tier-glow-rgb), 0.25) 50%, transparent 50%),
+        radial-gradient(75% 60% at center, rgba(var(--tier-glow-rgb), 0.25) 50%, transparent 50%);
+      display: grid;
+      place-items: center;
+      overflow: visible;
     }
-    /* Diagonal facet lines (drawn before rotation, so they appear as a + cross on the diamond) */
-    .ce-hero-diamond-shape::before {
+    /* Inner solid orb that clips the orbiting blobs — tier-tinted base */
+    .ce-orb-container {
+      width: calc(var(--s) - 2 * var(--p));
+      height: calc(var(--s) - 2 * var(--p));
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%,
+          color-mix(in srgb, var(--tier-c2) 90%, #ffffff) 0%,
+          rgb(var(--tier-glow-rgb)) 55%,
+          color-mix(in srgb, rgb(var(--tier-ink-rgb)) 60%, var(--tier-c1)) 100%);
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      box-shadow:
+        0 14px 32px rgba(var(--tier-ink-rgb), 0.28),
+        0 4px 14px rgba(255, 255, 255, 0.35);
+    }
+    /* 4 orbiting colored blobs — driven by tier tokens (c1, c2, glow, ink) */
+    .ce-orb-c {
+      --count: 4;
+      --radius: calc(var(--s) * 0.16);
+      --offset-per-item: calc(360deg / var(--count));
+      --current-angle-offset: calc(var(--offset-per-item) * var(--i) + var(--ce-orb-a));
+      position: absolute;
+      border-radius: 50%;
+      aspect-ratio: 1;
+      width: calc(var(--s) * 0.25);
+      translate:
+        calc(cos(var(--current-angle-offset)) * var(--radius) + var(--ce-orb-x, 0px))
+        calc(sin(var(--current-angle-offset)) * var(--radius) * -1);
+      scale: calc(0.6 + var(--ce-orb-l));
+      opacity: var(--ce-orb-o, 1);
+      animation: ceOrbSwirl 5.5s cubic-bezier(0.45, -0.35, 0.16, 1.5) infinite;
+    }
+    .ce-orb-c1 { --i: 0; --ce-orb-x: calc(var(--s) * 0.025); width: calc(var(--s) * 0.4);
+      background: radial-gradient(50% 50% at center,
+        rgb(var(--tier-ink-rgb)),
+        var(--tier-c2));
+      animation-timing-function: cubic-bezier(0.12, 0.32, 0.68, 0.24); }
+    .ce-orb-c2 { --i: 1; width: calc(var(--s) * 0.375);
+      background: radial-gradient(50% 50% at center,
+        var(--tier-c1),
+        var(--tier-c3, #ffffff)); }
+    .ce-orb-c3 { --i: 2; --ce-orb-x: calc(var(--s) * -0.025); width: calc(var(--s) * 0.125);
+      background: radial-gradient(50% 50% at center,
+        rgb(var(--tier-ink-rgb)),
+        transparent);
+      opacity: 0.6; }
+    .ce-orb-c4 { --i: 3;
+      background: color-mix(in srgb, rgb(var(--tier-ink-rgb)) 70%, var(--tier-c1));
+      animation-timing-function: cubic-bezier(0.39, -0.03, 0.75, 0.47); }
+    @keyframes ceOrbSwirl {
+      from { --ce-orb-a: 360deg; --ce-orb-l: 0.35; --ce-orb-o: 1; }
+      30%  { --ce-orb-l: 1.5; }
+      70%  { --ce-orb-o: 0.4; --ce-orb-l: 0.05; }
+      98%  { --ce-orb-o: 0.7; }
+      to   { --ce-orb-a: 0deg;  --ce-orb-l: 0.35; --ce-orb-o: 1; }
+    }
+    /* Glass overlay with a corner highlight + faint scan lines */
+    .ce-orb-glass {
+      position: absolute;
+      inset: calc(var(--p) - 1px);
+      border-radius: 50%;
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+      background: radial-gradient(20px at 70% 30%, rgba(255, 255, 255, 0.7), transparent 70%);
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .ce-orb-glass::after {
       content: "";
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(0deg, transparent 49.4%, rgba(255,255,255,0.45) 50%, transparent 50.6%),
-        linear-gradient(90deg, transparent 49.4%, rgba(255,255,255,0.35) 50%, transparent 50.6%);
-      mix-blend-mode: screen;
-      opacity: 0.85;
-    }
-    /* Animated shine sweep */
-    .ce-hero-diamond-shape::after {
-      content: "";
-      position: absolute;
-      inset: -30%;
-      background: linear-gradient(115deg,
-        transparent 38%,
-        rgba(255,255,255,0.7) 50%,
-        transparent 62%);
-      animation: ceDiamondShine 3.4s linear infinite;
-      mix-blend-mode: overlay;
+      border-radius: inherit;
+      background: repeating-linear-gradient(
+        rgba(255, 255, 255, 0.04),
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      border: 2px rgba(255, 255, 255, 0.1) solid;
     }
     @keyframes ceDiamondFloat {
       0%, 100% { transform: translateY(0) rotate(-3deg); }
@@ -427,35 +603,10 @@
     /* Hide the secondary star layer in light mode — one ink-tinted layer is enough */
     body:not(.dark-mode) .ce-hero::after { display: none; }
     body:not(.dark-mode) .ce-hero-diamond-shape {
-      /* Brighter, tier-tinted glassmorphism that holds up against white bg */
+      /* Slightly stronger halo on light bg */
       background:
-        linear-gradient(135deg,
-          rgba(255,255,255,0.85) 0%,
-          rgba(var(--tier-glow-rgb), 0.42) 45%,
-          rgba(var(--tier-ink-rgb), 0.55) 100%);
-      border: 1px solid rgba(255,255,255,0.95);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,1),
-        inset 0 -2px 8px rgba(var(--tier-ink-rgb), 0.35),
-        0 18px 36px rgba(var(--tier-ink-rgb), 0.32),
-        0 6px 16px rgba(var(--tier-ink-rgb), 0.18),
-        0 2px 6px rgba(255,255,255,0.7);
-    }
-    body:not(.dark-mode) .ce-hero-diamond-shape::before {
-      /* Switch facet lines to tier-ink so they're visible on the lighter fill */
-      background:
-        linear-gradient(0deg, transparent 49.4%, rgba(var(--tier-ink-rgb), 0.45) 50%, transparent 50.6%),
-        linear-gradient(90deg, transparent 49.4%, rgba(var(--tier-ink-rgb), 0.35) 50%, transparent 50.6%);
-      mix-blend-mode: normal;
-      opacity: 0.65;
-    }
-    body:not(.dark-mode) .ce-hero-diamond-shape::after {
-      /* Shine sweep — stronger and screen-blended for a true highlight on light bg */
-      background: linear-gradient(115deg,
-        transparent 38%,
-        rgba(255,255,255,0.95) 50%,
-        transparent 62%);
-      mix-blend-mode: screen;
+        radial-gradient(60% 75% at center, rgba(var(--tier-glow-rgb), 0.32) 50%, transparent 50%),
+        radial-gradient(75% 60% at center, rgba(var(--tier-glow-rgb), 0.32) 50%, transparent 50%);
     }
     body:not(.dark-mode) .ce-progress-track {
       background: rgba(20, 40, 90, 0.10);
@@ -579,7 +730,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      height: 40px;
+      height: 44px;
       padding: 0 16px;
       background: linear-gradient(90deg, var(--tier-c1) 0%, var(--tier-c2) 50%, var(--tier-c3) 100%);
       border: 0;
@@ -1201,7 +1352,7 @@
       display: flex;
       justify-content: space-between;
       position: relative;
-      margin-top: -48px;
+      margin: -48px 24px 0;
       padding-top: 24px;
     }
     .ce-stop { display: flex; flex-direction: column; gap: 8px; flex: 1; align-items: center; text-align: center; }
@@ -1260,7 +1411,7 @@
         #ffffff;
       border: 0;
       border-radius: 24px;
-      padding: 40px 40px 44px;
+      padding: 40px 56px 44px;
       box-shadow:
         inset 0 1px 1px rgba(255,255,255,1),
         inset 0 24px 56px rgba(var(--tier-glow-rgb), 0.06),
@@ -1333,7 +1484,7 @@
       width: 48px; height: 48px;
       border-radius: 50%;
       background:
-        linear-gradient(180deg, rgba(var(--tier-ink-rgb), 0.14) 0%, rgba(var(--tier-ink-rgb), 0.04) 100%),
+        linear-gradient(180deg, rgba(var(--tier-ink-rgb), 0.32) 0%, rgba(var(--tier-ink-rgb), 0.14) 100%),
         #ffffff;
       display: flex; align-items: center; justify-content: center;
       color: rgb(var(--tier-ink-rgb));
@@ -1348,8 +1499,8 @@
       border-radius: inherit;
       padding: 1px;
       background:
-        linear-gradient(rgba(var(--tier-ink-rgb), 0.6) 0%, rgba(var(--tier-ink-rgb), 0.2) 100%),
-        rgba(var(--tier-ink-rgb), 0.3);
+        linear-gradient(rgba(var(--tier-ink-rgb), 0.9) 0%, rgba(var(--tier-ink-rgb), 0.5) 100%),
+        rgba(var(--tier-ink-rgb), 0.6);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
               mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
@@ -2641,8 +2792,8 @@
 
     /* ─── Tablet ───────────────────────────────────────────── */
     @media (max-width: 1100px) {
-      .content { padding: 28px 24px 48px; gap: 24px; }
-      .ce-hero { height: 580px; min-height: 580px; padding-top: 80px; }
+      .content { padding: 28px 24px 0; gap: 24px; }
+      .ce-hero { height: 620px; min-height: 620px; padding-top: 80px; }
       .ce-hero-inner { padding: 0 24px; }
       .ce-hero-level { font-size: 64px; line-height: 72px; letter-spacing: -1.5px; }
       .ce-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2654,13 +2805,23 @@
     /* ─── Phone ────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .main { margin-left: 0 !important; padding-top: 56px; padding-bottom: 80px; }
-      .content { padding: 20px 16px 40px; gap: 40px; }
+      .content { padding: 20px 16px 0; gap: 40px; }
 
       /* Hero — fluid height so stacked stats can sit below content without overlap */
       .ce-hero { height: auto; min-height: 0; padding: 64px 0 24px; }
       .ce-hero-inner { padding: 0 16px; }
+      /* Thin out the star field on mobile so it doesn't feel noisy at small sizes:
+         drop the secondary tiny-dot layers and soften the primary one */
+      .ce-hero::after { display: none; }
+      .ce-hero-stars-3 { display: none; }
+      .ce-hero::before { animation: ceHeroTwinkleMobile 4s ease-in-out infinite alternate,
+                                    ceHeroDriftA 28s linear infinite; }
+      @keyframes ceHeroTwinkleMobile {
+        0%   { opacity: 0.25; }
+        100% { opacity: 0.55; }
+      }
       .ce-hero-greeting-top { font-size: 12px; margin-bottom: 16px; }
-      .ce-hero-diamond { width: 56px; height: 56px; margin-bottom: 26px; }
+      .ce-hero-diamond { --s: 120px; width: var(--s); height: var(--s); margin-bottom: 26px; }
       .ce-hero-level { font-size: 48px; line-height: 56px; letter-spacing: -1px; margin-bottom: 16px; gap: 10px; flex-wrap: wrap; }
       .ce-hero-level-tag { font-size: 11px; padding: 3px 8px; }
       .ce-hero-greeting { font-size: 15px; line-height: 22px; margin-bottom: 24px; }
@@ -2741,18 +2902,19 @@
 
       /* Tier milestone */
       .ce-milestone { padding: 22px 16px 24px; border-radius: 16px; }
-      .ce-milestone-hdr { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px; }
+      .ce-milestone-hdr { flex-direction: column; align-items: center; text-align: center; gap: 4px; margin-bottom: 20px; }
       .ce-milestone-title { font-size: 18px; line-height: 24px; }
       .ce-milestone-sub { font-size: 13px; }
       .ce-milestone-track { margin: 28px 18px 0; }
-      /* Match stops inset to track inset so the first/last icons sit on
-         the track ends instead of floating against the card edge */
+      /* Track inset = half icon width (18px). Stops row spans full content
+         width so the first/last icons' CENTERS land on the track endpoints
+         (their edges sit flush with the card padding). */
       .ce-milestone-stops {
-        margin: -22px 18px 0;
+        margin: -22px 0 0;
         padding-top: 16px;
       }
       .ce-stop { gap: 4px; min-width: 0; }
-      .ce-stop-icon { width: 36px; height: 36px; }
+      .ce-stop-icon { width: 36px; height: 36px; margin-top: -14px; }
       .ce-stop-icon svg { width: 14px; height: 14px; }
       .ce-stop-prize { font-size: 12px; line-height: 16px; }
       .ce-stop-pts { font-size: 10px; line-height: 14px; white-space: nowrap; }
@@ -2768,21 +2930,53 @@
       .ce-how-step,
       .ce-how-step:nth-child(2),
       .ce-how-step:last-child {
-        flex-direction: row;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        grid-template-areas:
+          "icon title"
+          "icon desc";
+        align-items: start;
+        column-gap: 14px;
+        row-gap: 4px;
         text-align: left;
-        gap: 14px;
+        position: relative;
+        min-height: 66px;
+      }
+      /* Vertical dashed connector running through the icon column,
+         from each icon's bottom into the top of the next icon */
+      .ce-how-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 19px;
+        top: 44px;
+        bottom: -22px;
+        width: 2px;
+        background-image: repeating-linear-gradient(
+          180deg,
+          rgba(var(--tier-ink-rgb), 0.45) 0 4px,
+          transparent 4px 8px
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      body.dark-mode .ce-how-step:not(:last-child)::after {
+        background-image: repeating-linear-gradient(
+          180deg,
+          rgba(var(--tier-glow-rgb), 0.4) 0 4px,
+          transparent 4px 8px
+        );
       }
       .ce-how-icon {
-        flex: 0 0 40px;
+        grid-area: icon;
         width: 40px; height: 40px;
         margin-bottom: 0;
         margin-top: 2px;
+        position: relative;
+        z-index: 1;
       }
       .ce-how-icon svg { width: 18px; height: 18px; }
-      .ce-how-step > div:last-child { flex: 1; min-width: 0; padding-top: 4px; }
-      .ce-how-title { font-size: 15px; margin-bottom: 4px; line-height: 22px; }
-      .ce-how-desc { max-width: 100%; font-size: 13px; line-height: 20px; }
+      .ce-how-title { grid-area: title; font-size: 15px; margin-bottom: 0; line-height: 22px; }
+      .ce-how-desc { grid-area: desc; max-width: 100%; font-size: 13px; line-height: 20px; }
 
       /* FAQ */
       .ce-faq-item { padding: 16px 0; }
@@ -2798,10 +2992,10 @@
 
     /* ─── Small phone ──────────────────────────────────────── */
     @media (max-width: 380px) {
-      .content { padding: 16px 12px 32px; gap: 32px; }
+      .content { padding: 16px 12px 0; gap: 32px; }
       .ce-hero { padding: 56px 0 20px; }
       .ce-hero-inner { padding: 0 12px; }
-      .ce-hero-diamond { width: 48px; height: 48px; margin-bottom: 24px; }
+      .ce-hero-diamond { --s: 72px; width: var(--s); height: var(--s); margin-bottom: 24px; }
       .ce-hero-level { font-size: 40px; line-height: 48px; }
       .ce-hero-level-tag { font-size: 10px; padding: 2px 7px; }
       .ce-hero-greeting { font-size: 14px; line-height: 20px; margin-bottom: 20px; }
@@ -2813,10 +3007,10 @@
       .ce-section-link::after { width: 32px; }
       .ce-card { padding: 24px 18px 20px; }
       .ce-milestone { padding: 20px 12px 22px; }
-      .ce-milestone-track { margin: 20px 14px 0; }
+      .ce-milestone-track { margin: 20px 16px 0; }
       .ce-milestone-stops { margin-top: -20px; padding-top: 12px; }
       .ce-stop { gap: 2px; }
-      .ce-stop-icon { width: 32px; height: 32px; }
+      .ce-stop-icon { width: 32px; height: 32px; margin-top: -12px; }
       .ce-stop-icon svg { width: 12px; height: 12px; }
       .ce-stop-prize { font-size: 11px; line-height: 14px; }
       .ce-stop-pts { display: none; }
@@ -2839,9 +3033,26 @@
       <section class="ce-hero">
         <div class="ce-hero-glow" aria-hidden="true"></div>
         <div class="ce-hero-stars-3" aria-hidden="true"></div>
+        <div class="ce-hero-galaxy" aria-hidden="true">
+          <div class="ce-hero-galaxy-origin">
+            <div class="ce-hero-galaxy-control">
+              <div class="ce-hero-galaxy-rotor" id="ce-hero-galaxy-rotor"></div>
+            </div>
+          </div>
+        </div>
         <div class="ce-hero-inner">
         <div class="ce-hero-content">
-          <div class="ce-hero-diamond" aria-hidden="true"><div class="ce-hero-diamond-shape"></div></div>
+          <div class="ce-hero-diamond" aria-hidden="true">
+            <div class="ce-hero-diamond-shape">
+              <div class="ce-orb-container">
+                <div class="ce-orb-c ce-orb-c1"></div>
+                <div class="ce-orb-c ce-orb-c2"></div>
+                <div class="ce-orb-c ce-orb-c3"></div>
+                <div class="ce-orb-c ce-orb-c4"></div>
+              </div>
+              <div class="ce-orb-glass"></div>
+            </div>
+          </div>
           <div class="ce-hero-level"><span class="ce-hero-level-name">SELECT</span><span class="ce-hero-level-tag" data-state="current">Current</span></div>
           <div class="ce-hero-greeting">Hi July, Welcome Back</div>
           <div class="ce-hero-progress">
@@ -3117,6 +3328,15 @@
       </section>
 
     </div>
+
+    <!-- ─── GALAXY ANIMATION BAND ─────────────────────────── -->
+    <section class="ce-galaxy" aria-hidden="true">
+      <div class="ce-galaxy-origin">
+        <div class="ce-galaxy-control">
+          <div class="ce-galaxy-rotor" id="ce-galaxy-rotor"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ─── LEVEL INTRODUCTION MODAL ─────────────────────────── -->
@@ -4016,6 +4236,83 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') rfCloseModal();
     });
+
+    // ─── 3D galaxy stars for hero + bottom band (tier-tinted) ──
+    (function ceGalaxies() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const heroRotor = document.getElementById('ce-hero-galaxy-rotor');
+      const bandRotor = document.getElementById('ce-galaxy-rotor');
+      if (!heroRotor && !bandRotor) return;
+
+      const MIN_DIST = 65, MAX_DIST = 90;     // vmin
+      const MIN_SIZE = 0.25, MAX_SIZE = 0.75; // vmin
+
+      // 5-color palette derived from the active tier's CSS tokens
+      function readPalette() {
+        const cs = getComputedStyle(document.body);
+        const v = (n) => cs.getPropertyValue(n).trim();
+        const rgbStr = (rgb) => {
+          const p = rgb.split(',').map(s => parseInt(s, 10));
+          if (p.length === 3 && p.every(Number.isFinite)) return `rgb(${p[0]}, ${p[1]}, ${p[2]})`;
+          return null;
+        };
+        const palette = [
+          v('--tier-c1'),
+          v('--tier-c2'),
+          v('--tier-c3') || '#ffffff',
+          rgbStr(v('--tier-glow-rgb')),
+          rgbStr(v('--tier-ink-rgb')),
+        ].filter(Boolean);
+        return palette.length ? palette : ['#ffffff'];
+      }
+
+      function buildStars(rotor, count, starClass, palette) {
+        if (!rotor) return;
+        const frag = document.createDocumentFragment();
+        const len = palette.length;
+        for (let i = 0; i < count; i++) {
+          const dist = MIN_DIST + (MAX_DIST - MIN_DIST) * Math.random();
+          const size = MIN_SIZE + (MAX_SIZE - MIN_SIZE) * Math.random();
+          const half = size / 2;
+          const color = palette[Math.floor(Math.random() * len)];
+          const blur = (half + Math.random() * size).toFixed(3);
+          const spread = (Math.random() * half).toFixed(3);
+          const rx = Math.floor(Math.random() * 360);
+          const ry = Math.floor(Math.random() * 360);
+          const rz = Math.floor(Math.random() * 360);
+          const xform =
+            `rotate3d(1,0,0,${rx}deg) ` +
+            `rotate3d(0,1,0,${ry}deg) ` +
+            `rotate3d(0,0,1,${rz}deg) ` +
+            `translate3d(0,0,${dist.toFixed(3)}vmin)`;
+          const shadow = `0 0 ${blur}vmin ${spread}vmin ${color}`;
+          const el = document.createElement('div');
+          el.className = starClass;
+          el.style.setProperty('--size', `${size.toFixed(3)}vmin`);
+          el.style.setProperty('--bg', color);
+          el.style.setProperty('--shadow', shadow);
+          el.style.setProperty('--xform', xform);
+          frag.appendChild(el);
+        }
+        rotor.replaceChildren(frag);
+      }
+
+      function rebuild() {
+        const palette = readPalette();
+        buildStars(heroRotor, 200, 'ce-hero-star', palette);
+        buildStars(bandRotor, 150, 'ce-hero-star', palette);
+      }
+
+      rebuild();
+
+      let rebuildT;
+      const obs = new MutationObserver(() => {
+        clearTimeout(rebuildT);
+        rebuildT = setTimeout(rebuild, 80);
+      });
+      obs.observe(document.body, { attributes: true, attributeFilter: ['data-tier', 'class'] });
+    })();
   </script>
+
 </body>
 </html>
