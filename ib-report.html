@@ -134,6 +134,278 @@
     }
     .filter-select:focus { outline: none; border-color: var(--blue); }
 
+    /* Custom VT dropdown — replaces native <select> dropdown UI.
+       Mirrors the currency-picker pattern used on the wallet page. */
+    .vt-select {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+    }
+    .vt-select-trigger {
+      height: 40px;
+      min-width: 160px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0 36px 0 16px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%237a8699' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color 0.15s;
+    }
+    .vt-select.open > .vt-select-trigger,
+    .vt-select-trigger:focus { outline: none; border-color: var(--blue); }
+    .vt-select-popup {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      z-index: 200;
+      overflow: hidden;
+    }
+    .vt-select.open > .vt-select-popup { display: block; }
+    .vt-select-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--bg-field);
+      transition: background 0.12s;
+    }
+    .vt-select-item:last-child { border-bottom: none; }
+    .vt-select-item:hover { background: #f4f6f9; }
+    .vt-select-item.active { background: var(--blue-light); color: var(--blue); }
+
+    /* ─── Product Type two-pane dropdown (Figma 36745:332529) ── */
+    .vt-product-popup {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 200;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 3px 12px rgba(30, 30, 30, 0.15);
+      overflow: hidden;
+      flex-direction: row;
+    }
+    .vt-select.vt-product.open > .vt-product-popup { display: flex; }
+    .vt-product-list {
+      width: 188px;
+      background: #fff;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .vt-product-list.symbols { width: 196px; }
+    .vt-product-divider {
+      width: 4px;
+      background: rgba(35, 32, 32, 0.04);
+      align-self: stretch;
+      flex-shrink: 0;
+    }
+    .vt-product-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 14px 12px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.12s;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .vt-product-item { justify-content: space-between; padding-left: 12px; }
+    .vt-product-item > span { flex: 1; min-width: 0; }
+    .vt-product-item.has-arrow { padding-left: 12px; }
+    .vt-product-item:hover { background: rgba(35, 32, 32, 0.06); }
+    /* Active product (left pane, currently expanded) — neutral grey */
+    .vt-product-item.active { background: rgba(35, 32, 32, 0.04); font-weight: 700; }
+    /* Currently-selected item (anywhere) — light blue VT highlight */
+    .vt-product-item.checked { background: var(--blue-light); color: var(--blue); }
+    .vt-product-item.checked:hover { background: var(--blue-light); }
+    .vt-product-item .vt-product-check {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      color: var(--blue);
+    }
+    .vt-product-item:not(.checked) .vt-product-check { visibility: hidden; }
+    .vt-product-arrow {
+      width: 16px; height: 16px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .vt-product-popup { flex-direction: column; min-width: 240px; }
+      .vt-product-divider { width: auto; height: 4px; }
+      .vt-product-list { width: 100% !important; max-height: 200px; }
+    }
+
+    /* ─── VT Date-range picker (Figma 36729:331951) ─────── */
+    .vt-date {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+    }
+    .vt-date-popup {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 250;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(35, 32, 32, 0.10);
+      overflow: hidden;
+      min-width: 880px;
+      max-width: calc(100vw - 32px);
+    }
+    /* When the trigger is on the right side of the screen, the popup
+       is anchored from the right edge to keep it inside the viewport. */
+    .vt-date.align-right > .vt-date-popup {
+      left: auto;
+      right: 0;
+    }
+    .vt-date.open > .vt-date-popup { display: flex; flex-direction: column; }
+
+    /* Header (month titles + nav arrows) */
+    .vt-date-headers { display: flex; }
+    .vt-date-header {
+      flex: 1;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(35, 32, 32, 0.12);
+    }
+    .vt-date-header.right { justify-content: space-between; flex-direction: row-reverse; }
+    .vt-date-nav-group { display: flex; align-items: center; gap: 4px; }
+    .vt-date-nav {
+      width: 28px; height: 28px;
+      border: none;
+      background: transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      transition: background 0.12s;
+    }
+    .vt-date-nav:hover { background: rgba(35, 32, 32, 0.06); }
+    .vt-date-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Body: presets sidebar + 2 month grids */
+    .vt-date-body { display: flex; align-items: stretch; }
+    .vt-date-presets {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+      border-right: 1px solid rgba(35, 32, 32, 0.08);
+    }
+    .vt-date-preset {
+      padding: 14px 20px;
+      font-size: 14px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.12s;
+      background: transparent;
+      border: none;
+      text-align: left;
+      font-family: 'Roboto', sans-serif;
+    }
+    .vt-date-preset:hover { background: rgba(35, 32, 32, 0.04); }
+    .vt-date-preset.active { background: rgba(35, 32, 32, 0.06); font-weight: 600; }
+
+    .vt-date-months { display: flex; gap: 0; }
+    .vt-date-month { width: 380px; padding: 8px 0; }
+    .vt-date-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      height: 48px;
+      align-items: center;
+      padding: 0 24px;
+    }
+    .vt-date-cell {
+      width: 32px; height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-primary);
+      cursor: pointer;
+      border-radius: 4px;
+      position: relative;
+      user-select: none;
+      transition: background 0.12s, color 0.12s;
+    }
+    .vt-date-cell.dow { font-weight: 500; cursor: default; }
+    .vt-date-cell.dow:hover { background: transparent; }
+    .vt-date-cell.outside { color: rgba(35, 32, 32, 0.45); }
+    .vt-date-cell:hover:not(.dow):not(.outside) { background: var(--bg-field); }
+    .vt-date-cell.in-range {
+      background: rgba(0, 107, 255, 0.12);
+      border-radius: 0;
+    }
+    .vt-date-cell.range-start {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 4px;
+    }
+    .vt-date-cell.range-end {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 4px;
+    }
+    .vt-date-cell.range-edge {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 4px;
+    }
+    /* Range continuous bg via row-level overlay (handled per cell) */
+
+    @media (max-width: 1024px) {
+      .vt-date-popup { min-width: 0; max-width: calc(100vw - 32px); overflow: auto; }
+    }
+    @media (max-width: 768px) {
+      .vt-date-popup { left: 0; right: 0; }
+      .vt-date-body { flex-direction: column; }
+      .vt-date-presets { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 8px; gap: 4px; border-right: none; border-bottom: 1px solid rgba(35, 32, 32, 0.08); }
+      .vt-date-preset { padding: 8px 12px; }
+      .vt-date-months { flex-direction: column; }
+      .vt-date-month { width: 100%; }
+    }
+
     .filter-date {
       height: 40px;
       min-width: 220px;
@@ -275,8 +547,8 @@
       width: 40px;
       height: 40px;
       border-radius: 8px;
-      border: none;
-      background: var(--bg-field);
+      border: 1px solid var(--border);
+      background: #fff;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -284,7 +556,7 @@
       flex-shrink: 0;
       transition: background 0.15s;
     }
-    .btn-download:hover { background: #e4e6e8; }
+    .btn-download:hover { background: var(--bg-field); }
 
     /* ─── Data Table ──────────────────────────────────────── */
     .table-card {
@@ -370,6 +642,750 @@
     .page-btn.ellipsis { border: none; cursor: default; background: transparent; }
     .page-btn.ellipsis:hover { background: transparent; }
 
+    /* ─── Rebate Report (Figma: 1068:163186) ─────────────── */
+    /* Toolbar: 3 selects (298px each) + Update button (103px), gap 16 between selects, gap 24 before button */
+    .rebate-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .rebate-toolbar > .filter-select,
+    .rebate-toolbar > .filter-date {
+      width: 298px;
+      min-width: 0;
+      flex: 0 1 298px;
+    }
+    .rebate-toolbar > .btn-update {
+      margin-left: 8px;
+      width: 103px;
+      padding: 0;
+    }
+
+    /* Summary grid: left card 540px fixed, right card flex */
+    .rebate-summary-grid {
+      display: grid;
+      grid-template-columns: 540px 1fr;
+      gap: 24px;
+    }
+
+    .rebate-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+    }
+
+    /* Left — Total Rebate card (576px tall in Figma, content stacks naturally) */
+    .rebate-card-total {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-height: 576px;
+    }
+    .rebate-card-total-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 26px;
+      color: var(--text-primary);
+    }
+    .rebate-card-total .net-value-row {
+      gap: 8px;
+      align-items: center;
+    }
+    .rebate-card-total .net-flag { width: 28px; height: 28px; margin-bottom: 0; }
+    .rebate-card-total .net-amount {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 44px;
+    }
+    .rebate-card-total .net-currency {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      align-self: center;
+    }
+
+    .rebate-pie-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex: 1;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      flex-wrap: wrap;
+    }
+    .rebate-pie {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        #1532E5 0% 22%,
+        #18CB85 22% 36%,
+        #B561FF 36% 52%,
+        #00D4FF 52% 68%,
+        #6CE07A 68% 86%,
+        #F0494B 86% 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rebate-pie::before {
+      content: "";
+      position: absolute;
+      inset: 28px;
+      background: #fff;
+      border-radius: 50%;
+    }
+    .rebate-pie-label {
+      position: relative;
+      z-index: 1;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 31px;
+      color: var(--text-primary);
+    }
+    .rebate-pie-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 167px;
+    }
+    .rebate-pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: var(--text-secondary);
+    }
+    .rebate-pie-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Right — product breakdown card (rows 96px tall, 48px gap between columns) */
+    .rebate-card-breakdown {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .rebate-product-row {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .rebate-product-row::before {
+      content: "";
+      grid-column: 2;
+      grid-row: 1;
+      background: var(--border);
+      align-self: stretch;
+      width: 1px;
+    }
+    .rebate-product-row:has(.rebate-product-full)::before { display: none; }
+    .rebate-product-row + .rebate-product-row { border-top: 1px solid var(--border); padding-top: 24px; }
+    .rebate-product {
+      display: grid;
+      grid-template-rows: 24px 44px 28px;
+      row-gap: 0;
+      height: 96px;
+      min-width: 0;
+    }
+    .rebate-product-full { grid-column: 1 / -1; }
+    .rebate-product-header {
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 24px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+    .rebate-product-header > .rebate-product-sub {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+    .rebate-product-amount {
+      grid-row: 2;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 44px;
+      height: 44px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    .rebate-product-amount .unit {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 22px;
+      margin-left: 4px;
+    }
+    .rebate-product-footer {
+      grid-row: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      height: 28px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: capitalize;
+    }
+    .rebate-product-footer-value { color: var(--text-secondary); font-weight: 500; }
+
+    /* Mini-tabs row + filter icons */
+    .rebate-tab-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .rebate-mini-tabs {
+      display: inline-flex;
+      background: var(--bg-field);
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .rebate-mini-tab {
+      height: 32px;
+      padding: 0 18px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .rebate-mini-tab.active {
+      background: #fff;
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .rebate-tab-row-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-icon:hover { background: var(--bg-field); }
+
+    @media (max-width: 1100px) {
+      .rebate-summary-grid { grid-template-columns: 1fr; }
+      .rebate-card-total { min-height: 0; }
+      .rebate-toolbar > .filter-select,
+      .rebate-toolbar > .filter-date { flex: 1 1 220px; width: auto; }
+    }
+    @media (max-width: 768px) {
+      .rebate-product-row { grid-template-columns: 1fr; gap: 20px; }
+      .rebate-product-row::before { display: none; }
+      .rebate-product-row + .rebate-product-row { padding-top: 20px; }
+      .rebate-product-full { grid-column: auto; }
+      .rebate-pie-row { justify-content: center; }
+      .rebate-tab-row-right { width: 100%; }
+      .rebate-tab-row-right .filter-date { flex: 1; min-width: 0; }
+      .rebate-toolbar > .btn-update { width: 100%; margin-left: 0; }
+    }
+
+    /* ─── Sub-IB Report (Figma: 36649:307183) ─────────────── */
+    .subib-notice {
+      background: #e8f1ff;
+      color: var(--blue);
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .subib-filter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .subib-filter > .filter-select { flex: 0 1 188px; min-width: 140px; }
+    .subib-filter > .filter-date { flex: 0 1 240px; min-width: 200px; }
+    .subib-filter > .btn-update { margin-left: auto; }
+
+    .subib-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .subib-stat-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      outline: none;
+    }
+    .subib-stat-card:hover {
+      box-shadow: 0 6px 16px rgba(168, 195, 206, 0.32);
+      transform: translateY(-1px);
+    }
+    .subib-stat-card.active {
+      border: 1px solid var(--blue);
+      box-shadow: 0 4px 14px rgba(10, 54, 199, 0.16);
+    }
+    .subib-stat-card:focus-visible { border-color: var(--blue); }
+    .subib-stat-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .subib-stat-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .subib-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 32px;
+    }
+    .subib-stat-unit {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-left: 6px;
+    }
+    .subib-stat-foot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .subib-stat-trend {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+    .subib-stat-trend.up { background: #e8f7ee; color: #18a957; }
+    .subib-stat-trend.down { background: #fbe6e7; color: #e74c4f; }
+    .subib-stat-trend.neutral { background: var(--bg-field); color: var(--text-secondary); }
+
+    .subib-chart-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+    }
+    .subib-chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .subib-chart-svg { width: 100%; height: 240px; display: block; }
+
+    /* Sub-IB table section */
+    .subib-table-card {
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    /* Inner table block keeps its own card chrome so the data row reads */
+    .subib-table-card .data-table-wrap {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    /* Pagination row sits inside the wrap (now last child) — give it its own
+       padding and a divider above it. */
+    .subib-table-card .data-table-wrap > .pagination-row {
+      padding: 16px 24px;
+      border-top: 1px solid var(--bg-field);
+      margin: 0;
+    }
+    .subib-table-toprow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .subib-table-info {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .subib-table-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    /* Outlined icon button — same chrome as .btn-download on the Fund Report */
+    .btn-icon-plain {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--text-primary);
+      transition: background 0.15s;
+    }
+    .btn-icon-plain:hover { background: var(--bg-field); }
+    .subib-segment {
+      display: inline-flex;
+      background: var(--bg-field);
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .subib-segment-btn {
+      height: 32px;
+      padding: 0 18px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .subib-segment-btn.active {
+      background: #fff;
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .subib-pill-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .subib-pill {
+      height: 32px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 4px;
+      background: var(--bg-field);
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .subib-pill.active {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 4px;
+    }
+    .subib-pill:hover:not(.active) { background: #ececee; }
+
+    /* ─── Sub-IB filter: tree-checkbox dropdown ──────────── */
+    .vt-tree-popup {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 280px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      z-index: 200;
+      max-height: 420px;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .vt-tree-popup-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      max-height: 320px;
+    }
+    .vt-tree-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: #fff;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .vt-tree-footer .ssa-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .vt-tree-footer .ssa-toggle .slider::before {
+      content: ""; position: absolute;
+      width: 18px; height: 18px; left: 3px; top: 3px;
+      background: #fff; border-radius: 50%;
+      transition: transform .2s;
+    }
+    .vt-tree-footer .ssa-toggle input:checked + .slider { background: #00b565 !important; }
+    .vt-tree-footer .ssa-toggle input:checked + .slider::before { transform: translateX(16px); }
+    .vt-select.vt-tree.open > .vt-tree-popup { display: flex; }
+    .vt-tree-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      color: var(--text-primary);
+      transition: background 0.12s;
+      user-select: none;
+    }
+    .vt-tree-item:hover { background: var(--bg-field); }
+    .vt-tree-item[data-level="1"] { padding-left: 28px; }
+    .vt-tree-item[data-level="2"] { padding-left: 48px; }
+    .vt-tree-item[data-level="3"] { padding-left: 68px; }
+    .vt-tree-checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--text-tertiary);
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .vt-tree-item.checked > .vt-tree-checkbox {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    .vt-tree-item.checked > .vt-tree-checkbox::after {
+      content: "";
+      width: 9px;
+      height: 6px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+    .vt-tree-item.indeterminate > .vt-tree-checkbox {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    .vt-tree-item.indeterminate > .vt-tree-checkbox::after {
+      content: "";
+      width: 8px;
+      height: 2px;
+      background: #fff;
+    }
+    .vt-tree-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .vt-tree-item[data-level="0"] .vt-tree-label,
+    .vt-tree-item[data-level="1"] .vt-tree-label { font-weight: 600; }
+    .vt-tree-item[data-level="2"] .vt-tree-label,
+    .vt-tree-item[data-level="3"] .vt-tree-label { font-weight: 400; }
+    .vt-tree-item.italic .vt-tree-label { font-style: italic; color: var(--text-secondary); }
+    .vt-tree-tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      line-height: 16px;
+    }
+    .vt-tree-tag.subib { background: #e8eaff; color: #5b6bff; }
+    .vt-tree-tag.ra { background: #e6f7ec; color: #18a957; }
+    .vt-tree-tag.all { background: var(--blue-light); color: var(--blue); }
+
+    /* ─── Rebate Box 2 totals header (Figma 36661:316773) ─── */
+    /* The first table row shows column label (small, secondary) + the
+       running total below it (bold, primary). Reused across views. */
+    .data-table thead .rebate-total-cell {
+      background: #fff;
+      padding: 14px 24px;
+      text-align: left;
+    }
+    .rebate-total-label {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 18px;
+    }
+    .rebate-total-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 22px;
+      margin-top: 2px;
+    }
+    /* Light-blue "Total" tag — sits as its own row above the totals header
+       inside the table card. The row band uses the same grey as the totals
+       cells so it visually merges into one grey strip. */
+    .rebate-table-wrap { position: relative; }
+    .rebate-total-tag-row {
+      background: #fff;
+      padding: 0;
+      display: flex;
+      align-items: stretch;
+    }
+    .rebate-total-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-light);
+      padding: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 20px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 24px;
+      border-bottom-left-radius: 0;
+    }
+    .rebate-total-tag svg { color: var(--text-primary); flex-shrink: 0; opacity: 0.85; }
+
+    /* Each view stacks its children with the same spacing as the parent card */
+    .subib-view {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .subib-view[hidden] { display: none; }
+    .subib-view .pagination-row { padding-top: 0; padding-bottom: 0; border-top: 0; }
+
+    /* Account-view combined filter (User ID + free-text input) */
+    .subib-account-filter {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      width: 400px;
+      max-width: 100%;
+      transition: border-color 0.15s;
+    }
+    .subib-account-filter:focus-within { border-color: var(--blue); }
+    .subib-account-filter > .vt-select { flex: 0 0 auto; }
+    .subib-account-filter .vt-select-trigger {
+      border: none;
+      min-width: 120px;
+      width: 116px;
+      height: 32px;
+      padding: 0 30px 0 12px;
+      font-size: 14px;
+      box-shadow: none;
+      background-color: transparent;
+    }
+    /* Vertical divider between select and input */
+    .subib-account-filter > .vt-select + .subib-account-input {
+      border-left: 1px solid rgba(35, 32, 32, 0.16);
+    }
+    .subib-account-input {
+      flex: 1;
+      min-width: 0;
+      height: 32px;
+      border: none;
+      background: transparent;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      color: var(--text-primary);
+      padding: 0 12px;
+    }
+    .subib-account-input::placeholder { color: var(--text-tertiary); }
+    .subib-account-input:focus { outline: none; }
+    .subib-account-search-icon {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+      margin-right: 4px;
+    }
+    .subib-account-clear {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+    .subib-account-clear:hover { background: rgba(35,32,32,0.06); color: var(--text-primary); }
+    .subib-account-filter.has-text .subib-account-clear { display: inline-flex; }
+
+    /* Account table needs to scroll horizontally — 16 columns won't fit */
+    .subib-account-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .subib-account-table { min-width: 1800px; }
+    .subib-account-table th,
+    .subib-account-table td { white-space: nowrap; }
+
+    @media (max-width: 1100px) {
+      .subib-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .subib-filter > .btn-update { margin-left: 0; width: 100%; }
+      .subib-stats { grid-template-columns: 1fr; gap: 16px; }
+      .subib-table-toprow { flex-direction: column; align-items: flex-start; }
+    }
+
     /* ─── Disclaimer ──────────────────────────────────────── */
     .disclaimer {
       font-size: 12px;
@@ -411,9 +1427,152 @@
       .net-amount { font-size: 22px; }
       .stats-bar-value { font-size: 20px; }
     }
+    /* ─── Guide tooltip (reused from trading.html) ─────── */
+    .guide-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 9998; display: none; }
+    .guide-overlay.active { display: block; }
+    .guide-spotlight { position: fixed; z-index: 9999; display: none; background: #fff; border-radius: 10px; padding: 12px 18px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); pointer-events: none; }
+    .guide-spotlight .guide-spotlight-content {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+      white-space: nowrap;
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 4px;
+    }
+    .guide-tooltip { position: fixed; background: #fff; border-radius: 10px; padding: 19px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 10000; width: 320px; font-family: 'Roboto', sans-serif; transform: scale(0.8); transform-origin: top left; display: none; }
+    .guide-tooltip-title { font-size: 16px; font-weight: 600; color: #282d34; margin-bottom: 10px; }
+    .guide-tooltip-desc { font-size: 11px; font-weight: 400; color: #282d34; line-height: 1.5; margin-bottom: 16px; }
+    .guide-tooltip-progress { font-size: 10px; font-weight: 500; color: #7a8699; margin-bottom: 12px; }
+    .guide-tooltip-btns { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+    .guide-btn-skip { padding: 6px 12px; border: none; background: transparent; border-radius: 5px; font-size: 11px; font-weight: 500; color: #7a8699; cursor: pointer; transition: all 0.2s; }
+    .guide-btn-skip:hover { background: #f4f5f6; color: #282d34; }
+    .guide-btn-next { padding: 6px 16px; background: #0a36c7; color: #fff; border: none; border-radius: 5px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .guide-btn-next:hover { opacity: 0.9; }
+    /* ─── Column Display filter popup (Figma 36745:333154) ─── */
+    .colfilter-wrap { position: relative; display: inline-block; }
+    .colfilter-popup {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+      width: 312px;
+      max-width: calc(100vw - 32px);
+      z-index: 250;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .colfilter-wrap.open > .colfilter-popup { display: flex; }
+    .colfilter-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 20px;
+      padding: 16px 12px 8px;
+    }
+    .colfilter-list {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .colfilter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.12s;
+    }
+    .colfilter-row:hover { background: var(--bg-field); }
+    .colfilter-drag {
+      width: 6px;
+      height: 10px;
+      flex-shrink: 0;
+      color: #c2c7d0;
+      cursor: grab;
+    }
+    .colfilter-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+    .colfilter-check input { display: none; }
+    .colfilter-check-box {
+      width: 16px; height: 16px;
+      border: 1.5px solid #c2c7d0;
+      border-radius: 4px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .colfilter-check input:checked + .colfilter-check-box {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    .colfilter-check input:checked + .colfilter-check-box::after {
+      content: "";
+      width: 8px;
+      height: 5px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+    .colfilter-label {
+      font-size: 14px;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .colfilter-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 12px 24px 24px;
+      border-top: 0.5px solid rgba(35, 32, 32, 0.12);
+      background: #fff;
+    }
+    .colfilter-btn {
+      height: 32px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, background 0.15s;
+    }
+    .colfilter-btn.reset { background: #f5f5f5; color: var(--text-primary); }
+    .colfilter-btn.reset:hover { background: #ececee; }
+    .colfilter-btn.confirm { background: var(--blue); color: #fff; }
+    .colfilter-btn.confirm:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
+  <!-- Guide tooltip overlay (reused pattern from trading.html) -->
+  <div class="guide-overlay" id="guideOverlay"></div>
+  <div class="guide-spotlight" id="guideSpotlight">
+    <div class="guide-spotlight-content" id="guideSpotlightContent">Sub-IB Report</div>
+  </div>
+  <div class="guide-tooltip" id="guideTooltip">
+    <div class="guide-tooltip-title" id="guideTitle">Track your sub-IBs in one place</div>
+    <div class="guide-tooltip-desc" id="guideDesc">Monitor your sub-IB network's performance directly from your dashboard.</div>
+    <div class="guide-tooltip-progress"><span id="guideProgress">1</span>/1</div>
+    <div class="guide-tooltip-btns">
+      <button class="guide-btn-skip" onclick="skipGuide()">Skip</button>
+      <button class="guide-btn-next" id="guideBtnNext" onclick="nextGuide()">Done</button>
+    </div>
+  </div>
   <div id="sidebar-root"></div>
   <div id="topbar-root"></div>
 
@@ -426,6 +1585,7 @@
       <div class="tabs-bar">
         <a class="tab active" href="#" data-tab="fund">Fund Report</a>
         <a class="tab" href="#" data-tab="rebate">Rebate Report</a>
+        <a class="tab" href="#" data-tab="subib">Sub-IB Report</a>
       </div>
 
       <!-- ══ Fund Report Panel ════════════════════════════════ -->
@@ -443,7 +1603,7 @@
                 <option>Last 90 Days</option>
                 <option>Custom Range</option>
               </select>
-              <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
+              <input type="text" class="filter-date" value="09/06/2026 - 15/06/2026" readonly />
               <button class="btn-update">Update</button>
             </div>
           </div>
@@ -482,7 +1642,7 @@
               <option selected>Processing time</option>
               <option>Trade time</option>
             </select>
-            <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
+            <input type="text" class="filter-date" value="09/06/2026 - 15/06/2026" readonly />
             <button class="btn-download" title="Download">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -540,109 +1700,462 @@
       <!-- ══ Rebate Report Panel ═══════════════════════════════ -->
       <div class="tab-panel" id="panel-rebate">
 
-        <!-- Summary Card -->
-        <div class="summary-card">
-          <div class="summary-card-header">
-            <span class="summary-label">Total Rebate</span>
-            <div class="filter-row">
-              <select class="filter-select">
-                <option selected>Month To Date</option>
-                <option>Last 7 Days</option>
-                <option>Last 30 Days</option>
-                <option>Last 90 Days</option>
-                <option>Custom Range</option>
-              </select>
-              <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
-              <button class="btn-update">Update</button>
-            </div>
-          </div>
-
-          <div class="net-value-row">
-            <img class="net-flag" src="images/imgUsd.png" alt="USD" />
-            <span class="net-amount">21.00</span>
-            <span class="net-currency">USD</span>
-          </div>
-
-          <div class="stats-bar">
-            <div class="stats-bar-item">
-              <span class="stats-bar-label">Commission</span>
-              <div>
-                <span class="stats-bar-value">21.00</span>
-                <span class="stats-bar-currency">USD</span>
-              </div>
-            </div>
-            <div class="stats-bar-item">
-              <span class="stats-bar-label">Spread Rebate</span>
-              <div>
-                <span class="stats-bar-value">0.00</span>
-                <span class="stats-bar-currency">USD</span>
-              </div>
-            </div>
-          </div>
+        <!-- Toolbar: Select / Date Range / Symbol / Update -->
+        <div class="rebate-toolbar">
+          <select class="filter-select">
+            <option selected>Select</option>
+            <option>Last 7 Days</option>
+            <option>Last 30 Days</option>
+            <option>Last 90 Days</option>
+            <option>Custom Range</option>
+          </select>
+          <input type="text" class="filter-date" value="09/06/2026 - 15/06/2026" readonly />
+          <select class="filter-select">
+            <option selected>CHINA50</option>
+            <option>XAUUSDco</option>
+            <option>NZDSGD+</option>
+            <option>CHFSGD+</option>
+            <option>AUDSGD+</option>
+            <option>AUDCNH</option>
+          </select>
+          <button class="btn-update">Update</button>
         </div>
 
-        <!-- Table Filters -->
-        <div class="table-filters">
-          <input type="text" class="search-bar" placeholder="Month To Date" />
-          <div class="table-filter-right">
-            <select class="filter-select processing">
-              <option selected>Processing time</option>
-              <option>Trade time</option>
-            </select>
-            <input type="text" class="filter-date" value="25/08/2025 - 02/09/2025" readonly />
-            <button class="btn-download" title="Download">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </button>
+        <!-- Summary Grid: Total Rebate (left) + Product Breakdown (right) -->
+        <div class="rebate-summary-grid">
+
+          <!-- Left: Total Rebate + Pie chart -->
+          <div class="rebate-card rebate-card-total">
+            <div class="rebate-card-total-title">Total Rebate</div>
+            <div class="net-value-row">
+              <img class="net-flag" src="images/imgUsd.png" alt="USD" />
+              <span class="net-amount">1,000,000.00</span>
+              <span class="net-currency">USD</span>
+            </div>
+            <div class="rebate-divider"></div>
+            <div class="rebate-pie-row">
+              <div class="rebate-pie" aria-label="Rebate breakdown">
+                <span class="rebate-pie-label">XAUUSDco</span>
+              </div>
+              <div class="rebate-pie-legend">
+                <div class="rebate-pie-legend-item"><span class="rebate-pie-dot" style="background:#1532E5"></span>NZDSGD+</div>
+                <div class="rebate-pie-legend-item"><span class="rebate-pie-dot" style="background:#18CB85"></span>CHFSGD+</div>
+                <div class="rebate-pie-legend-item"><span class="rebate-pie-dot" style="background:#B561FF"></span>AUDSGD+</div>
+                <div class="rebate-pie-legend-item"><span class="rebate-pie-dot" style="background:#00D4FF"></span>XAUUSDco</div>
+                <div class="rebate-pie-legend-item"><span class="rebate-pie-dot" style="background:#6CE07A"></span>XAUUSDco</div>
+                <div class="rebate-pie-legend-item"><span class="rebate-pie-dot" style="background:#F0494B"></span>AUDCNH</div>
+              </div>
+            </div>
           </div>
+
+          <!-- Right: Product breakdown grid -->
+          <div class="rebate-card rebate-card-breakdown">
+            <div class="rebate-product-row">
+              <div class="rebate-product">
+                <div class="rebate-product-header"><span>1COV</span></div>
+                <div class="rebate-product-amount">1,000,000.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Lots</span><span class="rebate-product-footer-value">00</span></div>
+              </div>
+              <div class="rebate-product">
+                <div class="rebate-product-header"><span>Commodities</span><span class="rebate-product-sub">CHINA50</span></div>
+                <div class="rebate-product-amount">1,000,000.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Lots</span><span class="rebate-product-footer-value">00</span></div>
+              </div>
+            </div>
+            <div class="rebate-product-row">
+              <div class="rebate-product">
+                <div class="rebate-product-header"><span>Indices</span></div>
+                <div class="rebate-product-amount">1,000,000.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Lots</span><span class="rebate-product-footer-value">00</span></div>
+              </div>
+              <div class="rebate-product">
+                <div class="rebate-product-header"><span>Crypto</span></div>
+                <div class="rebate-product-amount">1,000,000.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Lots</span><span class="rebate-product-footer-value">00</span></div>
+              </div>
+            </div>
+            <div class="rebate-product-row">
+              <div class="rebate-product">
+                <div class="rebate-product-header"><span>Share CFD</span></div>
+                <div class="rebate-product-amount">1,000,000.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Lots</span><span class="rebate-product-footer-value">00</span></div>
+              </div>
+              <div class="rebate-product">
+                <div class="rebate-product-header"><span>Bond</span></div>
+                <div class="rebate-product-amount">1,000,000.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Lots</span><span class="rebate-product-footer-value">00</span></div>
+              </div>
+            </div>
+            <div class="rebate-product-row">
+              <div class="rebate-product rebate-product-full">
+                <div class="rebate-product-header"><span>Synthetic Indices</span></div>
+                <div class="rebate-product-amount">0.00<span class="unit">USD</span></div>
+                <div class="rebate-product-footer"><span>Standard Lots</span></div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Data Table -->
-        <div class="table-card">
-          <div class="data-table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>User ID</th>
-                  <th>Name</th>
-                  <th>Rebate Account</th>
-                  <th>Rebate</th>
-                  <th>Commission</th>
-                  <th>Spread Rebate</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-                <tr><td>31/10/2025</td><td>123456787654</td><td>Dylan Rix</td><td>804317434(USD)</td><td>21.00</td><td>21.00</td><td>0.00</td></tr>
-              </tbody>
-            </table>
+        <!-- Rebate Box 2: Date/Account segment + commission notice + Day/Week pills + table (Figma 36661:316773) -->
+        <div class="subib-table-card">
+          <div class="subib-table-toprow">
+            <div class="subib-segment" role="tablist" aria-label="Group by">
+              <button type="button" class="subib-segment-btn active" role="tab" aria-selected="true" onclick="rebateShowView(this,'Date')">Date</button>
+              <button type="button" class="subib-segment-btn" role="tab" aria-selected="false" onclick="rebateShowView(this,'Account')">Account</button>
+            </div>
+            <div class="subib-table-actions">
+              <span class="subib-table-info">Total 0 Records From 01/01/2026 To 22/01/2026</span>
+              <button class="btn-icon-plain" title="Filter">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 4h14l-5 6v6l-4-2v-4L3 4z" stroke="#282d34" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="btn-icon-plain" title="Download">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
           </div>
-          <div class="pagination-row">
-            <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
-            <button class="page-btn">‹</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <button class="page-btn">4</button>
-            <button class="page-btn">5</button>
-            <button class="page-btn ellipsis">…</button>
-            <button class="page-btn">10</button>
-            <button class="page-btn">›</button>
+
+          <div class="subib-notice">Commission data is calculated daily starting at 1:00 AM server time (GMT+2-Standard Time/GMT+3-Daylight Saving Time) and updated based on closed trades. If results are not immediately reflected, please check back later.</div>
+
+          <!-- Date view (default) -->
+          <div class="subib-view" data-view="Date">
+            <div class="subib-pill-row" role="tablist" aria-label="Time grouping">
+              <button type="button" class="subib-pill active" onclick="rebatePickPill(this)">Day</button>
+              <button type="button" class="subib-pill" onclick="rebatePickPill(this)">Week</button>
+              <button type="button" class="subib-pill" onclick="rebatePickPill(this)">Month</button>
+              <button type="button" class="subib-pill" onclick="rebatePickPill(this)">Year</button>
+            </div>
+
+            <div class="data-table-wrap rebate-table-wrap">
+              <div class="rebate-total-tag-row">
+                <span class="rebate-total-tag">Total
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 8.5V5.5M6 4v.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <table class="data-table rebate-date-table">
+                <thead>
+                  <tr>
+                    <th class="rebate-total-cell"><div class="rebate-total-label rebate-date-label">Day</div><div class="rebate-total-value rebate-date-col">Day</div></th>
+                    <th class="rebate-total-cell"><div class="rebate-total-label">Notional Value (USD)</div><div class="rebate-total-value">894638563.00</div></th>
+                    <th class="rebate-total-cell"><div class="rebate-total-label">Total Rebate (USD)</div><div class="rebate-total-value">9858.00</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>22/01/2026</td><td>19,250.00 USD</td><td>22,250.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>19,250.00 USD</td><td>22,250.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>19,250.00 USD</td><td>22,250.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>19,250.00 USD</td><td>22,250.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>19,250.00 USD</td><td>22,250.00 USD</td></tr>
+                </tbody>
+              </table>
+              <div class="pagination-row">
+                <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
+                <button class="page-btn">‹</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn ellipsis">…</button>
+                <button class="page-btn">10</button>
+                <button class="page-btn">›</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account view -->
+          <div class="subib-view" data-view="Account" hidden>
+            <div class="data-table-wrap rebate-table-wrap">
+              <div class="rebate-total-tag-row">
+                <span class="rebate-total-tag">Total
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 8.5V5.5M6 4v.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="rebate-total-cell"><div class="rebate-total-label">Account</div><div class="rebate-total-value">Account</div></th>
+                    <th class="rebate-total-cell"><div class="rebate-total-label">Notional Value (USD)</div><div class="rebate-total-value">894638563.00</div></th>
+                    <th class="rebate-total-cell"><div class="rebate-total-label">Total Rebate (USD)</div><div class="rebate-total-value">9858.00</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>804317434(USD)</td><td>19,250.00 USD</td><td>22,250.00 USD</td></tr>
+                  <tr><td>804317435(USD)</td><td>20,500.00 USD</td><td>22,500.00 USD</td></tr>
+                  <tr><td>804317436(USD)</td><td>21,750.00 USD</td><td>22,750.00 USD</td></tr>
+                  <tr><td>804317437(USD)</td><td>22,000.00 USD</td><td>23,000.00 USD</td></tr>
+                  <tr><td>804317438(USD)</td><td>22,500.00 USD</td><td>23,500.00 USD</td></tr>
+                </tbody>
+              </table>
+              <div class="pagination-row">
+                <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
+                <button class="page-btn">‹</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn ellipsis">…</button>
+                <button class="page-btn">10</button>
+                <button class="page-btn">›</button>
+              </div>
+            </div>
           </div>
         </div>
 
       </div><!-- /panel-rebate -->
+
+      <!-- ══ Sub-IB Report Panel ══════════════════════════════ -->
+      <div class="tab-panel" id="panel-subib">
+
+        <!-- Notice banner -->
+        <div class="subib-notice">The latest data will be updated at server time 3:00 AM, based on previous day's trades.</div>
+
+        <!-- Filter row -->
+        <div class="subib-filter">
+          <select class="filter-select">
+            <option selected>Month To Date</option>
+            <option>Yesterday</option>
+            <option>Last 7 Days</option>
+            <option>Last 7 - 30 Days</option>
+            <option>Week To Date</option>
+            <option>Month To Date</option>
+          </select>
+          <input type="text" class="filter-date" value="09/06/2026 - 15/06/2026" readonly />
+          <select class="filter-select" data-vt-tree>
+            <option selected>All</option>
+            <option>Sub-IB A</option>
+            <option>A-RA-01</option>
+            <option>A-RA-02</option>
+            <option>Sub-IB A1</option>
+            <option>A1-RA-01</option>
+            <option>Sub-IB B</option>
+            <option>B-RA-01</option>
+            <option>B-RA-02</option>
+          </select>
+          <select class="filter-select" data-vt-product>
+            <option selected>Product Types</option>
+            <option>Forex</option>
+            <option>Commodities</option>
+            <option>Indices</option>
+            <option>Crypto</option>
+          </select>
+          <button class="btn-update">Search</button>
+        </div>
+
+        <!-- Stat cards (click to drive the chart below) -->
+        <div class="subib-stats">
+          <div class="subib-stat-card active" data-metric="gross" tabindex="0" role="button" aria-pressed="true">
+            <div class="subib-stat-label">Gross Deposit</div>
+            <div class="subib-stat-row">
+              <span class="subib-stat-value">13,112.39<span class="subib-stat-unit">USD</span></span>
+            </div>
+            <div class="subib-stat-foot">
+              <span class="subib-stat-trend up">+21%</span>
+              <span>From last period</span>
+            </div>
+          </div>
+
+          <div class="subib-stat-card" data-metric="net" tabindex="0" role="button" aria-pressed="false">
+            <div class="subib-stat-label">Net Deposit</div>
+            <div class="subib-stat-row">
+              <span class="subib-stat-value">13,112.39<span class="subib-stat-unit">USD</span></span>
+            </div>
+            <div class="subib-stat-foot">
+              <span class="subib-stat-trend down">-53 USD</span>
+              <span>From last period</span>
+            </div>
+          </div>
+
+          <div class="subib-stat-card" data-metric="volume" tabindex="0" role="button" aria-pressed="false">
+            <div class="subib-stat-label">Trading Volume</div>
+            <div class="subib-stat-row">
+              <span class="subib-stat-value">13,112.39<span class="subib-stat-unit">USD</span></span>
+            </div>
+            <div class="subib-stat-foot">
+              <span class="subib-stat-trend neutral">--</span>
+              <span>From last period</span>
+            </div>
+          </div>
+
+          <div class="subib-stat-card" data-metric="rebate" tabindex="0" role="button" aria-pressed="false">
+            <div class="subib-stat-label">Rebate Contributions</div>
+            <div class="subib-stat-row">
+              <span class="subib-stat-value">13,112.39<span class="subib-stat-unit">USD</span></span>
+            </div>
+            <div class="subib-stat-foot">
+              <span class="subib-stat-trend up">+114</span>
+              <span>From last period</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trend chart -->
+        <div class="subib-chart-card">
+          <div class="subib-chart-title" id="subib-chart-title">Gross Deposit</div>
+          <svg class="subib-chart-svg" viewBox="0 0 1100 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-label="Gross deposit trend">
+            <defs>
+              <linearGradient id="subib-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1e68f6" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#1e68f6" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- gridlines -->
+            <g stroke="#eef0f3" stroke-width="1">
+              <line x1="40" y1="20" x2="1080" y2="20"/>
+              <line x1="40" y1="60" x2="1080" y2="60"/>
+              <line x1="40" y1="100" x2="1080" y2="100"/>
+              <line x1="40" y1="140" x2="1080" y2="140"/>
+              <line x1="40" y1="180" x2="1080" y2="180"/>
+              <line x1="40" y1="220" x2="1080" y2="220"/>
+            </g>
+            <!-- Y axis labels -->
+            <g fill="#7a8699" font-family="Roboto, sans-serif" font-size="11">
+              <text x="0" y="24">05</text>
+              <text x="0" y="64">04</text>
+              <text x="0" y="104">03</text>
+              <text x="0" y="144">02</text>
+              <text x="0" y="184">01</text>
+              <text x="0" y="224">0</text>
+            </g>
+            <!-- Area fill under line -->
+            <path id="subib-chart-area" d="M 40 215 L 220 195 L 400 165 L 580 130 L 760 95 L 940 60 L 1080 25 L 1080 220 L 40 220 Z" fill="url(#subib-grad)"/>
+            <!-- Trend line -->
+            <path id="subib-chart-line" d="M 40 215 L 220 195 L 400 165 L 580 130 L 760 95 L 940 60 L 1080 25" stroke="#1e68f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div style="display:flex; justify-content:space-between; padding:8px 40px 0; font-size:12px; color:var(--text-secondary);">
+            <span>07/12</span><span>07/13</span><span>07/14</span><span>07/15</span><span>07/16</span><span>07/18</span><span>today</span>
+          </div>
+        </div>
+
+        <!-- Table section -->
+        <div class="subib-table-card">
+          <div class="subib-table-toprow">
+            <div class="subib-segment" role="tablist" aria-label="Group by">
+              <button type="button" class="subib-segment-btn active" role="tab" aria-selected="true" onclick="subibShowView(this,'Date')">Date</button>
+              <button type="button" class="subib-segment-btn" role="tab" aria-selected="false" onclick="subibShowView(this,'Account')">Account</button>
+            </div>
+            <div class="subib-table-actions">
+              <span class="subib-table-info">Total 0 Records From 01/01/2026 To 22/01/2026</span>
+              <button class="btn-icon-plain" title="Filter">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 4h14l-5 6v6l-4-2v-4L3 4z" stroke="#282d34" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="btn-icon-plain" title="Download">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M6 9l4 4 4-4" stroke="#282d34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15h12" stroke="#282d34" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Date view (default) -->
+          <div class="subib-view" data-view="Date">
+            <div class="subib-pill-row" role="tablist" aria-label="Time grouping">
+              <button type="button" class="subib-pill active" onclick="subibPickPill(this)">Day</button>
+              <button type="button" class="subib-pill" onclick="subibPickPill(this)">Week</button>
+              <button type="button" class="subib-pill" onclick="subibPickPill(this)">Month</button>
+              <button type="button" class="subib-pill" onclick="subibPickPill(this)">Year</button>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table subib-date-table">
+                <thead>
+                  <tr>
+                    <th class="subib-date-col">Day</th>
+                    <th>Gross Deposits (USD)</th>
+                    <th>Net Deposits (USD)</th>
+                    <th>Notional Value (USD)</th>
+                    <th>Rebate Contributions (USD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>22/01/2026</td><td>19,250.00 USD</td><td>19,250.00 USD</td><td>19,250.00 USD</td><td>20,250.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>20,500.00 USD</td><td>20,500.00 USD</td><td>20,500.00 USD</td><td>21,500.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>21,750.00 USD</td><td>21,750.00 USD</td><td>21,750.00 USD</td><td>22,750.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>22,000.00 USD</td><td>22,000.00 USD</td><td>22,000.00 USD</td><td>23,000.00 USD</td></tr>
+                  <tr><td>22/01/2026</td><td>22,500.00 USD</td><td>22,500.00 USD</td><td>22,500.00 USD</td><td>23,500.00 USD</td></tr>
+                </tbody>
+              </table>
+              <div class="pagination-row">
+                <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
+                <button class="page-btn">‹</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn ellipsis">…</button>
+                <button class="page-btn">10</button>
+                <button class="page-btn">›</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account view (Figma 36661:316771) -->
+          <div class="subib-view" data-view="Account" hidden>
+            <div class="subib-account-filter">
+              <select class="filter-select subib-account-field">
+                <option selected>Affid</option>
+                <option>User ID</option>
+                <option>Name</option>
+                <option>Email</option>
+                <option>Upper Affid</option>
+              </select>
+              <input type="text" class="subib-account-input" placeholder="Search by Affid" oninput="subibAccountSearch()" />
+              <button type="button" class="subib-account-clear" aria-label="Clear search" onclick="subibAccountClear()">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </button>
+              <svg class="subib-account-search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="data-table-wrap subib-account-wrap">
+              <table class="data-table subib-account-table">
+                <thead>
+                  <tr>
+                    <th>Affid</th>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Country</th>
+                    <th>Email</th>
+                    <th>Upper Affid</th>
+                    <th>Join Date</th>
+                    <th>Registration</th>
+                    <th>Opened Account</th>
+                    <th>FTD</th>
+                    <th>Gross Deposits</th>
+                    <th>Withdrawals</th>
+                    <th>Net Deposit</th>
+                    <th>Volume(Lots)</th>
+                    <th>Volume(NV)</th>
+                    <th>Rebate Contribution</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>111111</td><td>123456</td><td>Harry Potter</td><td>Malaysia</td><td>******</td><td>000000</td><td>22/01/2026</td><td>22/01/2026</td><td>3</td><td>500.00 USD</td><td>1,500.00 USD</td><td>200.00 USD</td><td>1,300.00 USD</td><td>12.50</td><td>250,000.00</td><td>20.00 USD</td></tr>
+                  <tr><td>111112</td><td>123457</td><td>Hermione Granger</td><td>Singapore</td><td>******</td><td>000000</td><td>22/01/2026</td><td>22/01/2026</td><td>2</td><td>1,000.00 USD</td><td>2,000.00 USD</td><td>0.00 USD</td><td>2,000.00 USD</td><td>8.20</td><td>180,000.00</td><td>15.00 USD</td></tr>
+                  <tr><td>111113</td><td>123458</td><td>Ron Weasley</td><td>Australia</td><td>******</td><td>000000</td><td>22/01/2026</td><td>22/01/2026</td><td>1</td><td>250.00 USD</td><td>800.00 USD</td><td>50.00 USD</td><td>750.00 USD</td><td>4.10</td><td>96,000.00</td><td>9.50 USD</td></tr>
+                  <tr><td>111114</td><td>123459</td><td>Albus Dumbledore</td><td>Japan</td><td>******</td><td>000000</td><td>22/01/2026</td><td>22/01/2026</td><td>5</td><td>2,500.00 USD</td><td>4,500.00 USD</td><td>500.00 USD</td><td>4,000.00 USD</td><td>22.30</td><td>460,000.00</td><td>32.00 USD</td></tr>
+                  <tr><td>111115</td><td>123460</td><td>Severus Snape</td><td>Vietnam</td><td>******</td><td>000000</td><td>22/01/2026</td><td>22/01/2026</td><td>0</td><td>0.00 USD</td><td>0.00 USD</td><td>0.00 USD</td><td>0.00 USD</td><td>0.00</td><td>0.00</td><td>0.00 USD</td></tr>
+                </tbody>
+              </table>
+              <div class="pagination-row">
+                <span class="pagination-info">Total of 100 data &nbsp;|&nbsp; 5 Pages</span>
+                <button class="page-btn">‹</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn ellipsis">…</button>
+                <button class="page-btn">10</button>
+                <button class="page-btn">›</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-subib -->
 
       <!-- ── Disclaimer ─────────────────────────────────────── -->
       <div class="disclaimer">
@@ -659,6 +2172,68 @@
   <script src="sidebar.js"></script>
   <script src="topbar.js"></script>
   <script>
+    // Sub-IB Date/Account segment switcher — defined first so inline onclick
+    // handlers find it regardless of script order.
+    window.subibShowView = function (btn, target) {
+      const group = btn.closest('.subib-segment');
+      const card = btn.closest('.subib-table-card');
+      if (!group || !card) return;
+      group.querySelectorAll('.subib-segment-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      card.querySelectorAll('.subib-view').forEach(v => {
+        v.toggleAttribute('hidden', v.dataset.view !== target);
+      });
+    };
+    // Sub-IB Day/Week/Month/Year pill picker
+    window.subibPickPill = function (btn) {
+      const group = btn.closest('.subib-pill-row');
+      const view = btn.closest('.subib-view');
+      if (!group) return;
+      group.querySelectorAll('.subib-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const label = btn.textContent.trim();
+      if (view) {
+        const colHead = view.querySelector('.subib-date-col');
+        if (colHead) colHead.textContent = label;
+      }
+    };
+    // Rebate Date/Account segment switcher (mirrors subibShowView)
+    window.rebateShowView = function (btn, target) {
+      const group = btn.closest('.subib-segment');
+      const card = btn.closest('.subib-table-card');
+      if (!group || !card) return;
+      group.querySelectorAll('.subib-segment-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      card.querySelectorAll('.subib-view').forEach(v => {
+        v.toggleAttribute('hidden', v.dataset.view !== target);
+      });
+    };
+    // Rebate Day/Week/Month/Year/E-wallet pill — also retitles the date column
+    window.rebatePickPill = function (btn) {
+      const group = btn.closest('.subib-pill-row');
+      const view = btn.closest('.subib-view');
+      if (!group) return;
+      group.querySelectorAll('.subib-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const label = btn.textContent.trim();
+      if (view) {
+        const colHead = view.querySelector('.rebate-date-col');
+        if (colHead) colHead.textContent = label;
+        const labelEl = view.closest('.subib-table-card')?.querySelector('.rebate-total-label');
+        // First column "Month" label updates with pill choice for Date view.
+        const firstLabel = view.querySelector('.rebate-total-cell .rebate-total-label');
+        if (firstLabel) firstLabel.textContent = label;
+      }
+    };
+
     // Tab switching
     const tabs = document.querySelectorAll('.tab');
     const panels = document.querySelectorAll('.tab-panel');
@@ -684,6 +2259,821 @@
         });
       });
     });
+
+    // Rebate Account/Date mini-tabs
+    document.querySelectorAll('.rebate-mini-tabs').forEach(group => {
+      group.querySelectorAll('.rebate-mini-tab').forEach(t => {
+        t.addEventListener('click', () => {
+          group.querySelectorAll('.rebate-mini-tab').forEach(x => {
+            x.classList.remove('active');
+            x.setAttribute('aria-selected', 'false');
+          });
+          t.classList.add('active');
+          t.setAttribute('aria-selected', 'true');
+        });
+      });
+    });
+
+    // ─── Custom VT dropdown — replaces native <select> popup UI ───
+    function buildVtSelect(orig) {
+      if (orig.dataset.vtBound === '1') return;
+      orig.dataset.vtBound = '1';
+      const wrap = document.createElement('div');
+      wrap.className = 'vt-select';
+      // Mirror layout sizing classes from the original (e.g. .filter-select stays
+      // for parent flex rules) by copying class list onto the wrapper too.
+      wrap.classList.add(...Array.from(orig.classList).filter(c => c !== 'filter-select'));
+      wrap.style.flex = orig.style.flex || '';
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'vt-select-trigger';
+      const popup = document.createElement('div');
+      popup.className = 'vt-select-popup';
+      const opts = Array.from(orig.options).map(o => ({ value: o.value || o.textContent.trim(), label: o.textContent.trim(), selected: o.selected }));
+      const setActive = (idx) => {
+        opts.forEach((o, i) => o.selected = i === idx);
+        trigger.textContent = opts[idx].label;
+        popup.querySelectorAll('.vt-select-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+        // Sync the original <select> so any existing form/JS still works
+        orig.selectedIndex = idx;
+        orig.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+      opts.forEach((o, i) => {
+        const item = document.createElement('div');
+        item.className = 'vt-select-item' + (o.selected ? ' active' : '');
+        item.textContent = o.label;
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setActive(i);
+          wrap.classList.remove('open');
+        });
+        popup.appendChild(item);
+      });
+      const initial = Math.max(0, opts.findIndex(o => o.selected));
+      trigger.textContent = opts[initial]?.label || '';
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Close any other open dropdowns
+        document.querySelectorAll('.vt-select.open').forEach(el => { if (el !== wrap) el.classList.remove('open'); });
+        wrap.classList.toggle('open');
+      });
+      wrap.appendChild(trigger);
+      wrap.appendChild(popup);
+      // Hide the original select but keep it in DOM for form submission
+      orig.style.display = 'none';
+      orig.parentNode.insertBefore(wrap, orig);
+      wrap.appendChild(orig);
+    }
+    // Two-pane Product Type dropdown (Figma 36745:332529)
+    function buildVtProductSelect(orig) {
+      if (orig.dataset.vtBound === '1') return;
+      orig.dataset.vtBound = '1';
+      const wrap = document.createElement('div');
+      wrap.className = 'vt-select vt-product';
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'vt-select-trigger';
+      const popup = document.createElement('div');
+      popup.className = 'vt-product-popup';
+      const PRODUCTS = [
+        { name: 'Forex',       symbols: ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'NZDUSD'] },
+        { name: 'Oil',         symbols: ['WTI', 'BRENT', 'XTIUSD'] },
+        { name: 'Silver',      symbols: ['XAGUSD', 'XAGEUR'] },
+        { name: 'Gold',        symbols: ['XAUUSD', 'XAUEUR', 'XAUAUD'] },
+        { name: 'Commodities', symbols: ['COPPER', 'NATGAS', 'COCOA', 'SUGAR'] },
+        { name: 'Indices',     symbols: ['US500', 'NAS100', 'US30', 'GER40', 'UK100', 'JPN225'] },
+        { name: 'Crypto',      symbols: ['BTCUSD', 'ETHUSD', 'XRPUSD', 'SOLUSD'] },
+        { name: 'Shares/Bond', symbols: ['AAPL', 'TSLA', 'MSFT', 'AMZN', 'NVDA'] },
+        { name: 'PAMM',        symbols: ['PAMM-A', 'PAMM-B', 'PAMM-C'] },
+      ];
+      let activeIdx = 0;       // currently expanded product
+      let selectedKey = 'all';  // 'all' or `${productIdx}:${symbol}`
+      const checkSvg = '<svg class="vt-product-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg>';
+      const arrowSvg = '<svg class="vt-product-arrow" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function render() {
+        const isAll = selectedKey === 'all';
+        popup.innerHTML = `
+          <div class="vt-product-list">
+            <button class="vt-product-item head ${isAll ? 'checked' : ''}" data-pick="all">
+              <span>All Instruments</span>
+              ${checkSvg}
+            </button>
+            ${PRODUCTS.map((p, i) => `
+              <button class="vt-product-item has-arrow ${i === activeIdx ? 'active' : ''}" data-product="${i}">
+                <span>${p.name}</span>
+                ${arrowSvg}
+              </button>
+            `).join('')}
+          </div>
+          <div class="vt-product-divider"></div>
+          <div class="vt-product-list symbols">
+            ${PRODUCTS[activeIdx].symbols.map(s => {
+              const k = `${activeIdx}:${s}`;
+              return `<button class="vt-product-item ${selectedKey === k ? 'checked' : ''}" data-pick="${k}">
+                <span>${s}</span>${checkSvg}
+              </button>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      function applySelection() {
+        let label = 'Product Types';
+        if (selectedKey === 'all') label = 'All Instruments';
+        else if (selectedKey) label = selectedKey.split(':')[1];
+        trigger.textContent = label;
+        // Sync hidden <select>: ensure an option exists then select it
+        let opt = Array.from(orig.options).find(o => o.textContent === label);
+        if (!opt) { opt = new Option(label, label); orig.appendChild(opt); }
+        opt.selected = true;
+        orig.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      // Init label
+      const sel = orig.options[orig.selectedIndex]; trigger.textContent = sel ? sel.textContent : 'Product Types';
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.vt-select.open, .vt-date.open').forEach(el => { if (el !== wrap) el.classList.remove('open'); });
+        if (!wrap.classList.contains('open')) render();
+        wrap.classList.toggle('open');
+      });
+
+      popup.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const productBtn = e.target.closest('[data-product]');
+        if (productBtn) {
+          activeIdx = +productBtn.dataset.product;
+          render();
+          return;
+        }
+        const pick = e.target.closest('[data-pick]');
+        if (pick) {
+          selectedKey = pick.dataset.pick;
+          applySelection();
+          render();
+          wrap.classList.remove('open');
+        }
+      });
+
+      orig.style.display = 'none';
+      orig.parentNode.insertBefore(wrap, orig);
+      wrap.appendChild(trigger);
+      wrap.appendChild(popup);
+      wrap.appendChild(orig);
+    }
+
+    // Tree-checkbox dropdown for the Sub-IB filter (mirrors VT's currency picker)
+    function buildVtTreeSelect(orig) {
+      if (orig.dataset.vtBound === '1') return;
+      orig.dataset.vtBound = '1';
+
+      // Tree shape that mirrors the screenshot. Each node has id, label, level
+      // (0 = All, 1 = group, 2 = leaf, 3 = nested leaf), tag (Sub-IB/RA/All),
+      // and optional italic flag for greyed-out sub-children.
+      const tree = [
+        { id: 'all', label: 'All', level: 0, tag: 'all', children: [
+          { id: 'sub-a', label: 'Sub-IB A', level: 1, tag: 'subib', children: [
+            { id: 'a-ra-01', label: 'A-RA-01', level: 2, tag: 'ra' },
+            { id: 'a-ra-02', label: 'A-RA-02', level: 2, tag: 'ra' },
+            { id: 'sub-a1', label: 'Sub-IB A1', level: 2, tag: 'subib', bold: true, children: [
+              { id: 'a1-ra-01', label: 'A1-RA-01', level: 3, tag: 'ra', italic: true }
+            ] },
+          ] },
+          { id: 'sub-b', label: 'Sub-IB B', level: 1, tag: 'subib', children: [
+            { id: 'b-ra-01', label: 'B-RA-01', level: 2, tag: 'ra' },
+            { id: 'b-ra-02', label: 'B-RA-02', level: 2, tag: 'ra' },
+          ] },
+        ]}
+      ];
+      // Flatten tree → ordered render list with parent/child links
+      const flat = [];
+      function walk(node, parent) {
+        node.parent = parent;
+        node.checked = true;
+        flat.push(node);
+        if (node.children) node.children.forEach(c => walk(c, node));
+      }
+      tree.forEach(n => walk(n, null));
+
+      const wrap = document.createElement('div');
+      wrap.className = 'vt-select vt-tree';
+      wrap.classList.add(...Array.from(orig.classList).filter(c => c !== 'filter-select'));
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'vt-select-trigger';
+      const popup = document.createElement('div');
+      popup.className = 'vt-tree-popup';
+
+      function setIndeterminate(node) {
+        if (!node.children) return;
+        const checks = node.children.map(c => { setIndeterminate(c); return c.checked === true; });
+        const indeterm = node.children.some(c => c.indeterminate) || (checks.some(Boolean) && !checks.every(Boolean));
+        if (indeterm) { node.checked = false; node.indeterminate = true; }
+        else { node.indeterminate = false; node.checked = checks.every(Boolean); }
+      }
+      function propagateDown(node, val) {
+        node.checked = val; node.indeterminate = false;
+        if (node.children) node.children.forEach(c => propagateDown(c, val));
+      }
+      function recomputeUp() {
+        // Reset and bubble from leaves
+        flat.forEach(n => { if (!n.children) n.indeterminate = false; });
+        // Walk parents from deepest to shallowest
+        const groups = flat.filter(n => n.children).sort((a, b) => b.level - a.level);
+        groups.forEach(setIndeterminate);
+      }
+      function refreshLabel() {
+        const all = flat[0];
+        if (all.checked) trigger.textContent = 'All';
+        else {
+          const leaves = flat.filter(n => !n.children && n.checked);
+          trigger.textContent = leaves.length ? `${leaves.length} selected` : 'None';
+        }
+      }
+      // Build the popup with a scrollable item list and a pinned footer
+      // containing the "Hide Archived Account" toggle.
+      const list = document.createElement('div');
+      list.className = 'vt-tree-popup-list';
+      const footer = document.createElement('div');
+      footer.className = 'vt-tree-footer';
+      footer.innerHTML = `
+        <span>Hide Archived Account</span>
+        <label class="ssa-toggle" style="position:relative; display:inline-block; width:40px; height:24px;">
+          <input type="checkbox" class="vt-tree-archive-toggle" />
+          <span class="slider" style="position:absolute; cursor:pointer; inset:0; background:#c2c7d0; border-radius:999px; transition:background .2s;"></span>
+        </label>`;
+      function render() {
+        list.innerHTML = flat.map(n => {
+          const cls = ['vt-tree-item'];
+          if (n.indeterminate) cls.push('indeterminate');
+          else if (n.checked) cls.push('checked');
+          if (n.italic) cls.push('italic');
+          const tag = n.tag === 'all' ? 'All' : (n.tag === 'subib' ? 'Sub-IB' : (n.tag === 'ra' ? 'RA' : ''));
+          const tagCls = n.tag ? `vt-tree-tag ${n.tag}` : '';
+          return `
+            <div class="${cls.join(' ')}" data-id="${n.id}" data-level="${n.level}">
+              <span class="vt-tree-checkbox"></span>
+              <span class="vt-tree-label">${n.label}</span>
+              ${tag ? `<span class="${tagCls}">${tag}</span>` : ''}
+            </div>`;
+        }).join('');
+      }
+      function toggle(id) {
+        const node = flat.find(n => n.id === id);
+        if (!node) return;
+        const next = !(node.checked === true);
+        propagateDown(node, next);
+        recomputeUp();
+        refreshLabel();
+        render();
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.vt-select.open, .vt-date.open').forEach(el => { if (el !== wrap) el.classList.remove('open'); });
+        wrap.classList.toggle('open');
+      });
+      list.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = e.target.closest('.vt-tree-item');
+        if (item) toggle(item.dataset.id);
+      });
+      footer.addEventListener('click', (e) => e.stopPropagation());
+
+      orig.style.display = 'none';
+      orig.parentNode.insertBefore(wrap, orig);
+      popup.appendChild(list);
+      popup.appendChild(footer);
+      wrap.appendChild(trigger);
+      wrap.appendChild(popup);
+      wrap.appendChild(orig);
+      refreshLabel();
+      render();
+    }
+
+    document.querySelectorAll('select.filter-select').forEach(sel => {
+      if (sel.hasAttribute('data-vt-tree')) buildVtTreeSelect(sel);
+      else if (sel.hasAttribute('data-vt-product')) buildVtProductSelect(sel);
+      else buildVtSelect(sel);
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.vt-select.open').forEach(el => el.classList.remove('open'));
+      document.querySelectorAll('.vt-date.open').forEach(el => el.classList.remove('open'));
+    });
+
+    // ─── Custom VT date-range picker (Figma 36729:331951) ────
+    function buildVtDate(orig) {
+      if (orig.dataset.vtBound === '1') return;
+      orig.dataset.vtBound = '1';
+      const wrap = document.createElement('div');
+      wrap.className = 'vt-date';
+      const trigger = orig; // keep the original input as the trigger
+      const popup = document.createElement('div');
+      popup.className = 'vt-date-popup';
+      orig.parentNode.insertBefore(wrap, orig);
+      wrap.appendChild(orig);
+      wrap.appendChild(popup);
+
+      const fmt = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+      const parseInput = (s) => {
+        const m = String(s || '').match(/(\d{2})\/(\d{2})\/(\d{4})\s*-\s*(\d{2})\/(\d{2})\/(\d{4})/);
+        if (!m) return null;
+        return [
+          new Date(+m[3], +m[2] - 1, +m[1]),
+          new Date(+m[6], +m[5] - 1, +m[4]),
+        ];
+      };
+      // Default: Last 7 Days within 2026 (15 Jun 2026 anchor → 09–15 Jun 2026)
+      const initial = parseInput(orig.value) || (() => {
+        const end = new Date(2026, 5, 15);
+        const start = new Date(end); start.setDate(start.getDate() - 6);
+        return [start, end];
+      })();
+      let [rangeStart, rangeEnd] = initial;
+      let pendingStart = null;       // when user clicks first date of new range
+      let viewMonth = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), 1);
+
+      const sameDay = (a, b) => a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+      const inRange = (d) => rangeStart && rangeEnd && d >= rangeStart && d <= rangeEnd;
+
+      // Anchor "today" to 15 Jun 2026 so all presets land in 2026
+      const todayAnchor = () => new Date(2026, 5, 15);
+      const presets = [
+        { label: 'Today', range: () => { const t = todayAnchor(); return [t, new Date(t)]; } },
+        { label: 'Last 7 Days', range: () => { const e = todayAnchor(); const s = new Date(e); s.setDate(s.getDate() - 6); return [s, e]; } },
+        { label: 'Last 30 Days', range: () => { const e = todayAnchor(); const s = new Date(e); s.setDate(s.getDate() - 29); return [s, e]; } },
+        { label: 'Last 90 Days', range: () => { const e = todayAnchor(); const s = new Date(e); s.setDate(s.getDate() - 89); return [s, e]; } },
+        { label: 'Month to Date', range: () => { const e = todayAnchor(); const s = new Date(e.getFullYear(), e.getMonth(), 1); return [s, e]; } },
+        { label: 'Quarter to Date', range: () => { const e = todayAnchor(); const q = Math.floor(e.getMonth() / 3) * 3; return [new Date(e.getFullYear(), q, 1), e]; } },
+        { label: 'Year to Date', range: () => { const e = todayAnchor(); return [new Date(e.getFullYear(), 0, 1), e]; } },
+      ];
+      function activePresetIdx() {
+        if (!rangeStart || !rangeEnd) return -1;
+        return presets.findIndex(p => {
+          const [s, e] = p.range();
+          return sameDay(s, rangeStart) && sameDay(e, rangeEnd);
+        });
+      }
+
+      const monthName = (d) => d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      function buildMonth(monthDate) {
+        // Figma uses Mo–Su order
+        const dows = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+        const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+        const lastDay = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+        // dayOfWeek: 0=Sun..6=Sat → shift so Mon=0
+        const lead = (first.getDay() + 6) % 7;
+        const html = [];
+        html.push('<div class="vt-date-row">');
+        for (const d of dows) html.push(`<div class="vt-date-cell dow">${d}</div>`);
+        html.push('</div>');
+        let cells = [];
+        // leading prev-month days
+        const prevLast = new Date(monthDate.getFullYear(), monthDate.getMonth(), 0).getDate();
+        for (let i = lead - 1; i >= 0; i--) cells.push({ outside: true, dt: new Date(monthDate.getFullYear(), monthDate.getMonth() - 1, prevLast - i) });
+        for (let d = 1; d <= lastDay; d++) cells.push({ outside: false, dt: new Date(monthDate.getFullYear(), monthDate.getMonth(), d) });
+        // trailing next-month days to fill 6 rows
+        while (cells.length % 7 !== 0 || cells.length < 42) {
+          const next = new Date(cells[cells.length - 1].dt); next.setDate(next.getDate() + 1);
+          cells.push({ outside: next.getMonth() !== monthDate.getMonth(), dt: next });
+          if (cells.length >= 42) break;
+        }
+        for (let r = 0; r < 6; r++) {
+          html.push('<div class="vt-date-row">');
+          for (let c = 0; c < 7; c++) {
+            const item = cells[r * 7 + c];
+            const dt = item.dt;
+            const cls = ['vt-date-cell'];
+            if (item.outside) cls.push('outside');
+            const isStart = sameDay(dt, rangeStart);
+            const isEnd = sameDay(dt, rangeEnd);
+            const isPending = pendingStart && sameDay(dt, pendingStart);
+            if (isStart || isEnd || isPending) cls.push('range-edge');
+            else if (rangeStart && rangeEnd && dt > rangeStart && dt < rangeEnd) cls.push('in-range');
+            html.push(`<div class="${cls.join(' ')}" data-iso="${dt.toISOString().slice(0,10)}">${dt.getDate()}</div>`);
+          }
+          html.push('</div>');
+        }
+        return html.join('');
+      }
+
+      function render() {
+        const left = new Date(viewMonth);
+        const right = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+        popup.innerHTML = `
+          <div class="vt-date-headers">
+            <div class="vt-date-header">
+              <div class="vt-date-nav-group">
+                <button class="vt-date-nav" data-nav="-12" aria-label="Previous year">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3l-4 4 4 4M13 3l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="vt-date-nav" data-nav="-1" aria-label="Previous month">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 3l-4 3 4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="vt-date-title">${monthName(left)}</div>
+              <div style="width:60px"></div>
+            </div>
+            <div class="vt-date-header right">
+              <div class="vt-date-nav-group">
+                <button class="vt-date-nav" data-nav="1" aria-label="Next month">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 3l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="vt-date-nav" data-nav="12" aria-label="Next year">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4M1 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="vt-date-title">${monthName(right)}</div>
+              <div style="width:60px"></div>
+            </div>
+          </div>
+          <div class="vt-date-body">
+            <div class="vt-date-presets">
+              ${presets.map((p, i) => `<button class="vt-date-preset${i === activePresetIdx() ? ' active' : ''}" data-preset="${i}">${p.label}</button>`).join('')}
+            </div>
+            <div class="vt-date-months">
+              <div class="vt-date-month">${buildMonth(left)}</div>
+              <div class="vt-date-month">${buildMonth(right)}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function applyRange() {
+        orig.value = `${fmt(rangeStart)} - ${fmt(rangeEnd)}`;
+        orig.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      popup.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const navBtn = e.target.closest('[data-nav]');
+        if (navBtn) {
+          const months = parseInt(navBtn.dataset.nav, 10);
+          viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + months, 1);
+          render();
+          return;
+        }
+        const preset = e.target.closest('[data-preset]');
+        if (preset) {
+          const [s, ee] = presets[+preset.dataset.preset].range();
+          rangeStart = s; rangeEnd = ee;
+          pendingStart = null;
+          viewMonth = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), 1);
+          applyRange();
+          render();
+          return;
+        }
+        const cell = e.target.closest('.vt-date-cell:not(.dow)');
+        if (cell) {
+          const iso = cell.dataset.iso;
+          const dt = new Date(iso + 'T00:00:00');
+          if (!pendingStart) {
+            pendingStart = dt;
+            rangeStart = dt;
+            rangeEnd = dt;
+          } else {
+            if (dt < pendingStart) { rangeStart = dt; rangeEnd = pendingStart; }
+            else { rangeStart = pendingStart; rangeEnd = dt; }
+            pendingStart = null;
+            applyRange();
+          }
+          render();
+        }
+      });
+
+      orig.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.vt-select.open, .vt-date.open').forEach(el => { if (el !== wrap) el.classList.remove('open'); });
+        if (!wrap.classList.contains('open')) {
+          // re-parse current value before opening
+          const parsed = parseInput(orig.value);
+          if (parsed) { rangeStart = parsed[0]; rangeEnd = parsed[1]; viewMonth = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), 1); }
+          render();
+          // Decide popup alignment: if the popup at left:0 would overflow
+          // the viewport, switch to right-aligned so it stays on-screen.
+          const triggerRect = orig.getBoundingClientRect();
+          const popupWidth = 880; // matches min-width
+          const overflowsRight = triggerRect.left + popupWidth > window.innerWidth - 16;
+          wrap.classList.toggle('align-right', overflowsRight);
+        }
+        wrap.classList.toggle('open');
+      });
+    }
+    document.querySelectorAll('input.filter-date').forEach(buildVtDate);
+
+    // Sub-IB stat cards: follow the active topbar account currency.
+    document.addEventListener('topbar-acct-change', (e) => {
+      const ccy = (e.detail && e.detail.currency) || 'USD';
+      document.querySelectorAll('#panel-subib .subib-stat-unit').forEach(el => {
+        el.textContent = ccy;
+      });
+    });
+
+    // Sub-IB stat cards drive the chart below
+    (function () {
+      const cards = document.querySelectorAll('#panel-subib .subib-stat-card');
+      const titleEl = document.getElementById('subib-chart-title');
+      const lineEl = document.getElementById('subib-chart-line');
+      const areaEl = document.getElementById('subib-chart-area');
+      if (!cards.length || !titleEl || !lineEl || !areaEl) return;
+      // Each metric has a title + a 7-point trend line path. Area path adds
+      // the right→bottom→left→start segment to close the polygon for the fill.
+      const metrics = {
+        gross: {
+          title: 'Gross Deposit',
+          line: 'M 40 215 L 220 195 L 400 165 L 580 130 L 760 95 L 940 60 L 1080 25',
+        },
+        net: {
+          title: 'Net Deposit',
+          line: 'M 40 200 L 220 175 L 400 185 L 580 140 L 760 145 L 940 100 L 1080 80',
+        },
+        volume: {
+          title: 'Trading Volume',
+          line: 'M 40 180 L 220 200 L 400 150 L 580 175 L 760 110 L 940 130 L 1080 95',
+        },
+        rebate: {
+          title: 'Rebate Contributions',
+          line: 'M 40 215 L 220 200 L 400 180 L 580 165 L 760 130 L 940 110 L 1080 70',
+        },
+      };
+      function setMetric(key) {
+        const m = metrics[key];
+        if (!m) return;
+        titleEl.textContent = m.title;
+        lineEl.setAttribute('d', m.line);
+        // Build the closed area path: line + right edge + bottom + back to start
+        areaEl.setAttribute('d', `${m.line} L 1080 220 L 40 220 Z`);
+        cards.forEach(c => {
+          const isActive = c.dataset.metric === key;
+          c.classList.toggle('active', isActive);
+          c.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+      }
+      cards.forEach(c => {
+        c.addEventListener('click', () => setMetric(c.dataset.metric));
+        c.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setMetric(c.dataset.metric);
+          }
+        });
+      });
+    })();
+
+    // ─── Sync .subib-table-info text with the panel's filter-date ──
+    (function () {
+      // For each panel that has the table info span, find the FIRST
+      // .filter-date input in the same panel and mirror its range.
+      function fmtRange(value) {
+        // Input is "dd/mm/yyyy - dd/mm/yyyy"; the info span shows them
+        // as the same dd/mm/yyyy values prefixed with "Total 0 Records From"
+        const m = String(value || '').match(/(\d{2}\/\d{2}\/\d{4})\s*-\s*(\d{2}\/\d{2}\/\d{4})/);
+        if (!m) return null;
+        return `Total 0 Records From ${m[1]} To ${m[2]}`;
+      }
+      document.querySelectorAll('.subib-table-info').forEach(info => {
+        const panel = info.closest('.tab-panel');
+        if (!panel) return;
+        const dateInput = panel.querySelector('input.filter-date');
+        if (!dateInput) return;
+        const update = () => {
+          const txt = fmtRange(dateInput.value);
+          if (txt) info.textContent = txt;
+        };
+        update();
+        // The custom date picker writes back via input.value + dispatches
+        // a 'change' event on the original input — listen for both.
+        dateInput.addEventListener('change', update);
+        dateInput.addEventListener('input', update);
+      });
+    })();
+
+    // ─── Column Display popup on every Filter btn-icon-plain ──
+    (function () {
+      // Default columns shown in the popup. Order + checked state mirror the
+      // Figma design (Email / Affid / Level pre-selected).
+      const DEFAULT_COLS = [
+        { id: 'user_id',     label: 'User ID',     checked: false },
+        { id: 'name',        label: 'Name',        checked: false },
+        { id: 'nickname',    label: 'Nickname',    checked: false },
+        { id: 'country',     label: 'Country',     checked: false },
+        { id: 'email',       label: 'Email',       checked: true  },
+        { id: 'affid',       label: 'Affid',       checked: true  },
+        { id: 'level',       label: 'Level',       checked: true  },
+        { id: 'parent',      label: 'Parent',      checked: false },
+        { id: 'join_date',   label: 'Join Date',   checked: false },
+        { id: 'registration',label: 'Registration',checked: false },
+        { id: 'client',      label: 'Client',      checked: false },
+        { id: 'ftd',         label: 'FTD',         checked: false },
+        { id: 'ftt',         label: 'FTT',         checked: false },
+        { id: 'deposits',    label: 'Deposits',    checked: false },
+        { id: 'net_deposits',label: 'Net Deposits',checked: false },
+        { id: 'volume_lots', label: 'Volume (Lots)',checked: false },
+        { id: 'volume_nv',   label: 'Volume (NV)', checked: false },
+        { id: 'tier',        label: 'Tier',        checked: false },
+        { id: 'commissions', label: 'Commissions', checked: false },
+        { id: 'status',      label: 'Status',      checked: false },
+      ];
+      const dragSvg = '<svg viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="1.5" r="1" fill="currentColor"/><circle cx="5" cy="1.5" r="1" fill="currentColor"/><circle cx="1" cy="5" r="1" fill="currentColor"/><circle cx="5" cy="5" r="1" fill="currentColor"/><circle cx="1" cy="8.5" r="1" fill="currentColor"/><circle cx="5" cy="8.5" r="1" fill="currentColor"/></svg>';
+
+      function renderRows(state) {
+        return state.map(c => `
+          <div class="colfilter-row" data-id="${c.id}">
+            <span class="colfilter-drag">${dragSvg}</span>
+            <label class="colfilter-check">
+              <input type="checkbox" ${c.checked ? 'checked' : ''} />
+              <span class="colfilter-check-box"></span>
+              <span class="colfilter-label">${c.label}</span>
+            </label>
+          </div>`).join('');
+      }
+
+      document.querySelectorAll('.btn-icon-plain[title="Filter"]').forEach(btn => {
+        if (btn.dataset.colfilterBound === '1') return;
+        btn.dataset.colfilterBound = '1';
+        // Snapshot state so each filter button has its own selections
+        const state = DEFAULT_COLS.map(c => ({ ...c }));
+
+        const wrap = document.createElement('div');
+        wrap.className = 'colfilter-wrap';
+        const popup = document.createElement('div');
+        popup.className = 'colfilter-popup';
+        popup.innerHTML = `
+          <div class="colfilter-title">Column Display</div>
+          <div class="colfilter-list"></div>
+          <div class="colfilter-actions">
+            <button type="button" class="colfilter-btn reset">Reset</button>
+            <button type="button" class="colfilter-btn confirm">Confirm</button>
+          </div>`;
+        const list = popup.querySelector('.colfilter-list');
+        list.innerHTML = renderRows(state);
+
+        // Sync clicks on row → toggle the matching state entry + checkbox
+        list.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const row = e.target.closest('.colfilter-row');
+          if (!row) return;
+          const id = row.dataset.id;
+          const item = state.find(c => c.id === id);
+          if (!item) return;
+          item.checked = !item.checked;
+          const cb = row.querySelector('input');
+          if (cb) cb.checked = item.checked;
+        });
+        popup.querySelector('.reset').addEventListener('click', (e) => {
+          e.stopPropagation();
+          state.forEach((c, i) => { c.checked = DEFAULT_COLS[i].checked; });
+          list.innerHTML = renderRows(state);
+        });
+        popup.querySelector('.confirm').addEventListener('click', (e) => {
+          e.stopPropagation();
+          wrap.classList.remove('open');
+        });
+        popup.addEventListener('click', (e) => e.stopPropagation());
+
+        // Move the trigger button INSIDE wrap so the popup is positioned
+        // relative to it.
+        btn.parentNode.insertBefore(wrap, btn);
+        wrap.appendChild(btn);
+        wrap.appendChild(popup);
+
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Close any other open colfilter / vt-select / vt-date popups
+          document.querySelectorAll('.colfilter-wrap.open').forEach(el => { if (el !== wrap) el.classList.remove('open'); });
+          document.querySelectorAll('.vt-select.open, .vt-date.open').forEach(el => el.classList.remove('open'));
+          wrap.classList.toggle('open');
+        });
+      });
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.colfilter-wrap.open').forEach(el => el.classList.remove('open'));
+      });
+    })();
+
+    // ─── Sub-IB Account-view live search filter ──────────────
+    window.subibAccountSearch = function () {
+      const fieldSel = document.querySelector('select.subib-account-field');
+      const input = document.querySelector('.subib-account-input');
+      const table = document.querySelector('.subib-account-table');
+      const wrap = document.querySelector('.subib-account-filter');
+      if (!fieldSel || !input || !table) return;
+      const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+      const field = fieldSel.options[fieldSel.selectedIndex]?.textContent?.trim() || '';
+      const idx = headers.indexOf(field);
+      const q = input.value.trim().toLowerCase();
+      const rows = Array.from(table.querySelectorAll('tbody tr')).filter(r => !r.classList.contains('subib-empty'));
+
+      rows.forEach(tr => {
+        if (!q) { tr.hidden = false; return; }
+        let match = false;
+        if (idx >= 0) {
+          const cell = tr.children[idx];
+          match = !!(cell && cell.textContent.toLowerCase().includes(q));
+        }
+        tr.hidden = !match;
+      });
+
+      // Empty-state row
+      let empty = table.querySelector('tbody tr.subib-empty');
+      const visible = rows.some(r => !r.hidden);
+      if (!visible && q) {
+        if (!empty) {
+          empty = document.createElement('tr');
+          empty.className = 'subib-empty';
+          const td = document.createElement('td');
+          td.colSpan = headers.length;
+          td.style.textAlign = 'center';
+          td.style.color = 'var(--text-secondary)';
+          td.style.padding = '32px 16px';
+          td.textContent = 'No matching results';
+          empty.appendChild(td);
+          table.querySelector('tbody').appendChild(empty);
+        }
+        empty.hidden = false;
+      } else if (empty) {
+        empty.hidden = true;
+      }
+
+      if (wrap) wrap.classList.toggle('has-text', q.length > 0);
+    };
+    window.subibAccountClear = function () {
+      const input = document.querySelector('.subib-account-input');
+      if (!input) return;
+      input.value = '';
+      window.subibAccountSearch();
+      input.focus();
+    };
+
+    (function () {
+      const fieldSel = document.querySelector('select.subib-account-field');
+      const input = document.querySelector('.subib-account-input');
+      if (!fieldSel || !input) return;
+      // Re-run filter when the user picks a different field via the custom dropdown
+      fieldSel.addEventListener('change', () => {
+        window.subibAccountSearch();
+      });
+      // Update placeholder to hint the active field
+      function updatePlaceholder() {
+        const f = fieldSel.options[fieldSel.selectedIndex]?.textContent?.trim() || '';
+        input.placeholder = f ? `Search by ${f}` : 'Please Enter';
+      }
+      fieldSel.addEventListener('change', updatePlaceholder);
+      updatePlaceholder();
+    })();
+
+    // (subibShowView defined at the top of this script block)
+    // Pill clicks handled by inline onclick → window.subibPickPill
+
+    // ─── Guide tooltip — highlight Sub-IB Report tab ─────
+    function showSubibGuide() {
+      const el = document.querySelector('.tab[data-tab="subib"]');
+      if (!el) { setTimeout(showSubibGuide, 200); return; }
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) { setTimeout(showSubibGuide, 200); return; }
+      const overlay = document.getElementById('guideOverlay');
+      const spotlight = document.getElementById('guideSpotlight');
+      const spotlightContent = document.getElementById('guideSpotlightContent');
+      const tooltip = document.getElementById('guideTooltip');
+      if (!overlay || !spotlight || !tooltip) { console.warn('[guide] missing nodes'); return; }
+      spotlightContent.textContent = el.textContent.trim();
+      overlay.classList.add('active');
+      // Show + measure the spotlight synchronously. forced-reflow via
+      // getBoundingClientRect() ensures offsetWidth is non-zero.
+      spotlight.style.display = 'block';
+      spotlight.style.left = '0px';
+      spotlight.style.top = '0px';
+      const sRect = spotlight.getBoundingClientRect();
+      const sw = sRect.width;
+      const sh = sRect.height;
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      spotlight.style.left = (cx - sw / 2) + 'px';
+      spotlight.style.top = (cy - sh / 2) + 'px';
+      const tooltipX = Math.max(20, cx - sw / 2);
+      const tooltipY = cy - sh / 2 + sh + 12;
+      tooltip.style.left = tooltipX + 'px';
+      tooltip.style.top = tooltipY + 'px';
+      tooltip.style.display = 'block';
+    }
+    window.nextGuide = function () { completeGuide(); };
+    window.skipGuide = function () { completeGuide(); };
+    function completeGuide() {
+      document.getElementById('guideOverlay').classList.remove('active');
+      document.getElementById('guideSpotlight').style.display = 'none';
+      document.getElementById('guideTooltip').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+    // Run on full window load (after sidebar.js / topbar.js inject DOM and
+    // CSS settles). 300ms cushion so the tab rect is final.
+    function startSubibGuide() { setTimeout(showSubibGuide, 300); }
+    if (document.readyState === 'complete') {
+      startSubibGuide();
+    } else {
+      window.addEventListener('load', startSubibGuide);
+    }
   </script>
 </body>
 </html>

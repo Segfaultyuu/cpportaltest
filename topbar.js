@@ -239,6 +239,13 @@
       body.ib-mode .topbar-acct-flag { width: 16px; height: 16px; }
       body.ib-mode .topbar-icon-btn[title="Coupons"],
       body.ib-mode .topbar-download { display: none !important; }
+      /* Anchor the open menu to the left edge of the switcher on mobile
+         so it drops down-right from the trigger */
+      .topbar-acct-menu {
+        left: 0; right: auto;
+        min-width: 240px;
+        max-width: calc(100vw - 24px);
+      }
     }
 
     /* ── Dark theme (toggled via topbar-theme-toggle) ───────── */
@@ -323,7 +330,7 @@
               <svg class="topbar-acct-check" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3 3 7-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <div class="topbar-acct-item" data-acct="456789">
-              <div class="topbar-acct-flag" style="background-image:url('images/country-flag.png');"></div>
+              <div class="topbar-acct-flag" style="background-image:url('https://cdn.jsdelivr.net/gh/lipis/flag-icons@main/flags/4x3/jp.svg');"></div>
               <span>456789 (820.45 JPY)</span>
               <svg class="topbar-acct-check" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3 3 7-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -441,6 +448,15 @@
         const txt = item.querySelector('span');
         if (txt && acctLabel) acctLabel.textContent = txt.textContent;
         acctMenu.classList.remove('open');
+        // Broadcast the change so pages can react (e.g. update card currencies)
+        const label = txt ? txt.textContent : '';
+        const m = label.match(/([A-Z]{3})\s*\)?\s*$/);
+        const detail = {
+          accountId: item.dataset.acct || '',
+          label,
+          currency: m ? m[1] : '',
+        };
+        document.dispatchEvent(new CustomEvent('topbar-acct-change', { detail }));
       });
     });
     document.addEventListener('click', (e) => {

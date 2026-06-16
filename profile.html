@@ -1182,30 +1182,23 @@
       });
     });
 
-    // IB / Client mode toggle (fired by topbar)
+    // Client profile keeps the Transfer IB / Account Manager tab visible
+    // (reused from IB profile) so clients can request a transfer.
+    // The IB Company badge is still IB-only — hide it in client mode and
+    // show it on IB mode if the topbar broadcasts a mode change.
     const badgeIbCompany = document.getElementById('badge-ib-company');
-    const tabTransfer    = document.getElementById('tab-transfer');
 
     function applyMode(mode) {
-      if (mode === 'ib') {
-        badgeIbCompany.style.display = '';
-        tabTransfer.style.display = '';
-      } else {
-        // Client mode: hide IB Company badge and Transfer IB tab
-        badgeIbCompany.style.display = 'none';
-        tabTransfer.style.display = 'none';
-        // If transfer panel is active, switch back to verification
-        if (tabTransfer.classList.contains('active')) {
-          document.querySelector('[data-panel="verification"]').click();
-        }
-      }
+      if (!badgeIbCompany) return;
+      badgeIbCompany.style.display = (mode === 'ib') ? '' : 'none';
     }
 
     document.addEventListener('topbar-mode-change', e => {
       applyMode(e.detail.mode);
     });
 
-    // Default: Client is active on load, so hide IB-only elements
+    // Default: client mode — hide the IB Company badge but keep the
+    // Transfer IB / Account Manager tab visible.
     applyMode('client');
   </script>
 </body>
