@@ -1419,6 +1419,164 @@
       .table-filter-right { width: 100%; flex-wrap: wrap; }
       .filter-select.processing { flex: 1; }
       .pagination-info { width: 100%; }
+
+      /* ── All controls match VT style: 40px tall, 8px radius, full-width on phones ── */
+      .filter-select,
+      .filter-date,
+      .search-bar,
+      .vt-select-trigger,
+      .btn-update {
+        height: 40px;
+        min-height: 40px;
+        font-size: 14px;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      /* Embedded trigger inside the combined search filter keeps its 32px */
+      .subib-account-filter .vt-select-trigger {
+        height: 32px;
+        min-height: 32px;
+        border-radius: 0;
+      }
+      .subib-account-filter { height: auto; }
+      .vt-select { width: 100%; min-width: 0; display: flex; }
+      .vt-select > .vt-select-trigger { width: 100%; min-width: 0; }
+      .vt-date { width: 100%; min-width: 0; display: flex; }
+      .vt-date > input.filter-date { width: 100%; }
+      /* Search bar (Fund Report) loses its background-image left padding clash */
+      .search-bar { width: 100%; }
+      /* Update button keeps 40px on phones, full-width */
+      .btn-update { width: 100%; padding: 0 20px; }
+
+      /* Toolbars wrap to one item per line on phones */
+      .rebate-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .rebate-toolbar > * { width: 100%; max-width: none; flex: 0 0 auto; margin: 0; }
+
+      .subib-filter { flex-direction: column; align-items: stretch; gap: 12px; }
+      .subib-filter > * { width: 100%; max-width: none; flex: 0 0 auto; margin: 0; }
+
+      /* Fund Report filter row in summary card */
+      .filter-row { flex-direction: column; gap: 12px; }
+      .filter-row > * { width: 100%; }
+
+      /* Fund Report table-filters row */
+      .table-filters { gap: 12px; }
+      .table-filter-right { gap: 10px; }
+      .table-filter-right > * { flex: 1 1 auto; }
+      .table-filter-right .btn-download { flex: 0 0 40px; }
+
+      /* ── Rebate summary grid (Total + product breakdown) ── */
+      .rebate-summary-grid { grid-template-columns: 1fr; gap: 16px; }
+      .rebate-card-total { min-height: 0; padding: 20px; }
+      .rebate-card-total .net-amount { font-size: 28px; line-height: 36px; }
+      .rebate-card-total .net-currency { font-size: 18px; line-height: 24px; }
+      .rebate-pie-row { gap: 16px; padding-top: 16px; }
+      .rebate-pie { width: 180px; height: 180px; }
+      .rebate-pie::before { inset: 24px; }
+
+      .rebate-card-breakdown { padding: 20px; gap: 16px; }
+      .rebate-product-row { grid-template-columns: 1fr; gap: 16px; }
+      .rebate-product-row::before { display: none; }
+      .rebate-product-row + .rebate-product-row { padding-top: 16px; }
+      .rebate-product-amount { font-size: 18px; line-height: 26px; height: auto; }
+
+      /* ── Sub-IB stat cards already collapse to 1-col elsewhere ── */
+      .subib-stat-card { padding: 14px 16px; }
+      .subib-stat-value { font-size: 20px; line-height: 28px; }
+      .subib-chart-card { padding: 16px; }
+      .subib-chart-svg { height: 180px; }
+
+      /* ── Table toprow stacks: segment full-width on top, info+icons below ── */
+      .subib-table-toprow { flex-direction: column; align-items: stretch; gap: 12px; }
+      .subib-segment { width: 100%; }
+      .subib-segment-btn { flex: 1; }
+      .subib-table-actions { width: 100%; justify-content: space-between; gap: 12px; }
+      .subib-table-info { font-size: 13px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+      /* Notice banner shrinks for narrow widths */
+      .subib-notice { font-size: 12px; padding: 12px 14px; line-height: 18px; }
+
+      /* Pills stay on one row; scroll horizontally if they overflow */
+      .subib-pill-row {
+        gap: 6px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .subib-pill-row::-webkit-scrollbar { display: none; }
+      .subib-pill { flex: 1 1 0; padding: 0 12px; min-width: 0; white-space: nowrap; }
+
+      /* Account-view filter still single-column */
+      .subib-account-filter { width: 100%; }
+
+      /* Tables get horizontal scroll within their wrap */
+      .subib-table-card .data-table-wrap { overflow-x: auto; }
+      .subib-table-card .data-table { min-width: 560px; }
+      .subib-account-table { min-width: 1400px; }
+
+      /* Rebate "Total" tag area gives the header room */
+      .rebate-total-tag { padding: 6px; font-size: 13px; }
+      .rebate-total-cell { padding: 12px 16px !important; }
+      .rebate-total-label { font-size: 12px; }
+      .rebate-total-value { font-size: 14px; line-height: 18px; }
+
+      /* Pagination compresses */
+      .pagination-row { padding: 14px 16px !important; gap: 6px; }
+      .pagination-info { font-size: 12px; margin-right: 0; order: -1; text-align: center; }
+      .page-btn { min-width: 28px; height: 28px; font-size: 12px; }
+
+      /* VT date popup spans the viewport on phones */
+      .vt-date-popup { min-width: 0; width: calc(100vw - 32px); max-width: calc(100vw - 32px); }
+      .vt-date-month { width: 100%; min-width: 0; }
+      .vt-tree-popup { min-width: 240px; max-width: calc(100vw - 32px); }
+      .vt-product-popup { max-width: calc(100vw - 32px); }
+      .vt-product-list, .vt-product-list.symbols { width: 50% !important; min-width: 0; }
+
+      /* Column-display popup keeps its width but caps to viewport */
+      .colfilter-popup { width: 280px; max-width: calc(100vw - 32px); }
+
+      /* Guide tooltip caps to viewport so it never overflows on phones */
+      .guide-tooltip {
+        width: 280px;
+        max-width: calc(100vw - 24px);
+        transform: scale(1);
+      }
+
+      /* ─── Sub-IB Report: phone tuning ────────────────────── */
+      /* Notice banner full width, smaller line-height */
+      #panel-subib .subib-notice { padding: 10px 12px; }
+
+      /* Stat cards: keep clickable feel without the desktop lift on touch */
+      #panel-subib .subib-stat-card:hover { transform: none; box-shadow: var(--shadow-card); }
+      #panel-subib .subib-stat-card { gap: 6px; }
+      #panel-subib .subib-stat-foot { font-size: 11px; gap: 6px; flex-wrap: wrap; }
+      #panel-subib .subib-stat-trend { padding: 1px 6px; font-size: 11px; }
+
+      /* Chart card: pin x-axis date strip below the SVG without overflow */
+      #panel-subib .subib-chart-card > div:last-child {
+        padding: 6px 16px 0;
+        font-size: 10px;
+        gap: 4px;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+      }
+      #panel-subib .subib-chart-card > div:last-child::-webkit-scrollbar { display: none; }
+
+      /* Account view: combined search bar full-width, embedded trigger
+         keeps a tight 120px so the input can flex. */
+      #panel-subib .subib-account-filter { width: 100%; height: auto; padding: 4px; }
+      #panel-subib .subib-account-filter > .vt-select { flex: 0 0 auto; width: 120px; }
+      #panel-subib .subib-account-filter .vt-select-trigger { width: 120px; height: 32px; }
+      #panel-subib .subib-account-input { flex: 1; min-width: 0; }
+      #panel-subib .subib-account-search-icon { display: none; }
+
+      /* Table info: allow wrap to a 2nd line so the date range stays readable */
+      #panel-subib .subib-table-info { white-space: normal; line-height: 18px; }
+
+      /* Day/Week/Month/Year — single row */
+      #panel-subib .subib-pill-row { width: 100%; flex-wrap: nowrap; overflow-x: auto; }
+      #panel-subib .subib-pill { flex: 1 1 0; min-width: 0; white-space: nowrap; }
     }
 
     @media (max-width: 480px) {
@@ -1426,6 +1584,31 @@
       .page-title { font-size: 20px; }
       .net-amount { font-size: 22px; }
       .stats-bar-value { font-size: 20px; }
+
+      .rebate-pie { width: 140px; height: 140px; }
+      .rebate-pie::before { inset: 18px; }
+      .rebate-pie-label { font-size: 18px; line-height: 24px; }
+      .rebate-pie-legend { width: 100%; gap: 12px; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .rebate-pie-legend-item { width: calc(50% - 6px); }
+
+      .subib-stat-card { padding: 12px 14px; }
+      .subib-stat-label { font-size: 13px; }
+      .subib-stat-value { font-size: 18px; line-height: 24px; }
+      .subib-stat-unit { font-size: 12px; }
+
+      .subib-pill { flex: 1 1 0; height: 30px; font-size: 12px; padding: 0 10px; }
+      .subib-segment-btn { padding: 0 12px; font-size: 12px; }
+
+      .data-table thead th,
+      .data-table tbody td { padding: 12px 14px; font-size: 12px; }
+      .rebate-total-cell { padding: 10px 14px !important; }
+
+      /* Sub-IB Report — small phone tuning */
+      #panel-subib .subib-stat-row { flex-wrap: wrap; }
+      #panel-subib .subib-stat-foot { width: 100%; }
+      #panel-subib .subib-chart-svg { height: 160px; }
+      #panel-subib .subib-chart-title { font-size: 14px; }
+      #panel-subib .subib-account-input::placeholder { font-size: 13px; }
     }
     /* ─── Guide tooltip (reused from trading.html) ─────── */
     .guide-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 9998; display: none; }
@@ -3040,8 +3223,6 @@
       if (!overlay || !spotlight || !tooltip) { console.warn('[guide] missing nodes'); return; }
       spotlightContent.textContent = el.textContent.trim();
       overlay.classList.add('active');
-      // Show + measure the spotlight synchronously. forced-reflow via
-      // getBoundingClientRect() ensures offsetWidth is non-zero.
       spotlight.style.display = 'block';
       spotlight.style.left = '0px';
       spotlight.style.top = '0px';
@@ -3052,11 +3233,32 @@
       const cy = rect.top + rect.height / 2;
       spotlight.style.left = (cx - sw / 2) + 'px';
       spotlight.style.top = (cy - sh / 2) + 'px';
-      const tooltipX = Math.max(20, cx - sw / 2);
-      const tooltipY = cy - sh / 2 + sh + 12;
+      // Show tooltip first so we can measure its rendered footprint
+      // (the card uses transform: scale(0.8), so its visual width is less
+      // than the box width; getBoundingClientRect returns the scaled rect).
+      tooltip.style.left = '0px';
+      tooltip.style.top = '0px';
+      tooltip.style.display = 'block';
+      const tRect = tooltip.getBoundingClientRect();
+      const tw = tRect.width;
+      const th = tRect.height;
+      const margin = 12;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // Default: align tooltip's left with the spotlight's left
+      let tooltipX = cx - sw / 2;
+      // Clamp to viewport so it never overflows the right edge
+      tooltipX = Math.min(tooltipX, vw - tw - margin);
+      // …and never the left edge
+      tooltipX = Math.max(margin, tooltipX);
+      // Default: drop below the spotlight; if it would overflow the bottom,
+      // flip it to above.
+      let tooltipY = cy - sh / 2 + sh + 12;
+      if (tooltipY + th > vh - margin) {
+        tooltipY = Math.max(margin, cy - sh / 2 - th - 12);
+      }
       tooltip.style.left = tooltipX + 'px';
       tooltip.style.top = tooltipY + 'px';
-      tooltip.style.display = 'block';
     }
     window.nextGuide = function () { completeGuide(); };
     window.skipGuide = function () { completeGuide(); };
